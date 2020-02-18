@@ -1,0 +1,29 @@
+@sidebar-color:	#434343;
+
+body {
+	display: flex;
+	flex-direction: column;
+	
+	height: 100%;
+}
+
+.home-main_content {
+	display: flex;
+	flex-grow: 1;
+	
+	.home-sidebar {
+		position: relative;
+		
+		width: 256px; 
+		height: 100%;
+		
+		background: @sidebar-color; 
+		
+		box-shadow: 3px 0 8px 0px #787878; 
+		z-index: 99;
+	}
+	
+	.home-restaurant_display {
+		flex-grow: 1;
+	}
+}

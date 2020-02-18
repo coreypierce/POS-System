@@ -1,0 +1,54 @@
+@logout_color:	#ea5166;
+
+.page-header {
+	position: relative;
+	
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+	padding: .5rem 1rem;
+    box-shadow: 0 3px 8px 0px #787878;
+    
+    background-color: white;
+    
+    z-index: 100;
+
+	.user-display {
+		.user-icon-wrapper {
+   		 	display: inline-block;
+   		 	
+			width: 3rem;
+    		height: 3rem;
+    		
+    		background: #4ab8ef;
+   			border-radius: .1rem;
+   			
+   			fill: white;
+   			stroke: white;
+   			
+   			i {
+   				display: block;
+   			}
+		}
+		
+		.user-details {
+			display: inline-block;
+		
+			.user-name {
+				font-size: 1.5rem;
+			}
+		
+			.user-assignment {
+				color: #717171;
+    			font-size: 1rem;
+			}
+		}
+	}
+	
+	.user-actions {
+		#logout_button {
+			background-color: @logout_color;
+		}
+	}
+}

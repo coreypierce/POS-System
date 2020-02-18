@@ -1,0 +1,49 @@
+@table-color_OPEN:		#48EA12;
+@table-color_SEATED:	#FF0;
+@table-color_ORDERED:	#00F;
+@table-color_CHECKOUT:	#80F;
+@table-color_UNKNOWN:	#DEDEDE;
+
+.table-display_wrapper {
+	position: relative;
+	
+	width: 100%;
+	height: 100%;
+	
+	.table-icon {
+		position: absolute;
+		
+		cursor: pointer;
+		z-index: 50;
+		
+		// default to unknown if no status given
+		fill: @table-color_UNKNOWN;
+		
+		.table-status_open {
+			fill: @table-color_OPEN;
+		}
+		
+		.table-status_seated {
+			fill: @table-color_SEATED;
+		}
+		
+		.table-status_ordered {
+			fill: @table-color_ORDERED;
+		}
+		
+		.table-status_checkout {
+			fill: @table-color_CHECKOUT;
+		}
+		
+		.table-status_unknown {
+			fill: @table-color_UNKNOWN;
+		}
+	}
+	
+	canvas {
+		width: 100%; 
+		height: 100%; 
+		
+		background-color: #f2f2f2;
+	}
+}

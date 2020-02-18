@@ -1,0 +1,39 @@
+<!-- Load/Access properties -->
+<value name="popup" default="popup_error_message.html" />
+<value name="name" default="" />
+
+<!-- Style Properties -->
+<value name="title" default="Title" />
+<value name="size" default="medium" />
+
+<res src="popup.less" type="css" />
+<res src="popup.js" type="js" />
+
+<res src="/common/jquery-3.4.1.min.js" type="js" />
+
+<article id="popup_UNASSIGNED" class="popup popup-size_{!size}">
+	<header class="popup-header">
+		<h2 class="popup-title">
+			{!title}
+		</h2>
+		    
+		<a class="popup-close_button"></a>
+		<hr />
+	</header>
+	
+	<section>
+		<import src="{!popup}" /> 
+	</section>
+</article>
+
+<script>
+	(function() {
+		var element = $("#popup_UNASSIGNED");
+		var id = Popup.register(element, "{!name}");
+		
+		// add close action to "x" button
+		element.find(".popup-close_button").on("click", function() {
+			Popup.close(id);
+		});
+	})()
+</script>
