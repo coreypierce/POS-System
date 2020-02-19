@@ -615,7 +615,11 @@ public class LogConsoleStreamProcessor {
 			
 			// Log Exception
 			while(exception != null) {
-				builder.append(exception.getMessage());
+				builder.append(exception.getClassName());
+				if(exception.getMessage() != null) {
+					builder.append(": ");
+					builder.append(exception.getMessage());
+				}
 				builder.append("\r\n");
 				
 				builder.append(STACK_MARKER);

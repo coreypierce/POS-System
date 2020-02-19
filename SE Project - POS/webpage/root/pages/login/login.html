@@ -1,0 +1,70 @@
+<html>
+	<import src="/common/base_head.html" title="Login" />
+	
+	<res src="login.less" type="css" />
+	<res src="/common/jquery-3.4.1.min.js" type="js" />
+	
+<body>
+	<section class="login-wrapper">
+		<header class="login-header">
+			<h2> Login </h2>
+			<hr />
+		</header>
+	
+		<div class="login-input_wrapper">
+			<h3> Employee ID </h3>
+			<input type="text" id="login_username" />
+		</div>
+		
+		<div class="login-input_wrapper">
+			<h3> Password </h3>
+			<input type="password" id="login_password" />
+		</div>
+		
+		<div class="login-input_wrapper">
+			<button onclick="login()">
+				<i></i>
+				Login
+			</button>
+		</div>
+	</section>
+	
+	<script type="text/javascript">
+		function login() {
+			// See "https://api.jquery.com/jquery.ajax/" for more details
+			$.ajax({
+				url: "/pages/login/try_login", // TODO: should be somewhere like: "api/employee/login"
+				method: "POST", // use POST or GET
+				
+				data: {		// JSON Object-data to send to server, if needed
+					username: $("#login_username").val(),	// don't worry too much about the jquery here
+					password: $("#login_password").val()	// pay attention to the names -- name: value
+				},
+				
+				headers: {	// JSON Object, provide additional HTTP Headers here
+					
+				}
+			})
+			// called upon sucessful-response from server
+			.done(function(data, status, xhr) {
+				// data: response data from server
+				// status: response status-message
+				// xhr: Javascript XmlHttpRequest Object
+				
+				alert(data.success ? "Login Passed" : "Login Failed");
+				// xhr.status == 200
+				// xhr.statusText = "OK"
+			
+			})
+			// called upon error-response from server, or due to transaction-error
+			.fail(function(xhr, status, error) {
+				// xhr: Javascript XmlHttpRequest Object
+				// status: response status-message
+				// error: error-message from server
+				
+				alert("An Error has occured! " + status + " --- " + error);
+			});
+		}
+	</script>
+</body>
+</html>

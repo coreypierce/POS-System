@@ -217,7 +217,7 @@ public class HTMLResourceLoader {
 			// convert source into absolute-path
 			src = RelativePathUtil.calculatePath(resource_path, src);
 			// remove "root/" from full-path to get absolute-resource path
-			src = src.substring(src.indexOf('/') + 1);
+			src = src.substring(src.indexOf('/'));
 
 			// check to see if we already have the resource added
 			if(res.containsKey(src)) {
