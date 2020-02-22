@@ -21,6 +21,7 @@ public class PasswordUtil {
 	public static boolean verifyPassword(String password, String correctHash) {
 		return correctHash.equals(hash(password));
 	}
-	
+
+//	----------------------------------------- Non-Constructible ----------------------------------------- \\
 	private PasswordUtil() { }
 }

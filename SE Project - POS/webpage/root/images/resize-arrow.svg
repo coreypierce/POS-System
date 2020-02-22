@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg11621"
+   version="1.1"
+   height="32"
+   width="32">
+   
+  <defs>
+    <symbol id="arrow" viewBox="0 0 24 32">
+	  <g>
+        <path
+       		d="m 24,16 -14,12 v -8 H 0 v -8 h 10 v -8 z"/>
+  	  </g>
+  	</symbol>
+  	
+  	<symbol id="arrow-old" viewBox="0 0 32 32">
+	  <g>
+   		<path
+       		d="m 32,16 -14,12 v -6 H 0 v -10 h 18 v -6 z"/>
+  	  </g>
+  	</symbol>
+  	
+  	<symbol id="rotate-arrow" viewBox="0 0 32 32">
+		<path
+		   d="m 30.004687,20.50205 -5.99778,8.02455 -5.997781,-8.02455 z" />
+		<path
+		   d="m 12.027129,2.5365 -8.0371736,5.98989 8.0371736,6.027 z" />
+		<path
+		   d="m 22.008893,20.52904 c 0.0072,-2.64899 -1.042109,-5.19186 -2.91613,-7.06696 -1.874021,-1.8751 -4.418571,-2.92814 -7.071633,-2.92655 0.0028,-1.33185 -0.691205,-2.83791 0.0085,-3.99554 3.709668,6.6e-4 7.266909,1.4744 9.888135,4.09656 2.621228,2.62216 4.091407,6.17765 4.086688,9.88326 z"/>
+  	</symbol>
+  </defs>
+  
+  <metadata>
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

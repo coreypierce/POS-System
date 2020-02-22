@@ -1,0 +1,139 @@
+.table-display_resources {
+	display: none;
+}
+
+.tables-edit_wrapper {
+    position: absolute;
+    
+    border: 1px dashed firebrick;
+    box-sizing: border-box;
+    
+	visibility: hidden;
+    z-index: 30;
+    
+    &.table-edit_active {
+    	visibility: visible;
+    }
+    
+    .tables-edit_strech_arrow, .tables-edit_rotate_arrow {
+		position: absolute;
+		
+		visibility: hidden;
+	    z-index: 70;
+		
+		fill: #66D;
+		opacity: .3;
+		
+		&:hover, &:active {
+			opacity: .9;
+		}
+	}
+	
+	&.table-edit_show_strech .tables-edit_strech_arrow {
+		visibility: inherit;
+	}
+	
+	&.table-edit_show_rotate .tables-edit_rotate_arrow {
+		visibility: inherit;
+	}
+    
+    .tables-edit_strech_arrow {
+    	width: 1.75rem;
+		height: 1.75rem;
+		
+		&#tables_edit_strech_right {
+			cursor: e-resize;
+			
+			top: ~"calc(50% - .875rem)";
+			right: -2rem;
+		}
+
+		&#tables_edit_strech_up {
+			transform: rotate(270deg);
+			cursor: n-resize;
+			
+			left: ~"calc(50% - .875rem)";
+			top: -2rem;
+		}
+		
+		&#tables_edit_strech_left {
+			transform: rotate(180deg);
+			cursor: w-resize;
+			
+			top: ~"calc(50% - .875rem)";
+			left: -2rem;
+		}
+		
+		&#tables_edit_strech_down {
+			transform: rotate(90deg);
+			cursor: s-resize;
+			
+			left: ~"calc(50% - .875rem)";
+			bottom: -2rem;
+		}	
+    }
+    
+    .tables-edit_rotate_arrow {
+    	width: 2.8875rem;
+		height: 2.8875rem;
+		
+		&#tables_edit_rotate_tr {
+			cursor: nw-resize;
+			
+			top: -1.75rem;
+			right: -1.75rem;
+		}	
+		
+		&#tables_edit_rotate_br {
+			transform: rotate(90deg);
+			cursor: sw-resize;
+			
+			bottom: -1.75rem;
+			right: -1.75rem;
+		}	
+		
+		&#tables_edit_rotate_bl {
+			transform: rotate(180deg);
+			cursor: se-resize;
+			
+			bottom: -1.75rem;
+			left: -1.75rem;
+		}
+		
+		&#tables_edit_rotate_tl {
+			transform: rotate(270deg);
+			cursor: ne-resize;
+			
+			top: -1.75rem;
+			left: -1.75rem;
+		}
+	}
+	
+	&:hover::after {
+		content: "";
+		
+		position: absolute;
+		top: 0;
+		left: 0;
+		
+		width: 100%;
+		height: 100%;
+		
+		background-color: #000;
+		opacity: .1;
+	}
+}
+
+.tables-edit_mode {
+	.table-icon, .table-wall {
+		cursor: move !important;
+		
+		&:hover::after{
+			&:extend(.tables-edit_wrapper:hover::after);
+		}
+		
+		&:active {
+			cursor: grabbing !important;
+		}
+	}
+} 

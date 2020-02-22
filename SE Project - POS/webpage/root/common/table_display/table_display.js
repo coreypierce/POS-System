@@ -1,4 +1,4 @@
-var TableDisplay = {};
+var TableDisplay = TableDisplay || { mode: "view" };
 (function(disp) {
 	if(!$) throw "Missing jQuery! Table-Display requires page to include jQuery";
 	
@@ -26,11 +26,17 @@ var TableDisplay = {};
 	
 	var wall_color = "#3f3f3f"; 
 	
-	// draw scale factor
-	var scaleX, scaleY;
+// ============================================ ============== ============================================ \\
+// ============================================ Element Lookup ============================================ \\
 	
-// ============================================ ============ ============================================ \\
-// ============================================ __ Functions ============================================ \\
+	var id_map = {};
+	
+	disp.findItemByElement = function(ele) {
+		return id_map[ele.attr("id")];
+	}
+	
+// ============================================ =============== ============================================ \\
+// ============================================ Setup Functions ============================================ \\
 
 	var items = [];
 	var layout_width = 1, layout_height = 1;
@@ -38,11 +44,73 @@ var TableDisplay = {};
 	function parseItems(items_data) {
 		for(var item of items_data) {
 			// assign 'class' to Object, based on if item contains table-data 
-			Object.setPrototypeOf(item, item.table && Table.prototype || Wall.prototype)
+			Object.setPrototypeOf(item, item.table && Table.prototype || Wall.prototype);
+			setupElement(item);
 		}
 		
 		// assign items to field
 		items = items_data;
+	}
+	
+	function setupElement(item) {
+		// add mappings for all item
+		item.makeElement();
+		id_map[item.element.attr("id")] = item;
+		
+		// if edit-mode
+		disp.setup && disp.setup(item.element);
+	}
+	
+	function addItem(item) {
+		// add item to the list
+		items.push(item);
+		// setup any additional properties
+		setupElement(item);
+	}
+	
+// ============================================ ================== ============================================ \\
+// ============================================ Movement Functions ============================================ \\
+	
+	function doesIntersect(p0, b0, p1, b1) {
+		if(p0.x + b0.width - 1 < p1.x) return false;
+		if(p0.y + b0.height - 1 < p1.y) return false;
+		
+		if(p1.x + b1.width - 1 < p0.x) return false;
+		if(p1.y + b1.height - 1 < p0.y) return false;
+		
+		return true;
+	}
+	
+	function moveItem(item, new_pos, new_bounds) {
+		if(new_pos.x < 0 || new_pos.y < 0) return false;
+		if(new_pos.x + new_bounds.width > layout_width) return false;
+		if(new_pos.y + new_bounds.height > layout_height) return false;
+		
+		if(new_bounds.width <= 0 || new_bounds.height <= 0) return false;
+		
+		if(item instanceof Wall) {
+			for(var check of items) {
+				// walls are allowed to intersect other walls
+				if(check instanceof Wall) continue;
+				if(doesIntersect(new_pos, new_bounds, check.position, check.bounds)) {
+					return false;
+				}
+			}
+			
+		} else {
+			// tables are checked against everything
+			for(var check of items) {
+				// do not check against self
+				if(check == item) continue;
+				if(doesIntersect(new_pos, new_bounds, check.position, check.bounds)) {
+					return false;
+				}
+			}
+		}
+		
+		item.position = new_pos;
+		item.bounds = new_bounds;
+		return true;
 	}
 	
 // ============================================ ============ ============================================ \\
@@ -71,27 +139,52 @@ var TableDisplay = {};
 	}
 	
 // ============================================ =========== ============================================ \\
-// ============================================ Table Class ============================================ \\
+// ============================================ Item Class ============================================ \\
 	
-	class Table {
+	class Item {
 		element;
-		table;
 		
+		rotation;
 		position;
 		bounds;
 		
 		constructor(x, y, width, height) {
+			rotation = 0;
 			position = { 'x': x, 'y': y };
 			bounds = { 'width': width, 'height': height };
 		}
 		
+		makeElement() { }
+		
+		resize() {
+			this.makeElement();
+			
+			this.element && this.element.css({
+				"top": 	this.position.y * disp.scaleY,
+				"left": this.position.x * disp.scaleX,
+				"width": 	this.bounds.width  * disp.scaleX + "px",
+				"height": 	this.bounds.height * disp.scaleY + "px",
+			});
+		}
+		
+		draw(g) {}
+		
+		move(position, bounds) {
+			moveItem(this, position, bounds);
+		}
+	}
+	
+// ============================================ =========== ============================================ \\
+// ============================================ Table Class ============================================ \\
+	
+	class Table extends Item {
 		makeElement() {
 			// if we don't have an element
 			if(!this.element) {
 				// main div-element
 				this.element = $("<div />")
 					.attr("id", "table_" + this.table.id)
-					.addClass("table-icon")
+					.addClass("table-icon");
 				
 				// table-label
 				var label = $("<span />")
@@ -107,40 +200,40 @@ var TableDisplay = {};
 				
 				this.element.append(label);
 				this.element.append(image);
+
+				// add class-flags for editing the item
+				this.element
+					.addClass("table-selectable").addClass("table-draggable")
+					.addClass("table-edit_rotatable");
 				
 				// add to tables-wrapper
 				wrapper.append(this.element);
 			}
 		}
-		
-		resize() {
-			this.makeElement();
-			
-			this.element.css({
-				"top": 	this.position.y * scaleY,
-				"left": this.position.x * scaleX,
-				"width": 	this.bounds.width  * scaleX + "px",
-				"height": 	this.bounds.height * scaleY + "px",
-			});
-			
-//			this.element.find("svg")
-//				.attr("width", this.bounds.width * scaleX)
-//				.attr("height", this.bounds.height * scaleY);
-		}
-		
-		draw(g) {}
 	}
 	
-// ============================================ =========== ============================================ \\
+// ============================================ ========== ============================================ \\
 // ============================================ Wall Class ============================================ \\
 	
-	class Wall {
-		constructor(x, y, width, height) {
-			position = { 'x': x, 'y': y };
-			bounds = { 'width': width, 'height': height };
+	var nextWallID = 0;
+	class Wall extends Item {
+		makeElement() {
+			// if we don't have an element
+			if(!this.element) {
+				// main div-element
+				this.element = $("<div />")
+					.attr("id", "wall_" + nextWallID ++)
+					.addClass("table-wall");
+				
+				// add class-flags for editing the item
+				this.element
+					.addClass("table-selectable").addClass("table-draggable")
+					.addClass("table-edit_scalable");
+				
+				// add to tables-wrapper
+				wrapper.append(this.element);
+			}
 		}
-		
-		resize() {}
 		
 		draw(g) {
 			g.fillStyle = wall_color;
@@ -149,7 +242,7 @@ var TableDisplay = {};
 				this.bounds.width - .5, this.bounds.height - .5);
 		}
 	}
-	
+
 // ============================================ ========= ============================================ \\
 // ============================================ Grid Draw ============================================ \\
 	
@@ -172,12 +265,12 @@ var TableDisplay = {};
 	} 
 	
 	function drawGrid(g) {
-		for(var x = 0, index = 0; x < w; x += scaleX, index ++) {
+		for(var x = 0, index = 0; x < w; x += disp.scaleX, index ++) {
 			g.strokeStyle = index % grid_major == 0 ? grid_color_major : grid_color_minor;
 			g.drawLine(x, 0, x, h);
 		}
 		
-		for(var y = 0, index = 0; y < h; y += scaleY, index ++) {
+		for(var y = 0, index = 0; y < h; y += disp.scaleY, index ++) {
 			g.strokeStyle = index % grid_major == 0 ? grid_color_major : grid_color_minor;
 			// if it's a major-grid line, use new line, else old line
 			g.globalCompositeOperation = index % grid_major == 0 ? "source-over" : "destination-over";
@@ -186,6 +279,12 @@ var TableDisplay = {};
 
 		// reset to default
 		g.globalCompositeOperation = "source-over";
+	}
+	
+	function drawLayoutBounds(g) {
+		g.fillStyle = "#0003";
+		g.fillRect(0, layout_height, layout_width, h / disp.scaleY);
+		g.fillRect(layout_width, 0, w / disp.scaleX, layout_height);
 	}
 
 // ============================================ ================== ============================================ \\
@@ -196,13 +295,13 @@ var TableDisplay = {};
 		h = canvas.height = canvas.clientHeight;
 		
 		// calculate the max-square scale factor
-		scaleX = w / layout_width;
-		scaleY = h / layout_height;
+		disp.scaleX = w / layout_width;
+		disp.scaleY = h / layout_height;
 		
-		if(scaleX < scaleY)
-			scaleY = scaleX;
+		if(disp.scaleX < disp.scaleY)
+			disp.scaleY = disp.scaleX;
 		else
-			scaleX = scaleY;
+			disp.scaleX = disp.scaleY;
 		
 		// resize all elements
 		for(var item of items) {
@@ -218,7 +317,10 @@ var TableDisplay = {};
 		drawGrid(g);
 		
 		// scale here so items can ignore scale when drawing
-		g.scale(scaleX, scaleY);
+		g.scale(disp.scaleX, disp.scaleY);
+		
+		// draw the limits of the restaurant
+		drawLayoutBounds(g);
 		
 		// draw all items
 		for(var item of items) {

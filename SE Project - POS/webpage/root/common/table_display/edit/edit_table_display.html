@@ -1,0 +1,61 @@
+<res src="edit_table_display.less" type="css" />
+<res src="edit_table_display.js" type="js" />
+
+<div class="table-display_resources">
+	<import src="/images/resize-arrow.svg" />
+</div>
+
+<div class="tables-edit_wrapper">
+	<div id="tables_edit_strech_right" data-axis="h+" class="tables-edit_strech_arrow table-draggable">
+		<svg width="100%" height="100%">
+			<use href="#arrow"> </use> 
+		</svg>
+	</div>
+	
+	<div id="tables_edit_strech_left" data-axis="h-" class="tables-edit_strech_arrow table-draggable">
+		<svg width="100%" height="100%">
+			<use href="#arrow"> </use> 
+		</svg>
+	</div>
+	
+	<div id="tables_edit_strech_up" data-axis="v-" class="tables-edit_strech_arrow table-draggable">
+		<svg width="100%" height="100%">
+			<use href="#arrow"> </use> 
+		</svg>
+	</div>
+	
+	<div id="tables_edit_strech_down" data-axis="v+" class="tables-edit_strech_arrow table-draggable">
+		<svg width="100%" height="100%">
+			<use href="#arrow"> </use> 
+		</svg>
+	</div>
+	
+	<div id="tables_edit_rotate_tr" class="tables-edit_rotate_arrow table-draggable">
+		<svg width="100%" height="100%">
+			<use href="#rotate-arrow"> </use> 
+		</svg>
+	</div>
+	
+	<div id="tables_edit_rotate_tl" class="tables-edit_rotate_arrow table-draggable">
+		<svg width="100%" height="100%">
+			<use href="#rotate-arrow"> </use> 
+		</svg>
+	</div>
+	
+	<div id="tables_edit_rotate_br" class="tables-edit_rotate_arrow table-draggable">
+		<svg width="100%" height="100%">
+			<use href="#rotate-arrow"> </use> 
+		</svg>
+	</div>
+	
+	<div id="tables_edit_rotate_bl" class="tables-edit_rotate_arrow table-draggable">
+		<svg width="100%" height="100%">
+			<use href="#rotate-arrow"> </use> 
+		</svg>
+	</div>
+</div>
+
+<script type="text/javascript">
+	// if component is imported, then enable "edit-mode" on table-view
+	$("#tables_edit_strech_right").closest(".table-display_wrapper").addClass("tables-edit_mode")
+</script>
