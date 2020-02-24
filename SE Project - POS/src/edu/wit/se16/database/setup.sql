@@ -12,10 +12,11 @@ CREATE TABLE `employees` (
 	`firstname` VARCHAR(45) NOT NULL,
 	`lastname` VARCHAR(45) NOT NULL,
 	`role` ENUM('Server', 'Host', 'Manager') NOT NULL DEFAULT 'Server',
-	`password_hash` VARCHAR(45) NOT NULL,
-	`password_salt` VARCHAR(45) NOT NULL,
+	`password_hash` VARCHAR(88) NOT NULL,
+	`password_salt` VARCHAR(88) NOT NULL,
 	`active` TINYINT NULL DEFAULT 1,
 	`deleted` TINYINT NULL DEFAULT 0,
+    `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (`id`),
 UNIQUE INDEX `id_UNIQUE` (`id` ASC));
   

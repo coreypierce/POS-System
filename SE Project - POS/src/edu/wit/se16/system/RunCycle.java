@@ -15,7 +15,7 @@ public class RunCycle {
 
 	private static boolean isShutdownStarted = false;
 	
-	public static interface ShutdownAction { public void shutdown(); }
+	public static interface ShutdownAction { public void shutdown() throws Exception; }
 	private static final ArrayList<ShutdownAction> SHUTDOWN_ACTIONS = new ArrayList<>();
 	private static final ArrayList<ShutdownAction> PRE_SHUTDOWN_ACTIONS = new ArrayList<>();
 	

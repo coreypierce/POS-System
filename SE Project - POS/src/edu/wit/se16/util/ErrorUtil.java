@@ -14,6 +14,18 @@ public class ErrorUtil {
 		}
 	}
 	
+	public static <T> T sneak(ViolentProvider<T> provider) {
+		try {
+			return provider.access();
+		} catch (Exception e) {
+			throw sneekyThrow(e);
+		}
+	} 
+	
+	public static interface ViolentProvider<T> {
+		public T access() throws Exception;
+	}
+	
 	public static interface ViolentRunnable {
 		public void run() throws Exception;
 	}
