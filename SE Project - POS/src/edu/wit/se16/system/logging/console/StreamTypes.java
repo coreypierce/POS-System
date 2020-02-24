@@ -4,11 +4,54 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.function.UnaryOperator;
 
-class StreamTypes {
+import org.slf4j.Logger;
+
+import ch.qos.logback.classic.Level;
+
+public class StreamTypes {
+	
+	// ===================================== Log Writer ===================================== \\
+	
+	public static class LogWriter extends Writer {
+		private Logger LOG;
+		private Level level;
+		
+		private StringBuffer buffer;
+		
+		public LogWriter(Logger LOG, Level level) {
+			this.level = level;
+			this.LOG = LOG;
+			
+			this.buffer = new StringBuffer();
+		}
+		
+		public void write(char[] cbuf, int off, int len) throws IOException {
+			this.buffer.append(cbuf, off, len);
+		}
+
+		public void flush() throws IOException {
+			switch (level.levelInt) {
+				case Level.INFO_INT: LOG.info(buffer.toString()); break;
+				case Level.WARN_INT: LOG.warn(buffer.toString()); break;
+				case Level.ERROR_INT: LOG.error(buffer.toString()); break;
+				case Level.DEBUG_INT: LOG.debug(buffer.toString()); break;
+				case Level.TRACE_INT: LOG.trace(buffer.toString()); break;
+				
+				default: throw new IllegalArgumentException("Unsupported log-level: " + (level != null ? level.levelStr : "null"));
+			}
+			
+			buffer.setLength(0);
+		}
+
+		public void close() throws IOException {
+			flush();
+		}
+	}
 	
 	// ===================================== Pipe Stream ===================================== \\
 

@@ -23,11 +23,24 @@
 
 package edu.wit.se16.database;
 
-import java.io.*;
-import java.sql.*;
-import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import ch.qos.logback.classic.Level;
+import edu.wit.se16.system.logging.LoggingUtil;
+import edu.wit.se16.system.logging.console.StreamTypes.LogWriter;
 
 /**
  * Tool to run database scripts
@@ -65,29 +78,9 @@ public class ScriptRunner {
 		this.connection = connection;
 		this.autoCommit = autoCommit;
 		this.stopOnError = stopOnError;
-		File logFile = new File("create_db.log");
-		File errorLogFile = new File("create_db_error.log");
-		try {
-			if (logFile.exists()) {
-				logWriter = new PrintWriter(new FileWriter(logFile, true));
-			} else {
-				logWriter = new PrintWriter(new FileWriter(logFile, false));
-			}
-		} catch (IOException e) {
-			System.err.println("Unable to access or create the db_create log");
-		}
-		try {
-			if (errorLogFile.exists()) {
-				errorLogWriter = new PrintWriter(new FileWriter(errorLogFile, true));
-			} else {
-				errorLogWriter = new PrintWriter(new FileWriter(errorLogFile, false));
-			}
-		} catch (IOException e) {
-			System.err.println("Unable to access or create the db_create error log");
-		}
-		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
-		println("\n-------\n" + timeStamp + "\n-------\n");
-		printlnError("\n-------\n" + timeStamp + "\n-------\n");
+
+		logWriter = new PrintWriter(new LogWriter(LoggingUtil.getLogger(), Level.DEBUG));
+		errorLogWriter = new PrintWriter(new LogWriter(LoggingUtil.getLogger(), Level.ERROR));
 	}
 
 	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
