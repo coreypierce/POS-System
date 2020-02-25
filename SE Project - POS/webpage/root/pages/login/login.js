@@ -1,4 +1,4 @@
-// two-way PDKDF2-SHA256 password exchange with server
+// two-way PBKDF2-SHA256 password exchange with server
 var Login = Login || {};
 (function(Login) {
 

@@ -15,7 +15,7 @@ public class Employee extends DatabaseObject {
 	
 	private static final PreparedStatement QUERY = Database.prep("SELECT * FROM employees WHERE ID = ?");
 	private static final PreparedStatement INSERT = Database.prep(
-			"INSERT INTO employees (firstname, lastname, role, password_hash, password_salt) VALUES (?, ?, ?, ?, ?);");
+			"INSERT INTO employees (firstname, lastname, role, password_hash, password_salt) VALUES (?, ?, ?, ?, ?)");
 
 	// prevents more the on instance from inserting at once
 	private static final Object INSERT_LOCK = new Object();
@@ -53,14 +53,14 @@ public class Employee extends DatabaseObject {
 		
 		// TODO: display / provide password.password to manager...
 		
-		// insert into database
-		insert();
-		// re-query fields
-		query();
+		insert(); // insert into database
+		query(); // re-query fields
 		
 		// TODO: DELETE
 		LOG.debug("Employee #{} password \"{}\"", id, password.plain_text);
 	}
+
+// =========================================== DB - Object =========================================== \\
 	
 	protected boolean query() {
 		return Database.query(result -> {
@@ -103,13 +103,17 @@ public class Employee extends DatabaseObject {
 			}
 		}
 	}
-	
+
+// =========================================== Update State =========================================== \\
+
 	public void delete() {
 		if(deleted) { LOG.warn("Employee has already been deleted!"); return; }
 		
 		LOG.trace("Deleting Employee #{} ...", id);
 		Database.update(DELETE, id);
 	}
+
+// =========================================== Password =========================================== \\
 	
 	public String getSalt() { return password_salt; }
 	public String getPassword() { return password_hash; }

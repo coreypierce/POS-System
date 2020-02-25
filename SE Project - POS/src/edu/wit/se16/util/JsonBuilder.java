@@ -32,6 +32,17 @@ public class JsonBuilder {
 		current.push(new NodeWritter(FACTORY.objectNode())); 
 	}
 	
+	public static JsonBuilder from(JsonNode root) {
+		if(!(root instanceof ContainerNode)) {
+			throw new IllegalArgumentException("Root node must be of type ContainerNode<?>");
+		}
+		
+		JsonBuilder builder = new JsonBuilder();
+		builder.current.clear();
+		builder.current.push(new NodeWritter((ContainerNode<?>) root));
+		return builder;
+	}
+	
 	public JsonBuilder append(byte[] data, int offset, int length) { return this.append(data, offset, length); }
 	public JsonBuilder append(byte[] data) { return this.append(null, data); }
 	public JsonBuilder append(boolean v) { return this.append(null, v); }
@@ -51,6 +62,7 @@ public class JsonBuilder {
 	public JsonBuilder append(Short value) { return this.append(null, value); }
 	public JsonBuilder append(Object pojo) { return this.append(null, pojo); }
 	public JsonBuilder append(String text) { return this.append(null, text); }
+	public JsonBuilder append(JsonNode node) { return this.append(null, node); }
 
 	public JsonBuilder appendNull() { return this.appendNull(null); }
 	public JsonBuilder appendRaw(String raw) { return this.append(null, raw); }
@@ -78,6 +90,7 @@ public class JsonBuilder {
 	public JsonBuilder append(String name, Short value) { current.peek().append(name, FACTORY.numberNode(value)); return this; }
 	public JsonBuilder append(String name, Object pojo) { current.peek().append(name, FACTORY.pojoNode(pojo)); return this; }
 	public JsonBuilder append(String name, String text) { current.peek().append(name, FACTORY.textNode(text)); return this; }
+	public JsonBuilder append(String name, JsonNode node) { current.peek().append(name, node); return this; }
 
 	public JsonBuilder appendNull(String name) { current.peek().append(name, FACTORY.nullNode()); return this; }
 	public JsonBuilder appendRaw(String name, String raw) { current.peek().append(name, FACTORY.rawValueNode(new RawValue(raw))); return this; }
@@ -134,7 +147,7 @@ public class JsonBuilder {
 		
 		public void append(String name, JsonNode value) {
 			if(root instanceof ObjectNode) {
-				if(name == null || name.isEmpty()) throw new IllegalArgumentException("Cannot add value with Name!");
+				if(name == null || name.isEmpty()) throw new IllegalArgumentException("Cannot add value without name to Object!");
 				((ObjectNode) root).set(name, value);
 			
 			} else if(root instanceof ArrayNode) {

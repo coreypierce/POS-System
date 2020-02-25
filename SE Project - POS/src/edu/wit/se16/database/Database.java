@@ -9,11 +9,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
-
-import com.mysql.jdbc.Statement;
 
 import edu.wit.se16.system.RunCycle;
 import edu.wit.se16.system.SystemVars;
@@ -60,6 +59,11 @@ public class Database {
 				ScriptRunner runner = new ScriptRunner(connection, false, false);
 				InputStream script_in = Database.class.getResourceAsStream("setup.sql");
 				runner.runScript(new BufferedReader(new InputStreamReader(script_in)));
+				
+				// TODO: Temp add test-data REMOVE BEFORE RELEASE
+				LOG.warn("Temp data added; REMOVE BEFORE RELEASE");
+				script_in = Database.class.getResourceAsStream("test_data.sql");
+				runner.runScript(new BufferedReader(new InputStreamReader(script_in)));
 			}
 		} catch(IOException e) {
 			LOG.error("Failed to find SQL creation script!", e);
@@ -89,7 +93,7 @@ public class Database {
 	public static PreparedStatement prep(String sql) {
 		try {
 			Connection connect = getConnection();
-			PreparedStatement statement = connect.prepareStatement(sql);
+			PreparedStatement statement = connect.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			return statement;
 			
 		} catch (SQLException e) {

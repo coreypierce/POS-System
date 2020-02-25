@@ -75,6 +75,28 @@ CREATE TABLE `tables` (
 PRIMARY KEY (`id`),
 UNIQUE INDEX `id_UNIQUE` (`id` ASC),
 	INDEX `table_number_INDEX` (`table_number` ASC));
+    
+CREATE TABLE `table_status_history` (
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`employee_id` INT UNSIGNED NULL,
+	`table_id` INT UNSIGNED NOT NULL,
+	`status` ENUM('Open', 'Seated', 'Order_Placed', 'Check_Printed', 'Check_In') NOT NULL,
+	`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`),
+UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+	INDEX `table_status_history_FOREIGN_KEY_employee_idx` (`employee_id` ASC),
+	INDEX `table_status_history_FOREIGN_KEY_table_idx` (`table_id` ASC),
+    
+CONSTRAINT `table_status_history_FOREIGN_KEY_employee`
+FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE,
+    
+CONSTRAINT `table_status_history_FOREIGN_KEY_table`
+FOREIGN KEY (`table_id`) REFERENCES `tables` (`id`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+);
 
 /* ********************************* **** ********************************* */
 /* ********************************* Menu ********************************* */
