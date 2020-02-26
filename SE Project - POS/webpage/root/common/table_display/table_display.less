@@ -4,6 +4,10 @@
 @table-color_CHECKOUT:	#80F;
 @table-color_UNKNOWN:	#DEDEDE;
 
+.table-display_resources {
+	display: none;
+}
+
 .table-display_wrapper {
 	position: relative;
 	
@@ -25,25 +29,24 @@
 		
 		// default to unknown if no status given
 		fill: @table-color_UNKNOWN;
-		background: @table-color_UNKNOWN;
 		
-		.table-status_open {
+		&.table-status_open {
 			fill: @table-color_OPEN;
 		}
 		
-		.table-status_seated {
+		&.table-status_seated {
 			fill: @table-color_SEATED;
 		}
 		
-		.table-status_ordered {
+		&.table-status_ordered {
 			fill: @table-color_ORDERED;
 		}
 		
-		.table-status_checkout {
+		&.table-status_checkout {
 			fill: @table-color_CHECKOUT;
 		}
 		
-		.table-status_unknown {
+		&.table-status_unknown {
 			fill: @table-color_UNKNOWN;
 		}
 		

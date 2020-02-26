@@ -113,7 +113,7 @@ private static final Logger LOG = LoggingUtil.getLogger();
 		return JsonBuilder.create()
 			.append("id", super.id)
 			.append("name", "TB-" + tableNumber)
-			.append("icon", "???")
+			.append("icon", tableDescriptor)
 			.append("status", getStatus().toString()) // remove confusion on enum-translation
 		.build();
 	}

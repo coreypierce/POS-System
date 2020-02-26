@@ -191,12 +191,18 @@ var TableDisplay = TableDisplay || { mode: "view" };
 					.text(this.table.name);
 				
 				// svg-icon
-				var image = $("<svg />")
+				var image = $(document.createElementNS('http://www.w3.org/2000/svg', "svg"))
 					.attr("width", "100%")
 					.attr("height", "100%")
-					.append($("<use />")
+					.append($(document.createElementNS('http://www.w3.org/2000/svg', "use"))
 						.attr("href", "#" + this.table.icon)
 					);
+				
+					 if(this.table.status == "Open") this.element.addClass("table-status_open");
+				else if(this.table.status == "Seated") this.element.addClass("table-status_seated");
+				else if(this.table.status == "Order_Placed") this.element.addClass("table-status_ordered");
+				else if(this.table.status == "Check_Printed") this.element.addClass("table-status_checkout");
+				else this.element.addClass("table-status_unknown");
 				
 				this.element.append(label);
 				this.element.append(image);
