@@ -256,6 +256,7 @@ CREATE TABLE `restaurant_layout` (
 	`is_table` INT UNSIGNED NULL,
 	`position` POINT NOT NULL,
 	`bounds` POINT NOT NULL,
+    `rotation` INT NOT NULL,
 PRIMARY KEY (`id`),
 UNIQUE INDEX `id_UNIQUE` (`id` ASC),
 UNIQUE INDEX `is_table_UNIQUE` (`is_table` ASC),

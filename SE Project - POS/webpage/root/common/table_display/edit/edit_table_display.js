@@ -109,23 +109,43 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 // ============================================ Drag-Rotate ============================================ \\
 	
 	function calcBounds(rot, position, bounds) {
-		// if 90deg rotation, swap width and height
-		if(rot == 90 || rot == 270) {
-			var temp = bounds.width;
-			bounds.width = bounds.height;
-			bounds.height = temp;
-		}
+		// get corners
+		var x0 = position.x, y0 = position.y;
+		var x1 = x0 + bounds.width, y1 = y0 + bounds.height;
 		
-		var x = position.x - bounds.width / 2;
-		var y = position.y - bounds.height / 2;
+		// find center point
+		var cx = (x1 + x0) / 2, cy = (y1 + y0) / 2;
 		
-			 if(rot == 0)   (x =  x, y =  y);
-		else if(rot == 90)  (x = -y, y =  x);
-		else if(rot == 180) (x = -x, y = -y);
-		else if(rot == 270) (x =  y, y = -x);
+		// translate to origin
+		x0 -= cx; x1 -= cx;
+		y0 -= cy; y1 -= cy;
 		
-		position.x = x + bounds.width / 2;
-		position.y = y + bounds.height / 2;
+		var angle = rot / 180 * Math.PI;
+
+		// rotate points
+		var rx0 = x0 * Math.cos(angle) - y0 * Math.sin(angle);
+		var ry0 = x0 * Math.sin(angle) + y0 * Math.cos(angle);
+
+		var rx1 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
+		var ry1 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
+		
+		// translate back
+		rx0 += cx; rx1 += cx;
+		ry0 += cy; ry1 += cy;
+		
+		// find corners
+		var right = Math.max(rx0, rx1);
+		var left = Math.min(rx0, rx1);
+		var top = Math.max(ry0, ry1);
+		var bottom = Math.min(ry0, ry1);
+		
+		// calculate bounds
+		bounds.width = Math.round(right - left);
+		bounds.height = Math.round(top - bottom);
+		
+		// set position
+		position.x = Math.round(left);
+		position.y = Math.round(bottom);
 	}
 	
 	class RotationHandle extends Draggable {
@@ -137,27 +157,16 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 			}
 			
 			// record starting size and location, of item
-			this.base_size = Object.assign({}, this.item.bounds);
-			this.base_position = Object.assign({}, this.item.position);
-			this.base_rotation = this.item.rotation;
-		}
-		
-		drag(e) {
-			if(!this.item) return;
+			var bounds = Object.assign({}, this.item.bounds);
+			var position = Object.assign({}, this.item.position);
 			
-			var x = event.screenX, y = event.pageY;
-			var bounds = this.item.element[0].getBoundingClientRect();
-			x = x - (bounds.x + bounds.width / 2); y = y - (bounds.y + bounds.height / 2);
+			var rot_amount = this.element.data("dir") == 'ccw' ? 90 : -90;
+			var rotation = this.item.rotation + rot_amount;
+			rotation = (rotation + 360) % 360;
 			
-			var rad = Math.atan2(-y, x);
-			var deg = rad * 180 / Math.PI;
-			// lock to 90-deg increments
-			deg = Math.round(deg / 90) * 90;
-			// force to 0-360
-			deg = (deg + 360) % 360;
-			
-			calcBounds(deg - this.item.rotation, this.item.position, this.item.bounds);
-			this.item.rotation = deg;
+			// calculate rotation bounds, and update
+			calcBounds(rot_amount, position, bounds);
+			this.item.move(position, bounds, rotation);
 			
 			// update element position
 			this.item.resize();
@@ -167,20 +176,8 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 			positionSelectBox();
 		}
 		
-		cancel(e) {
-			if(!this.item) return;
-			
-			this.item.rotation = this.base_rotation;
-			this.item.position = this.base_position;
-			this.item.bounds = this.base_size;
-			
-			// update element position
-			this.item.resize();
-			// update graphic
-			TableDisplay.redraw();
-			// update edit-box's position
-			positionSelectBox();
-		}
+		drag(e) { }
+		cancel(e) { }
 	}
 	
 // ============================================ ========= ============================================ \\

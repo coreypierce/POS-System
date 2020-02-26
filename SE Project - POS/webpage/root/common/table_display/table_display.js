@@ -81,12 +81,15 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		return true;
 	}
 	
-	function moveItem(item, new_pos, new_bounds) {
+	function moveItem(item, new_pos, new_bounds, new_rotation) {
 		if(new_pos.x < 0 || new_pos.y < 0) return false;
 		if(new_pos.x + new_bounds.width > layout_width) return false;
 		if(new_pos.y + new_bounds.height > layout_height) return false;
 		
 		if(new_bounds.width <= 0 || new_bounds.height <= 0) return false;
+
+		// auto-assign rotation, if none was provided
+		typeof(new_rotation) == 'undefined' && (new_rotation = item.rotation);
 		
 		if(item instanceof Wall) {
 			for(var check of items) {
@@ -110,6 +113,7 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		
 		item.position = new_pos;
 		item.bounds = new_bounds;
+		item.rotation = new_rotation;
 		return true;
 	}
 	
@@ -162,15 +166,18 @@ var TableDisplay = TableDisplay || { mode: "view" };
 			this.element && this.element.css({
 				"top": 	this.position.y * disp.scaleY,
 				"left": this.position.x * disp.scaleX,
+				
 				"width": 	this.bounds.width  * disp.scaleX + "px",
 				"height": 	this.bounds.height * disp.scaleY + "px",
 			});
+			
+			this.ele_rotate && this.ele_rotate.css("transform", "rotateZ(" + this.rotation + "deg)");
 		}
 		
 		draw(g) {}
 		
-		move(position, bounds) {
-			moveItem(this, position, bounds);
+		move(position, bounds, rotation) {
+			moveItem(this, position, bounds, rotation);
 		}
 	}
 	
@@ -206,6 +213,8 @@ var TableDisplay = TableDisplay || { mode: "view" };
 				
 				this.element.append(label);
 				this.element.append(image);
+				
+				this.ele_rotate = image;
 
 				// add class-flags for editing the item
 				this.element

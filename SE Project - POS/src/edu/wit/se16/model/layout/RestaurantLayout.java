@@ -5,8 +5,8 @@ import java.awt.Point;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 
@@ -23,7 +23,7 @@ public class RestaurantLayout {
 	
 	private static final String QUERY_ITEM_SQL = 
 		"SELECT " +
-			"is_table, " +
+			"id, is_table, rotation, " +
 			"ST_X(position) as pos_x, ST_Y(position) as pos_y, " +
 			"ST_X(bounds) as width, ST_Y(bounds) as height " +
 		"FROM restaurant_layout";
@@ -32,7 +32,11 @@ public class RestaurantLayout {
 	
 	private static final PreparedStatement QUERY_ITEM = Database.prep(QUERY_ITEM_SQL + " WHERE ID = ?");
 	private static final PreparedStatement INSERT_ITEM = Database.prep(
-			"INSERT INTO restaurant_layout (location, bounds, is_table) VALUES(POINT(?, ?), POINT(?, ?), ?)");
+			"INSERT INTO restaurant_layout (rotation, position, bounds, is_table) VALUES(?, POINT(?, ?), POINT(?, ?), ?)");
+	
+
+	private static final PreparedStatement UPDATE_ITEM = Database.prep(
+			"UPDATE restaurant_layout SET rotation = ?, position = POINT(?, ?), bounds = POINT(?, ?) WHERE id = ?");
 	
 // ============================================ Instance ============================================ \\
 	
@@ -63,11 +67,11 @@ public class RestaurantLayout {
 // ============================================ End of Static ============================================ \\
 // ============================================ ============= ============================================ \\
 	
-	private Collection<Item> items;
+	private Map<Integer, Item> items;
 	private int width, height;
 	
 	private RestaurantLayout() {
-		this.items = new ArrayList<>();
+		this.items = new HashMap<>();
 		
 		// don't let width/height == 0
 		this.width = 1;
@@ -75,11 +79,11 @@ public class RestaurantLayout {
 	}
 	
 	private void queryItems() {
-		this.items = new ArrayList<>();
+		this.items = new HashMap<>();
 		
 		Database.query(result -> {
 			Item item = Item.from(result);
-			this.items.add(item);
+			this.items.put(item.getId(), item);
 			
 			// check/update layout bounds
 			int limit_x = item.location.x + item.bounds.width;
@@ -96,13 +100,34 @@ public class RestaurantLayout {
 			.append("height", height);
 
 		builder.newArray("items");
-		for(Item item : items) {
+		for(Item item : items.values()) {
 			builder.append(item.toJSON());
 		}
 		
 		builder.end();
 		return builder.build();
 	}
+	
+// ============================================ Item Actions ============================================ \\
+	
+	public Item getItem(int id) {
+		return items.computeIfAbsent(id, Item::new);
+	}
+	
+	public Item newItem(int rotation, Point position, Dimension bounds, Table table) {
+		Item item = new Item(rotation, position, bounds, table);
+		items.put(item.getId(), item);
+		return item;
+	}
+	
+	public boolean deleteItem(int id) {
+		// TODO: implement delete item
+		LOG.warn("TODO: delete restaurant-item #{}", id);
+		return false;
+	}
+	
+// ============================================ =============== ============================================ \\
+// ============================================ Restaurant Item ============================================ \\
 	
 	/**
 	 * 	Represents a wall or table to be draw in restaurant view. <br />
@@ -111,16 +136,28 @@ public class RestaurantLayout {
 	public static class Item extends DatabaseObject {
 		private Point location;
 		private Dimension bounds;
+		private int rotation;
 		
 		private Table table;
 		
-		public Item(int id) {
+		private Item(int id) {
 			super(id);
+		}
+
+		private Item(int rotation, Point position, Dimension bounds, Table table) {
+			this.rotation = rotation;
+			this.location = position;
+			this.bounds = bounds;
+			
+			this.table = table;
+
+			insert(); // insert into database
+			query(); // re-query fields
 		}
 		
 		private Item() {}
-		
-		public static Item from(ResultSet result) throws SQLException {
+
+		static Item from(ResultSet result) throws SQLException {
 			Item item = new Item();
 			item.loadFromRow(result);
 			return item;
@@ -129,8 +166,11 @@ public class RestaurantLayout {
 		// =========================================== DB - Object =========================================== \\
 		
 		public void loadFromRow(ResultSet result) throws SQLException {
+			this.id = result.getInt("id");
+			
 			this.location = new Point(result.getInt("pos_x"), result.getInt("pos_y"));
 			this.bounds = new Dimension(result.getInt("width"), result.getInt("height"));
+			this.rotation = result.getInt("rotation");
 			
 			// check if this is a wall or table
 			Integer table_id = result.getObject("is_table", Integer.class);
@@ -154,6 +194,7 @@ public class RestaurantLayout {
 			LOG.trace("Inserting new Layout-Item...");
 			// call update request
 			if(Database.update(INSERT_ITEM, 
+					rotation,
 					location.x, location.y,
 					bounds.width, bounds.height, 
 					table != null ? table.getId() : null)
@@ -176,10 +217,21 @@ public class RestaurantLayout {
 			}
 		}
 		
+// =========================================== Update Actions =========================================== \\
+		
+		public boolean updateConstraints(int rotation, Point position, Dimension bounds) {
+			this.location = position;
+			this.bounds = bounds;
+
+			LOG.trace("Update layout-item #{} -- pos: {}, bounds: {}", id, position, bounds);			
+			return Database.update(UPDATE_ITEM, rotation, position.x, position.y, bounds.width, bounds.height, id);
+		}
+		
 // =========================================== JSON =========================================== \\
 		
 		public JsonNode toJSON() {
 			JsonBuilder builder = JsonBuilder.create()
+				.append("id", id)
 				.newObject("position")
 					.append("x", location.x)
 					.append("y", location.y)
@@ -187,7 +239,8 @@ public class RestaurantLayout {
 				.newObject("bounds")
 					.append("width", bounds.width)
 					.append("height", bounds.height)
-				.end();
+				.end()
+				.append("rotation", rotation);
 			
 			if(table != null) {
 				builder.append("table", table.toJSON());

@@ -102,7 +102,7 @@ private static final Logger LOG = LoggingUtil.getLogger();
 		if(status == null) throw new IllegalArgumentException("Table-Status cannot be 'null'");
 		
 		// attempt to insert new 'table_status_history' entry
-		if(!Database.update(UPDATE_STATUS, employee == null ? null : employee.getId(), id, status)) {
+		if(!Database.update(UPDATE_STATUS, employee == null ? null : employee.getId(), id, status.toString())) {
 			LOG.error("Table-Status update failed!");
 		}
 	}
