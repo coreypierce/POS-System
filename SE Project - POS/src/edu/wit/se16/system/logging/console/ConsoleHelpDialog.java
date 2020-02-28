@@ -59,6 +59,9 @@ public class ConsoleHelpDialog extends JDialog {
 		serverPanel.add(Box.createVerticalStrut(5));
 		
 		serverPanel.add(new JLabel("<html>\r\n\t<b>exit/shutdown/stop</b><br/>\r\n\t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n\tShutdown web-server and terminates the program\r\n</html>"));
+		serverPanel.add(Box.createVerticalStrut(10));
+		
+		serverPanel.add(new JLabel("<html>\r\n\t<b>sql [statment]</b><br/>\r\n\t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n\tExecutes the provided SQL statement, statement must be inside [ ... ]\r\n</html>"));
 		serverPanel.add(Box.createVerticalGlue());
 	}
 
