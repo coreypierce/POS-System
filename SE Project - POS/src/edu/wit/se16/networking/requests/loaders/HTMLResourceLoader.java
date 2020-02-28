@@ -19,6 +19,7 @@ import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
+import edu.wit.se16.networking.SessionManager;
 import edu.wit.se16.system.logging.LoggingUtil;
 
 public class HTMLResourceLoader {
@@ -50,6 +51,7 @@ public class HTMLResourceLoader {
 		return loadHTML(resourcePath, values, null);
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static StringBuilder loadHTML(String resourcePath, CaseInsensitiveMap values, HashMap<String, String> res) throws IOException {
 		LOG.trace("Attempting to load HTML from \"{}\"...", resourcePath);
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -76,6 +78,8 @@ public class HTMLResourceLoader {
 			values = new CaseInsensitiveMap();
 		}
 		
+		// add session values to map
+		SessionManager.getSessionValues().forEach(values::putIfAbsent);
 		
 		HashMap<String, String> resources = res;
 		if(resources == null) {

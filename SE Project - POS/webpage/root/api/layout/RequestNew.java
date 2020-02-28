@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 import edu.wit.se16.model.Table;
+import edu.wit.se16.model.layout.LayoutJsonParams;
 import edu.wit.se16.model.layout.RestaurantLayout;
 import edu.wit.se16.model.layout.RestaurantLayout.Item;
 import edu.wit.se16.networking.StandardResponses;
@@ -52,8 +53,11 @@ public class RequestNew implements IRequest {
 		item = RestaurantLayout.getLayout()
 				.newItem(rotation, new Point(pos_x, pos_y), new Dimension(width, height), table);
 		
+		// Layout conversion Parameters
+		LayoutJsonParams params = new LayoutJsonParams();
+		
 		// send item back to requester 
-		JsonBuilder.from(item.toJSON()).build(response);
+		JsonBuilder.from(item.toJSON(params)).build(response);
 		response.setStatus(HttpServletResponse.SC_OK);
 		return response;
 	}

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 import edu.wit.se16.model.Employee;
+import edu.wit.se16.model.SessionToken;
+import edu.wit.se16.networking.SessionManager;
 import edu.wit.se16.networking.StandardResponses;
 import edu.wit.se16.networking.requests.IRequest;
 import edu.wit.se16.networking.requests.RequestInfo;
@@ -43,7 +45,10 @@ public class RequestLoginToken implements IRequest {
 			// check if provided password matches database
 			if(check_hash.equals(password_hash)) {
 				LOG.trace("Employee #{} login successful!", employee_id);
-				LOG.warn("TODO: record new login-token, and return cookie");
+				
+				SessionToken token = SessionToken.generateToken(employee);
+				SessionManager.setSession(token);
+				
 				response.setStatus(HttpServletResponse.SC_OK);
 				return response;
 			}

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 
+import edu.wit.se16.model.layout.LayoutJsonParams;
 import edu.wit.se16.model.layout.RestaurantLayout;
 import edu.wit.se16.networking.requests.IRequest;
 import edu.wit.se16.networking.requests.RequestInfo;
@@ -20,9 +21,12 @@ public class RequestView implements IRequest {
 		LOG.trace("Access restaurant-layout...");
 		RestaurantLayout layout = RestaurantLayout.getLayout();
 
+		// Layout conversion Parameters
+		LayoutJsonParams params = new LayoutJsonParams();
+		
 		// convert Restaurant-Layout to JSON and send it back to client
 		JsonBuilder
-			.from(layout.toJSON())
+			.from(layout.toJSON(params))
 		.build(response);
 		
 		response.setStatus(HttpServletResponse.SC_OK);

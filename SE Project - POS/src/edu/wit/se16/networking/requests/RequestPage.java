@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
+import edu.wit.se16.networking.SessionManager;
 import edu.wit.se16.networking.StandardResponses;
 import edu.wit.se16.networking.requests.loaders.HTMLResourceLoader;
 import edu.wit.se16.system.logging.LoggingUtil;
@@ -29,6 +30,12 @@ public class RequestPage implements IRequest {
 	public HttpServletResponse process(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
 		// open stream to HTML file, and open response stream
 		InputStream in = HTMLResourceLoader.loadHTMLStream(resource, null);
+		return sendPage(resource, filename, in, request, response);
+	}
+	
+	public static HttpServletResponse sendPage(String resource, String filename, InputStream in,
+			RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
+		
 		OutputStream out = response.getOutputStream();
 		
 		if(in != null) {

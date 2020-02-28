@@ -1,7 +1,7 @@
 INSERT INTO `employees` (firstname, lastname, role, password_hash, password_salt)
 	VALUES ("Andy", "Ngo", "Server", 
-			"+HY0oqqJUw/r/qTG9B4qYe3FArLQq4ygRrXqk4qtA==",  /* Password: YsRflh */
-			"+ygXvL/p65Zf7/yyCpiGRZnGK8tklaCj1PNWURPLwp5jxqxT/MOSR/685HFGT/qByXJ4zIz808XBZHlsA=="); 
+			"olmYQRbHSTyLw/aEA6fRMtjrB/13Xg9z48z+5yl7v9t9J5+eE3FkUhqKYicZW5RSkunLfVy1bgngKALwbmhEHw==",  /* Password: gQcytP */
+			"CQHXBEYiP/beKahnzD//Ys/I4YVkeDsTobBoGcZyJ5/jYUPzfiwV28h+0pAKSJaZw+p/c+lp2CyWpmDDEVUohg=="); 
             
 INSERT INTO `tables` (table_number, table_descriptor) VALUES ("6", "table_rrect_2x2");
 INSERT INTO `table_status_history` (employee_id, table_id, status) VALUES(NULL, (SELECT ID FROM `tables` LIMIT 1), "Open");

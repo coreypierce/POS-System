@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import edu.wit.se16.database.Database;
 import edu.wit.se16.database.DatabaseObject;
+import edu.wit.se16.model.layout.LayoutJsonParams;
 import edu.wit.se16.system.logging.LoggingUtil;
 import edu.wit.se16.util.JsonBuilder;
 
@@ -109,12 +110,24 @@ private static final Logger LOG = LoggingUtil.getLogger();
 	
 // =========================================== Display JSON =========================================== \\
 	
-	public JsonNode toJSON() {
+	public JsonNode toJSON(LayoutJsonParams param) {
+		// remove confusion on enum-translation by using string
+		String status = getStatus().toString();
+		
+		// if a section was provided
+		if(param != null && param.section != null) {
+			// if the table is not part of that section
+			if(!param.section.hasTable(this)) {
+				// hide status of that table
+				status = "unknown";
+			}
+		}
+		
 		return JsonBuilder.create()
 			.append("id", super.id)
 			.append("name", "TB-" + tableNumber)
 			.append("icon", tableDescriptor)
-			.append("status", getStatus().toString()) // remove confusion on enum-translation
+			.append("status", status) 
 		.build();
 	}
 }

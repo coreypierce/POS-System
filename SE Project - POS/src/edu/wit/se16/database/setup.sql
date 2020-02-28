@@ -64,6 +64,22 @@ FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
 	ON UPDATE CASCADE
 );
 
+/* ********************************* ************** ********************************* */
+/* ********************************* Session Tokens ********************************* */
+
+CREATE TABLE `session_tokens` (
+	`id` CHAR(24) NOT NULL,
+	`employee_id` INT UNSIGNED NOT NULL,
+	`expiration` TIMESTAMP NOT NULL,
+PRIMARY KEY (`id`),
+UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+	INDEX `session_token_FOREIGN_KEY_employee_idx` (`employee_id` ASC),
+    
+CONSTRAINT `session_token_FOREIGN_KEY_employee`
+FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+);
 
 /* ********************************* ***** ********************************* */
 /* ********************************* Table ********************************* */

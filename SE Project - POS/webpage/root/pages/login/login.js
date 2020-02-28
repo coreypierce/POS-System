@@ -15,6 +15,10 @@ var Login = Login || {};
 			
 			data: {
 				"employee_id": username
+			},
+		
+			headers: {
+				"Non-Session": true
 			}
 		})
 		.done(function(data, status, xhr) {
@@ -41,7 +45,7 @@ var Login = Login || {};
 	}
 	
 	// callback function for request login-details
-	function submit_password(username, password) {
+	function submit_password(username, password, pass, fail) {
 		return function(details) {
 			var server_salt = sjcl.codec.base64.toBits(details.salt);
 			// hash password based on Server-spec
@@ -68,14 +72,20 @@ var Login = Login || {};
 					"salt": salt_b64,
 					"key_size": Login.key_size,
 					"iterations": Login.iterations
+				},
+				
+				headers: {
+					"Non-Session": true
 				}
-			});
+			})
+			.done(pass)
+			.fail(fail);
 		};
 	}
 	
 	// attempt to submit a password to the server
-	Login.submit = function(username, password) {
+	Login.submit = function(username, password, pass, fail) {
 		// get spec from server
-		requestDetails(username, submit_password(username, password));
+		requestDetails(username, submit_password(username, password, pass, fail));
 	}
 })(Login);

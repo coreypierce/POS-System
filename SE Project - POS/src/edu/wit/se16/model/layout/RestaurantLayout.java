@@ -94,14 +94,14 @@ public class RestaurantLayout {
 		}, QUERY_LAYOUT);
 	}
 	
-	public JsonNode toJSON() {
+	public JsonNode toJSON(LayoutJsonParams param) {
 		JsonBuilder builder = JsonBuilder.create()
 			.append("width", width)
 			.append("height", height);
 
 		builder.newArray("items");
 		for(Item item : items.values()) {
-			builder.append(item.toJSON());
+			builder.append(item.toJSON(param));
 		}
 		
 		builder.end();
@@ -229,7 +229,7 @@ public class RestaurantLayout {
 		
 // =========================================== JSON =========================================== \\
 		
-		public JsonNode toJSON() {
+		public JsonNode toJSON(LayoutJsonParams param) {
 			JsonBuilder builder = JsonBuilder.create()
 				.append("id", id)
 				.newObject("position")
@@ -243,7 +243,7 @@ public class RestaurantLayout {
 				.append("rotation", rotation);
 			
 			if(table != null) {
-				builder.append("table", table.toJSON());
+				builder.append("table", table.toJSON(param));
 			} else {
 				builder.appendNull("table");
 			}

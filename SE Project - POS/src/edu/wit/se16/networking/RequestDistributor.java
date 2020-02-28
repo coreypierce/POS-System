@@ -66,9 +66,18 @@ public class RequestDistributor extends AbstractHandler {
 			// Mark that the request has been received and processed
 			baseRequest.setHandled(true);
 			
-			// check for a request-handler mapped to the target address
-			if(tryRequest(target, requestInfo, response)) 
-				return;
+			// only attempt session load on request, default resources don't need session
+			if(requests.containsKey(target)) {
+				// attempt to resume session, if not start new session
+				if(!SessionManager.resume(requestInfo)) {
+					SessionManager.startSession(requestInfo, response);
+					return;
+				}
+				
+				// check for a request-handler mapped to the target address
+				if(tryRequest(target, requestInfo, response)) 
+					return;
+			}
 			
 			// Check if request is for a file
 			if(defaultFileHandler != null && requestInfo.getFileName().contains(".")) {
@@ -83,6 +92,9 @@ public class RequestDistributor extends AbstractHandler {
 		} catch(IllegalArgumentException e) {
 			// Catch RequestInfo parsing exceptions
 			StandardResponses.error(null, response, HttpServletResponse.SC_BAD_REQUEST, "Request method is not supported");
+			
+		} finally {
+			SessionManager.suspend(response);
 		}
 	}
 	
