@@ -79,7 +79,7 @@ public class HTMLResourceLoader {
 		}
 		
 		// add session values to map
-		SessionManager.getSessionValues().forEach(values::putIfAbsent);
+		SessionManager.getSessionHTMLValues().forEach(values::putIfAbsent);
 		
 		HashMap<String, String> resources = res;
 		if(resources == null) {
@@ -225,7 +225,7 @@ public class HTMLResourceLoader {
 
 			// check to see if we already have the resource added
 			if(res.containsKey(src)) {
-				LOG.warn("Resource \"{}\" has already been added", src); 
+				LOG.trace("Resource \"{}\" has already been added", src); 
 				return false;
 			}
 			

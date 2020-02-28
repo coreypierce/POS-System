@@ -1,8 +1,6 @@
 package edu.wit.se16.system;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -90,7 +88,7 @@ public class CommandHandler {
 				LOG.info("SQL successful [{} row(s) updated]", statement.getUpdateCount());
 			}
 		} catch(SQLException e) {
-			LOG.error("SQL Failed!", e);
+			LOG.error("SQL Failed!\n {}", e.getMessage());
 		}
 	} 
 	

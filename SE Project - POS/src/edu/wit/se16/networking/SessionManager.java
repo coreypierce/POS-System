@@ -76,7 +76,8 @@ public class SessionManager {
 		}
 	}
 	
-	public static CaseInsensitiveMap getSessionValues() { return sessionValues; }
+	public static SessionToken getSessionToken() { return token; }
+	public static CaseInsensitiveMap getSessionHTMLValues() { return sessionValues; }
 	
 //	----------------------------------------- Non-Constructible ----------------------------------------- \\
 	private SessionManager() {}

@@ -20,8 +20,8 @@ import edu.wit.se16.system.logging.LoggingUtil;
 public class SessionToken {
 	private static final Logger LOG = LoggingUtil.getLogger();
 	
-	private static final String COOKIE_NAME = "Session-Token";
-	private static final Duration LOGIN_TIMEOUT = Duration.ofMinutes(5);
+	private static final String COOKIE_NAME = "Session-Token"; // TODO: reduce to 5 minute-timeout
+	private static final Duration LOGIN_TIMEOUT = Duration.ofMinutes(5000);
 	
 	private static final PreparedStatement QUERY = Database.prep(
 			"SELECT * FROM session_tokens WHERE id = ? ORDER BY expiration DESC LIMIT 1");
@@ -142,7 +142,7 @@ public class SessionToken {
 		
 		// calculate the new expiration time
 		this.experation = Instant.now().plus(LOGIN_TIMEOUT);
-		LOG.trace("Token ({}) Expiers at: {}", this.token, this.experation);
+		LOG.trace("Token ({}) now Expiers at: {}", this.token, this.experation);
 		
 		// update the database with the new expiration-date
 		Database.update(UPDATE_EXPERATION, Timestamp.from(experation), this.token);

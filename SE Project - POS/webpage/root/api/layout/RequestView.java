@@ -7,8 +7,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 
+import edu.wit.se16.model.Employee;
+import edu.wit.se16.model.Employee.Role;
+import edu.wit.se16.model.Shift;
 import edu.wit.se16.model.layout.LayoutJsonParams;
 import edu.wit.se16.model.layout.RestaurantLayout;
+import edu.wit.se16.model.layout.Section;
+import edu.wit.se16.networking.SessionManager;
 import edu.wit.se16.networking.requests.IRequest;
 import edu.wit.se16.networking.requests.RequestInfo;
 import edu.wit.se16.system.logging.LoggingUtil;
@@ -21,8 +26,17 @@ public class RequestView implements IRequest {
 		LOG.trace("Access restaurant-layout...");
 		RestaurantLayout layout = RestaurantLayout.getLayout();
 
+		// get the current employee
+		Employee employee = SessionManager.getSessionToken().getEmployee();
+		Shift shift = Shift.getCurrentShift();
+		
 		// Layout conversion Parameters
 		LayoutJsonParams params = new LayoutJsonParams();
+		
+		// if the employee is a Server, then get their active section
+		if(employee.getRole() == Role.Server && shift != null) {
+			params.section = Section.findSection(shift, employee);
+		}
 		
 		// convert Restaurant-Layout to JSON and send it back to client
 		JsonBuilder

@@ -253,7 +253,7 @@ PRIMARY KEY (`section_id`, `table_id`),
 INDEX `section_table_FOREIGN_KEY_table_idx` (`table_id` ASC),
 
 CONSTRAINT `section_table_FOREIGN_KEY_section`
-FOREIGN KEY (`section_id`) REFERENCES `specials` (`shift_id`)
+FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`)
 	ON DELETE CASCADE
 	ON UPDATE CASCADE,
     

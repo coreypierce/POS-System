@@ -48,7 +48,7 @@ public class Section extends DatabaseObject {
 	
 	public Section(Shift shift) {
 		this.shift_id = shift.getId();
-		this.number = shift.nextNumber();
+		this.number = shift.nextSectionNumber();
 
 		insert(); // insert into database
 		query(); // re-query fields
@@ -57,12 +57,8 @@ public class Section extends DatabaseObject {
 	public static Section findSection(Shift shift, Employee employee) {
 		// mutable integer
 		AtomicInteger id = new AtomicInteger(0);
-		
 		// query section-id based on shift and employee
-		Database.query(result -> {
-			id.set(result.getInt("id"));
-		}, LOOKUP_SECTION, shift.getId(), employee.getId());
-		
+		Database.query(result -> { id.set(result.getInt("id")); }, LOOKUP_SECTION, shift.getId(), employee.getId());
 		// if no section was found
 		return id.get() == 0 ? null : new Section(id.get());
 	}
