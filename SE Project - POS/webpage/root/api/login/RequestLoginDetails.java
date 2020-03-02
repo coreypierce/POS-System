@@ -34,7 +34,7 @@ public class RequestLoginDetails implements IRequest {
 			Employee employee = new Employee(employee_id);
 			salt = employee.getSalt();
 
-			LOG.trace("Employe found, sending login-details...");
+			LOG.trace("Employee found, sending login-details...");
 			
 		} catch(NoSuchElementException e) {
 			LOG.warn("No Employee #{}, generating fake-details...", employee_id);

@@ -64,6 +64,22 @@ FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
 	ON UPDATE CASCADE
 );
 
+/* ********************************* ************** ********************************* */
+/* ********************************* Session Tokens ********************************* */
+
+CREATE TABLE `session_tokens` (
+	`id` CHAR(24) NOT NULL,
+	`employee_id` INT UNSIGNED NOT NULL,
+	`expiration` TIMESTAMP NOT NULL,
+PRIMARY KEY (`id`),
+UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+	INDEX `session_token_FOREIGN_KEY_employee_idx` (`employee_id` ASC),
+    
+CONSTRAINT `session_token_FOREIGN_KEY_employee`
+FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
+);
 
 /* ********************************* ***** ********************************* */
 /* ********************************* Table ********************************* */
@@ -237,7 +253,7 @@ PRIMARY KEY (`section_id`, `table_id`),
 INDEX `section_table_FOREIGN_KEY_table_idx` (`table_id` ASC),
 
 CONSTRAINT `section_table_FOREIGN_KEY_section`
-FOREIGN KEY (`section_id`) REFERENCES `specials` (`shift_id`)
+FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`)
 	ON DELETE CASCADE
 	ON UPDATE CASCADE,
     
@@ -256,6 +272,7 @@ CREATE TABLE `restaurant_layout` (
 	`is_table` INT UNSIGNED NULL,
 	`position` POINT NOT NULL,
 	`bounds` POINT NOT NULL,
+    `rotation` INT NOT NULL,
 PRIMARY KEY (`id`),
 UNIQUE INDEX `id_UNIQUE` (`id` ASC),
 UNIQUE INDEX `is_table_UNIQUE` (`is_table` ASC),

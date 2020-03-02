@@ -7,7 +7,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 
+import edu.wit.se16.model.Employee;
+import edu.wit.se16.model.Employee.Role;
+import edu.wit.se16.model.Shift;
+import edu.wit.se16.model.layout.LayoutJsonParams;
 import edu.wit.se16.model.layout.RestaurantLayout;
+import edu.wit.se16.model.layout.Section;
+import edu.wit.se16.networking.SessionManager;
 import edu.wit.se16.networking.requests.IRequest;
 import edu.wit.se16.networking.requests.RequestInfo;
 import edu.wit.se16.system.logging.LoggingUtil;
@@ -20,64 +26,21 @@ public class RequestView implements IRequest {
 		LOG.trace("Access restaurant-layout...");
 		RestaurantLayout layout = RestaurantLayout.getLayout();
 
+		// get the current employee
+		Employee employee = SessionManager.getSessionToken().getEmployee();
+		Shift shift = Shift.getCurrentShift();
+		
+		// Layout conversion Parameters
+		LayoutJsonParams params = new LayoutJsonParams();
+		
+		// if the employee is a Server, then get their active section
+		if(employee.getRole() == Role.Server && shift != null) {
+			params.section = Section.findSection(shift, employee);
+		}
+		
 		// convert Restaurant-Layout to JSON and send it back to client
 		JsonBuilder
-			.from(layout.toJSON())
-//		JsonBuilder.create()
-//			.append("width", 35)
-//			.append("height", 25)
-//			.newArray("items")
-//				// Table 1
-//				.newObject()
-//					.newObject("position")
-//						.append("x", 8)
-//						.append("y", 3)
-//					.end()
-//					.newObject("bounds")
-//						.append("width", 7)
-//						.append("height", 4)
-//					.end()
-//					.newObject("table")
-//						.append("id", 6)
-//						.append("name", "TB-6")
-//						.append("icon", "apple")
-//					.end()
-//				.end()
-//
-//				// Wall 3
-//				.newObject()
-//					.newObject("position")
-//						.append("x", 23)
-//						.append("y", 5)
-//					.end()
-//					.newObject("bounds")
-//						.append("width", 1)
-//						.append("height", 15)
-//					.end()
-//				.end()
-//				// Wall 2
-//				.newObject()
-//					.newObject("position")
-//						.append("x", 23)
-//						.append("y", 19)
-//					.end()
-//					.newObject("bounds")
-//						.append("width", 5)
-//						.append("height", 1)
-//					.end()
-//				.end()
-//				// Wall 1
-//				.newObject()
-//					.newObject("position")
-//						.append("x", 27)
-//						.append("y", 8)
-//					.end()
-//					.newObject("bounds")
-//						.append("width", 5)
-//						.append("height", 8)
-//					.end()
-//				.end()
-//			.end()
+			.from(layout.toJSON(params))
 		.build(response);
 		
 		response.setStatus(HttpServletResponse.SC_OK);

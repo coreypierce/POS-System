@@ -117,4 +117,11 @@ public class Employee extends DatabaseObject {
 	
 	public String getSalt() { return password_salt; }
 	public String getPassword() { return password_hash; }
+	
+// =========================================== Getters =========================================== \\
+	
+	public String getFirstName() { return firstname; }
+	public String getLastName() { return lastname; }
+	
+	public Role getRole() { return role; }
 }
