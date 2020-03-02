@@ -7,6 +7,8 @@
 	
 	<res src="login.js" type="js" />
 	
+	<value name="redirect_url" default="/" />
+	
 <body>
 	<section class="login-wrapper">
 		<header class="login-header">
@@ -34,39 +36,15 @@
 	
 	<script type="text/javascript">
 		function login() {
-			// See "https://api.jquery.com/jquery.ajax/" for more details
-			$.ajax({
-				url: "/pages/login/try_login", // TODO: should be somewhere like: "api/employee/login"
-				method: "POST", // use POST or GET
-				
-				data: {		// JSON Object-data to send to server, if needed
-					username: $("#login_username").val(),	// don't worry too much about the jquery here
-					password: $("#login_password").val()	// pay attention to the names -- name: value
+			Login.submit($("#login_username").val(), $("#login_password").val(), 
+				function() {
+					window.location.replace("{!redirect_url}");
 				},
 				
-				headers: {	// JSON Object, provide additional HTTP Headers here
-					
-				}
-			})
-			// called upon sucessful-response from server
-			.done(function(data, status, xhr) {
-				// data: response data from server
-				// status: response status-message
-				// xhr: Javascript XmlHttpRequest Object
-				
-				alert(data.success ? "Login Passed" : "Login Failed");
-				// xhr.status == 200
-				// xhr.statusText = "OK"
-			
-			})
-			// called upon error-response from server, or due to transaction-error
-			.fail(function(xhr, status, error) {
-				// xhr: Javascript XmlHttpRequest Object
-				// status: response status-message
-				// error: error-message from server
-				
-				alert("An Error has occured! " + status + " --- " + error);
-			});
+				function() {
+					alert("Login Failed!");
+					$("#login_password").val("");
+				});
 		}
 	</script>
 </body>
