@@ -35,11 +35,23 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		return id_map[ele.attr("id")];
 	}
 	
+
+// ============================================ =========== ============================================ \\
+// ============================================ Layout Size ============================================ \\
+	
+	disp.layout_width = 1;
+	disp.layout_height = 1;
+	
+	var layoutSizeListeners = [];
+	
+	disp.addLayoutSizeListener = function(listener) {
+		layoutSizeListeners.push(listener);
+	};
+	
 // ============================================ =============== ============================================ \\
 // ============================================ Setup Functions ============================================ \\
 
 	var items = [];
-	var layout_width = 1, layout_height = 1;
 	
 	function parseItems(items_data) {
 		for(var item of items_data) {
@@ -61,12 +73,23 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		disp.setup && disp.setup(item.element);
 	}
 	
-	function addItem(item) {
+	disp.addItem = function(item) {
 		// add item to the list
 		items.push(item);
 		// setup any additional properties
 		setupElement(item);
 	}
+	
+	disp.removeItem = function(item) {
+		for(var i = 0; i < items.length; i ++) {
+			if(items[i] == item) {
+				item.element.remove();
+				id_map[item.element.attr("id")] = undefined;
+				items.splice(i, 1);
+				return;
+			}
+		} 
+	} 
 	
 // ============================================ ================== ============================================ \\
 // ============================================ Movement Functions ============================================ \\
@@ -83,8 +106,8 @@ var TableDisplay = TableDisplay || { mode: "view" };
 	
 	function moveItem(item, new_pos, new_bounds, new_rotation) {
 		if(new_pos.x < 0 || new_pos.y < 0) return false;
-		if(new_pos.x + new_bounds.width > layout_width) return false;
-		if(new_pos.y + new_bounds.height > layout_height) return false;
+		if(new_pos.x + new_bounds.width > disp.layout_width) return false;
+		if(new_pos.y + new_bounds.height > disp.layout_height) return false;
 		
 		if(new_bounds.width <= 0 || new_bounds.height <= 0) return false;
 
@@ -129,11 +152,14 @@ var TableDisplay = TableDisplay || { mode: "view" };
 			// if request was successful
 			if(status == "success") {
 				// extract useful data
-				layout_width = data.width; 
-				layout_height = data.height;
+				disp.layout_width = data.width; 
+				disp.layout_height = data.height;
 				
 				parseItems(data.items);
 				disp.resize();
+				
+				// call the size listeners when the size changes due to request
+				layoutSizeListeners.forEach(listener => listener(disp.layout_width, disp.layout_height));
 			}
 		})
 		.fail(function(xhr, status, error) {
@@ -153,9 +179,9 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		bounds;
 		
 		constructor(x, y, width, height) {
-			rotation = 0;
-			position = { 'x': x, 'y': y };
-			bounds = { 'width': width, 'height': height };
+			this.rotation = 0;
+			this.position = { 'x': x, 'y': y };
+			this.bounds = { 'width': width, 'height': height };
 		}
 		
 		makeElement() { }
@@ -177,20 +203,21 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		draw(g) {}
 		
 		move(position, bounds, rotation) {
-			moveItem(this, position, bounds, rotation);
+			return moveItem(this, position, bounds, rotation);
 		}
 	}
 	
 // ============================================ =========== ============================================ \\
 // ============================================ Table Class ============================================ \\
-	
+
+	var nextTableID = 0;
 	class Table extends Item {
 		makeElement() {
 			// if we don't have an element
 			if(!this.element) {
 				// main div-element
 				this.element = $("<div />")
-					.attr("id", "table_" + this.table.id)
+					.attr("id", "table_" + nextTableID ++)
 					.addClass("table-icon");
 				
 				// table-label
@@ -257,6 +284,9 @@ var TableDisplay = TableDisplay || { mode: "view" };
 				this.bounds.width - .5, this.bounds.height - .5);
 		}
 	}
+	
+	disp.Wall = Wall;
+	disp.Table = Table;
 
 // ============================================ ========= ============================================ \\
 // ============================================ Grid Draw ============================================ \\
@@ -298,8 +328,8 @@ var TableDisplay = TableDisplay || { mode: "view" };
 	
 	function drawLayoutBounds(g) {
 		g.fillStyle = "#0003";
-		g.fillRect(0, layout_height, layout_width, h / disp.scaleY);
-		g.fillRect(layout_width, 0, w / disp.scaleX, layout_height);
+		g.fillRect(0, disp.layout_height, disp.layout_width, h / disp.scaleY);
+		g.fillRect(disp.layout_width, 0, w / disp.scaleX, disp.layout_height);
 	}
 
 // ============================================ ================== ============================================ \\
@@ -310,8 +340,8 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		h = canvas.height = canvas.clientHeight;
 		
 		// calculate the max-square scale factor
-		disp.scaleX = w / layout_width;
-		disp.scaleY = h / layout_height;
+		disp.scaleX = w / disp.layout_width;
+		disp.scaleY = h / disp.layout_height;
 		
 		if(disp.scaleX < disp.scaleY)
 			disp.scaleY = disp.scaleX;

@@ -116,43 +116,61 @@ public class Database {
 	}
 	
 	public static boolean query(ResultsConsumer action, PreparedStatement statement, Object... args) {
-		try {
-			// assign parameters as genetics (library chooses a type)
-			for(int i = 0; i < args.length; i ++) {
-				statement.setObject(i + 1, args[i]);
-			}
-			
-			ResultSet results = statement.executeQuery();
-			boolean hasResult = false;
-			
-			// if result processor was provided
-			if(action != null) { 
-				while(results.next()) {
-					hasResult = true;
-					action.accept(results);
+		synchronized(statement) {
+			try {
+				// assign parameters as genetics (library chooses a type)
+				for(int i = 0; i < args.length; i ++) {
+					statement.setObject(i + 1, args[i]);
 				}
-			} else {
-				hasResult = results.next();
+				
+				ResultSet results = statement.executeQuery();
+				boolean hasResult = false;
+				
+				// if result processor was provided
+				if(action != null) { 
+					while(results.next()) {
+						hasResult = true;
+						action.accept(results);
+					}
+				} else {
+					hasResult = results.next();
+				}
+				
+				return hasResult;
+			} catch(SQLException e) {
+				// sneaky throw error, worst case: caught by HTTP thread and respond with 500
+				throw ErrorUtil.sneekyThrow(e);
 			}
-			
-			return hasResult;
-		} catch(SQLException e) {
-			// sneaky throw error, worst case: caught by HTTP thread and respond with 500
-			throw ErrorUtil.sneekyThrow(e);
 		}
 	}
 	
 	public static boolean update(PreparedStatement statement, Object... args) {
-		try {
-			// assign parameters as genetics (library chooses a type)
-			for(int i = 0; i < args.length; i ++) {
-				statement.setObject(i + 1, args[i]);
+		return update(null, statement, args);
+	}
+	
+	public static boolean update(ResultsConsumer action, PreparedStatement statement, Object... args) {
+		synchronized(statement) {
+			try {
+				// assign parameters as genetics (library chooses a type)
+				for(int i = 0; i < args.length; i ++) {
+					statement.setObject(i + 1, args[i]);
+				}
+				
+				boolean success = statement.executeUpdate() != 0;
+				ResultSet results = statement.getResultSet();
+				
+				if(action != null && results != null) {
+					while(results.next()) {
+						action.accept(results);
+					}
+				}
+				
+				return success;
+				
+			} catch(SQLException e) {
+				// sneaky throw error, worst case: caught by HTTP thread and respond with 500
+				throw ErrorUtil.sneekyThrow(e);
 			}
-			
-			return statement.executeUpdate() != 0;
-		} catch(SQLException e) {
-			// sneaky throw error, worst case: caught by HTTP thread and respond with 500
-			throw ErrorUtil.sneekyThrow(e);
 		}
 	}
 	

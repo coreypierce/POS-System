@@ -44,7 +44,7 @@ public class RequestNew implements IRequest {
 		Table table = null;
 		
 		// if a table is requested
-		if(tableDescript != null) {
+		if(tableDescript != null && !tableDescript.isEmpty()) {
 			// create table
 			table = new Table(tableDescript, 0);
 		}

@@ -1,3 +1,9 @@
+@wall-color: #3f3f3f;
+@ghost-color: #3f3f3f;
+
+@table-color_UNKNOWN:	#aEaEaE;
+@table-color_DELETE:	#bf1d1d;
+
 .tables-edit_wrapper {
     position: absolute;
     
@@ -123,6 +129,31 @@
 .tables-edit_mode {
 	.table-icon, .table-wall {
 		cursor: move !important;
+		fill: @table-color_UNKNOWN !important;
+		
+		&.table-delete {
+			fill: @table-color_DELETE !important;
+			opacity: .5;
+			
+			&::before {
+				content: "Drop to Delete";
+				
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				
+				color: white;
+				font-weight: bold;
+				text-align: center;
+				
+				transform: translate(-50%, -50%);
+				z-index: 100;
+			}
+			
+			span {
+				display: none;
+			}
+		}
 		
 		&:hover::after{
 			&:extend(.tables-edit_wrapper:hover::after);
@@ -132,4 +163,35 @@
 			cursor: grabbing !important;
 		}
 	}
+	
+	.table-wall.table-delete {
+		background-color: @table-color_DELETE !important;
+		
+		&::before {
+			content: "";
+		}
+	}
 } 
+
+.tables-add_ghost {
+	&:extend(.tables-edit_wrapper);
+	
+	position: absolute;
+	background: none;
+	
+	opacity: .75;
+	cursor: grabbing;
+	
+	z-index: 500;
+	visibility: hidden;	
+	
+	&.tables-add_wall {
+		background-color: @wall-color;
+		visibility: visible;	
+	}
+	
+	&.tables-add_table {
+		fill: @ghost-color;
+		visibility: visible;
+	}
+}
