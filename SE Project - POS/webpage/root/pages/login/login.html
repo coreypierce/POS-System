@@ -10,23 +10,23 @@
 <body>
 	<section class="login-wrapper">
 		<header class="login-header">
-			<h2> Login </h2>
-			<hr />
+			<h2> 
+				<div id="date"></div>
+			    <div id="time"></div>
+			</h2>
+			
 		</header>
 	
 		<div class="login-input_wrapper">
-			<h3> Employee ID </h3>
-			<input type="text" id="login_username" />
+			<input type="text" id="login_username" placeholder="Employee ID"/>
 		</div>
 		
 		<div class="login-input_wrapper">
-			<h3> Password </h3>
-			<input type="password" id="login_password" />
+			<input type="password" id="login_password" placeholder="Password"/>
 		</div>
 		
-		<div class="login-input_wrapper">
-			<button onclick="login()">
-				<i></i>
+		<div class="login-button_wrapper">
+			<button onclick="login()" style="background:#42e619">
 				Login
 			</button>
 		</div>
@@ -68,6 +68,22 @@
 				alert("An Error has occured! " + status + " --- " + error);
 			});
 		}
+	</script>
+	
+	<script>
+	//gets date and time and updates every second
+		var date = $("#date");
+    	var time = $("#time");
+    	
+    	function update_time(){
+    		var uDate = new Date();
+    		date.text(uDate.toLocaleDateString());
+    		time.text(uDate.toLocaleTimeString());
+    	}
+
+   		setInterval(update_time, 1000);
+   		update_time();
+   		
 	</script>
 </body>
 </html>
