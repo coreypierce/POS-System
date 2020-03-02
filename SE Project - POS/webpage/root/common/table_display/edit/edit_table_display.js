@@ -88,6 +88,7 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 			TableDisplay.redraw();
 			// update edit-box's position
 			positionSelectBox();
+			markChanged(this.item);
 		}
 		
 		cancel(e) {
@@ -174,6 +175,7 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 			TableDisplay.redraw();
 			// update edit-box's position
 			positionSelectBox();
+			markChanged(this.item);
 		}
 		
 		drag(e) { }
@@ -215,6 +217,7 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 			TableDisplay.redraw();
 			// update edit-box's position
 			positionSelectBox();
+			markChanged(this.item);
 		}
 		
 		cancel(e) {
@@ -273,6 +276,92 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 		else 
 			wrapper.removeClass("table-edit_show_rotate");
 	}
+
+// ============================================ ===== ============================================ \\
+// ============================================ Ghost ============================================ \\
+	
+	// after page load
+	$(function() {
+		var ghost = $("tables-add_ghost");
+		
+	});
+	
+	function tryInsert(item) {
+		var bounds = item.bounds;
+		var pos = { x: 0, y: 0 };
+		
+		for(var x = 0; x < edit.layout_width - bounds.width; x ++) {
+		for(var y = 0; y < edit.layout_height - bounds.height; y ++) {
+			pos.x = x; pos.y = y;
+			
+			if(item.move(pos, bounds, 0)) {
+				edit.addItem(item);
+				return true;
+			}
+		}}
+		
+		return false;
+	}
+	
+	edit.addWall = function() {
+		var w = new edit.Wall(0, 0, 1, 5);
+		w.table = null;
+		w.id = null;
+		
+		if(tryInsert(w)) {
+			finAddition(w);
+			
+		} else {
+			beep();
+		}
+	}
+	
+	edit.addTable = function(type) {
+		var t = new edit.Table(0, 0, type.width, type.height);
+		t.table = {
+			id: 0,
+			name: "",
+			icon: type.icon,
+			status: "unknown"
+		};
+		
+		t.id = null;
+		
+		if(tryInsert(t)) {
+			finAddition(t);
+		} else {
+			beep();
+		}
+	}
+	
+	function finAddition(item) {
+		// validate and select element
+		item.resize();
+		selectItem(item.element);
+		
+		// add element to list of changes
+		markChanged(item);
+		// redraw display
+		edit.redraw();
+	}
+	
+	function deleteItem(item) {
+		edit.removeItem(item);
+		removeSelection();
+		
+		// mark as deleted, then mark changed
+		item.deleted = true;
+		markChanged(item);
+		
+		// redraw display
+		edit.redraw();
+	}
+	
+	var beep_audio;
+	function beep() {
+		!beep_audio && (beep_audio = new Audio("/sfx/win_chord.mp3"));  
+		beep_audio.play();
+	}
 	
 // ============================================ ========= ============================================ \\
 // ============================================ Listeners ============================================ \\
@@ -310,9 +399,110 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 		}
 	}
 	
+// ============================================ ======== ============================================ \\
+// ============================================ Tracking ============================================ \\
+	
+	var changed_items = [];
+	
+	function markChanged(item) {
+		// check if item is already in list
+		for(var i = 0; i < changed_items.length; i ++) {
+			if(changed_items[i] == item) return;
+		}
+		
+		// if not, add to changed items
+		changed_items.push(item);
+	}
+
+	function perform_addItem(item) {
+		$.ajax({
+			url: "/api/layout/new",
+			method: "POST",
+			
+			data: {
+				x: item.position.x,
+				y: item.position.y,
+				
+				width: item.bounds.width,
+				height: item.bounds.height,
+				
+				rotation: item.rotation,
+				
+				table: item instanceof TableDisplay.Table && item.table.icon || null
+			}
+		}).done(function(data) {
+			Object.assign(item, data);
+		});
+	}
+
+	function perform_updateItem(item) {
+		$.ajax({
+			url: "/api/layout/edit",
+			method: "POST",
+			
+			data: {
+				id: item.id,
+				
+				x: item.position.x,
+				y: item.position.y,
+				
+				width: item.bounds.width,
+				height: item.bounds.height,
+				
+				rotation: item.rotation
+			}
+		});
+	}
+	
+	function perform_deleteItem(item) {
+		$.ajax({
+			url: "/api/layout/delete",
+			method: "POST",
+			
+			data: {
+				id: item.id,
+			}
+		});
+	}
+	
+	edit.saveChanges = function() {
+		changed_items.forEach(item => {
+			if(item.deleted) {
+				// only if the item has an ID can it be deleted
+				if(item.id) {
+					perform_deleteItem(item);
+				}
+				
+			// is this a new item, no-id
+			} else if(!item.id) {
+				perform_addItem(item);
+				
+			// has an ID and not marked for deletion, just update
+			} else {
+				perform_updateItem(item);
+			}
+		});
+	}
+	
 // ============================================ ===== ============================================ \\
 // ============================================ Setup ============================================ \\
 
+	edit.setupDelete = function(element) {
+		element.hover(function(event) {
+			if(event.type == "mouseenter") {
+				drag_target && drag_target instanceof TableItem &&
+					selected_target && selected_target.addClass("table-delete");
+				
+			} else if(event.type == "mouseleave") {
+				drag_target && drag_target instanceof TableItem &&
+					selected_target && selected_target.removeClass("table-delete");
+			}
+		}).on("mouseup", function(event) {
+			drag_target && drag_target instanceof TableItem &&
+				selected_target && deleteItem(TableDisplay.findItemByElement(selected_target));
+		});
+	};
+	
 	edit.setup = function(e) {
 		if(!e) {
 			$(".table-draggable:not(.table-edit_setup)")

@@ -34,9 +34,10 @@ public class RestaurantLayout {
 	private static final PreparedStatement INSERT_ITEM = Database.prep(
 			"INSERT INTO restaurant_layout (rotation, position, bounds, is_table) VALUES(?, POINT(?, ?), POINT(?, ?), ?)");
 	
-
 	private static final PreparedStatement UPDATE_ITEM = Database.prep(
 			"UPDATE restaurant_layout SET rotation = ?, position = POINT(?, ?), bounds = POINT(?, ?) WHERE id = ?");
+
+	private static final PreparedStatement DELETE_ITEM = Database.prep("DELETE FROM restaurant_layout WHERE id = ?");
 	
 // ============================================ Instance ============================================ \\
 	
@@ -86,11 +87,7 @@ public class RestaurantLayout {
 			this.items.put(item.getId(), item);
 			
 			// check/update layout bounds
-			int limit_x = item.location.x + item.bounds.width;
-			int limit_y = item.location.y + item.bounds.height;
-			
-			if(limit_x > width) this.width = limit_x;
-			if(limit_y > height) this.height = limit_y;
+			updateBounds(item);
 		}, QUERY_LAYOUT);
 	}
 	
@@ -108,6 +105,25 @@ public class RestaurantLayout {
 		return builder.build();
 	}
 	
+	public void recalculateSize() {
+		// recalculate layout bounds
+		this.width = 1;
+		this.height = 1;
+		
+		for(Item item : this.items.values()) {
+			updateBounds(item);
+		}
+	}
+	
+	private void updateBounds(Item item) {
+		// check/update layout bounds
+		int limit_x = item.location.x + item.bounds.width;
+		int limit_y = item.location.y + item.bounds.height;
+		
+		if(limit_x > width) this.width = limit_x;
+		if(limit_y > height) this.height = limit_y;
+	}
+	
 // ============================================ Item Actions ============================================ \\
 	
 	public Item getItem(int id) {
@@ -117,13 +133,24 @@ public class RestaurantLayout {
 	public Item newItem(int rotation, Point position, Dimension bounds, Table table) {
 		Item item = new Item(rotation, position, bounds, table);
 		items.put(item.getId(), item);
+		
+		// check/update layout bounds
+		updateBounds(item);
+		
 		return item;
 	}
 	
 	public boolean deleteItem(int id) {
-		// TODO: implement delete item
-		LOG.warn("TODO: delete restaurant-item #{}", id);
-		return false;
+		Item rem = items.get(id);
+		// if item doesn't exist, job done
+		if(rem == null) return true;
+		
+		// delete item
+		if(!rem.delete()) return false;
+		items.remove(id);
+		
+		recalculateSize();
+		return true;
 	}
 	
 // ============================================ =============== ============================================ \\
@@ -215,6 +242,14 @@ public class RestaurantLayout {
 				LOG.warn("Layout-Item INSERT failed!");
 				return false;
 			}
+		}
+		
+		protected boolean delete() {
+			LOG.warn("Deleting restaurant-item #{}...", id);
+			int id = super.id;
+			super.id = 0;
+			
+			return Database.update(DELETE_ITEM, id);
 		}
 		
 // =========================================== Update Actions =========================================== \\

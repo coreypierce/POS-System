@@ -45,10 +45,13 @@ public class RequestEdit implements IRequest {
 		JsonBuilder builder = JsonBuilder.create();
 		
 		try {
-			Item item = RestaurantLayout.getLayout().getItem(id);
+			RestaurantLayout layout = RestaurantLayout.getLayout();
+			Item item = layout.getItem(id);
 
 			// attempt item update
 			if(item.updateConstraints(rotation, new Point(pos_x, pos_y), new Dimension(width, height))) {
+				// we could have moved the farthest item in, recalculate
+				layout.recalculateSize();
 				builder.append("status", "success");
 				
 			} else {

@@ -1,0 +1,200 @@
+<res src="edit_layout.less" type="css" />
+<res src="/common/jquery-3.4.1.min.js" type="js" />
+
+<import src="/common/employee_header/employee_header.html" />
+
+<div class="edit-layout_content"> 
+	<nav class="edit-action_bar">
+		<button onclick="save()"> <i></i> Save </button>
+		<button id="resize-button" onclick="toggleResize()"> <i></i> Resize </button>
+		
+		<div class="edit-resize_wrapper">
+			<h2> Dimensions </h2>
+			
+			<div class="edit-resize_slider_wrapper">
+				<span> W </span>
+				<input type="range" id="resize_w" min="30" max="175" value="50" step="5" class="edit-resize_slider">
+			</div>
+			
+			<div class="edit-resize_slider_wrapper">
+				<span> H </span>
+				<input type="range" id="resize_h" min="30" max="125" value="50" step="5" class="edit-resize_slider">
+			</div>
+		</div>
+	</nav>
+
+	<aside class="edit-sidebar">
+		<div class="edit-sidebar_filters">
+			<h2> Search </h2>
+			
+			<h3> Type </h3>
+			<select id="table_type" onchange="onFilterUpdate()">
+				<option value=".*"> Any </option>
+			</select>
+			
+			<h3> Seats </h3>
+			<select id="table_seats" onchange="onFilterUpdate()">
+				<option value=".*"> Any</option>
+			</select>
+		</div>
+		
+		<div class="edit-sidebar_tables">
+			<span class="table-cards_none" style="display: none"> No matching tables! </span>
+		</div>
+	
+		<button class="edit-sidebar_add_wall" onclick="addWall()"> Add Wall </button>
+	</aside>
+
+	<section class="edit-restaurant_display">
+		<import src="/common/table_display/table_display.html">
+			<import src="/common/table_display/edit/edit_table_display.html" />
+		</import> 
+	</section>
+	
+	<div class="edit-popup_wrapper">
+		<import src="/util/popup/popup.html" popup="/pages/edit/save_layout_popup.html" 
+			name="edit_save_popup" title="Confirm Save Changes" size="small"/>
+	</div>
+	
+	<script type="text/javascript">
+// ============================================ ====== ============================================ \\
+// ============================================ Resize ============================================ \\
+		function hideResize() {
+			$(".edit-resize_wrapper").removeClass("edit-resize_shown");
+			$(window).off("click", hideResize);
+		}
+	
+		function showResize() {
+			$(".edit-resize_wrapper").addClass("edit-resize_shown");
+			$(window).on("click", hideResize);
+		}
+		
+		function toggleResize() {
+			if($(".edit-resize_wrapper").hasClass("edit-resize_shown"))
+				hideResize();
+			else 
+				showResize();
+		}
+		
+		$(".edit-resize_wrapper, #resize-button").on("click", function(event) {
+			event.stopPropagation();
+		});
+		
+		TableDisplay.addLayoutSizeListener(function(width, height) {
+			$("#resize_w").val(width);
+			$("#resize_h").val(height);
+		});
+		
+		$("#resize_w").on("input", function() {
+			TableDisplay.layout_width = $(this).val();
+			TableDisplay.resize();
+		});
+
+		$("#resize_h").on("input", function() {
+			TableDisplay.layout_height = $(this).val();
+			TableDisplay.resize();
+		});
+
+// ============================================ ========== ============================================ \\
+// ============================================ Add/Remove ============================================ \\
+		
+		function save() {
+			Popup.show("edit_save_popup");
+		}
+		
+		function addWall() {
+			TableDisplay.addWall();
+		}
+		
+		function addTable(descript) {
+			TableDisplay.addTable(descript);
+		}
+		
+		TableDisplay.setupDelete($(".edit-sidebar"));
+
+// ============================================ =========== ============================================ \\
+// ============================================ Table Cards ============================================ \\
+
+		var seat_types = [];
+		var count_options = [];
+		
+		var tableCards = [];
+		function makeTableCard(descript) {
+			tableCards.push(
+				$("<div />")
+					.data("descript", descript)
+					.addClass("edit-table_card")
+					.on("click", e => addTable(descript))
+					.append($("<div />")
+								.addClass("edit-table_card_info")
+								.append($("<h4 />")
+											.text(descript.type))
+								.append($("<span />")
+											.addClass("edit-table_card_attr")
+											.text("Seats: ")
+											.append($("<b/>")
+														.text(descript.seats)
+											)
+								)
+					).append($(document.createElementNS('http://www.w3.org/2000/svg', "svg"))
+								.append($(document.createElementNS('http://www.w3.org/2000/svg', "use"))
+											.attr("href", "#" + descript.icon)
+								)
+					)
+				.appendTo($(".edit-sidebar_tables")));
+			
+			!seat_types.includes(descript.type) && seat_types.push(descript.type);
+			!count_options.includes(descript.seats) && count_options.push(descript.seats);
+		}
+		
+		function onFilterUpdate() {
+			var filter_type = new RegExp($("#table_type").val());
+			var filter_count = new RegExp($("#table_seats").val());
+			
+			var emptyMessage = $(".table-cards_none");
+			emptyMessage.css("display", "");
+			
+			tableCards.forEach(e => {
+				var descript = e.data("descript");
+				
+				if(filter_type.test(descript.type) && filter_count.test(descript.seats + "")) {
+					e.removeClass("search-filter");
+					// if we find at-least one match, hide message
+					emptyMessage.css("display", "none");
+					
+				} else {
+					e.addClass("search-filter");
+				}
+			})
+		}
+		
+		makeTableCard({
+			type: "Table",
+			seats: 4,
+			icon: "table_rrect_2x2",
+			width: 7,
+			height: 7
+		});
+		
+		makeTableCard({
+			type: "Bench",
+			seats: 2,
+			icon: "table_rrect_2x2",
+			width: 3,
+			height: 3
+		});
+		
+		// after adding all types
+		
+		seat_types = seat_types.sort();
+		count_options = count_options.sort();
+		
+		var types_select = $("#table_type");
+		var seats_select = $("#table_seats");
+		
+		function escapeRgx(str) { return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+		
+		seat_types.forEach(type => types_select.append($("<option />").val(escapeRgx(type)).text(type)));
+		count_options.forEach(count => seats_select.append($("<option />").val(count).text(count)));
+	</script>
+</div>

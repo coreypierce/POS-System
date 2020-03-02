@@ -1,0 +1,19 @@
+<div class="main-body">
+	Are you sure you want to save changes?
+	
+	<div class="button-wrapper">
+		<button class="save_button" onclick="_edit_popup_save()"> Save </button>
+		<button class="cancel-button" onclick="_edit_popup_close()"> Cancel </button>
+	</div>
+</div>
+
+<script>
+	function _edit_popup_save() {
+		TableDisplay.saveChanges();
+		_edit_popup_close();
+	}
+	
+	function _edit_popup_close() {
+		Popup.close();
+	}
+</script>
