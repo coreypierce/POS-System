@@ -79,9 +79,8 @@ public class SessionToken {
 			for(Cookie cookie : cookies) {
 				if(cookie.getName().equals(COOKIE_NAME)) {
 					try {
-						// find the first usable cookie
+						// find the last usable cookie
 						token = new SessionToken(cookie);
-						break;
 					} catch(NoSuchElementException e) {
 						// if a token was provided, but doesn't exist
 					}

@@ -185,6 +185,7 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		}
 		
 		makeElement() { }
+		updateElement() { }
 		
 		resize() {
 			this.makeElement();
@@ -248,10 +249,61 @@ var TableDisplay = TableDisplay || { mode: "view" };
 					.addClass("table-selectable").addClass("table-draggable")
 					.addClass("table-edit_rotatable");
 				
+				this.element.on("click", e => disp.mode != 'edit' && openTableActions(e, this));
+				
 				// add to tables-wrapper
 				wrapper.append(this.element);
 			}
 		}
+
+		updateElement() {
+			this.element
+				.removeClass("table-status_open")
+				.removeClass("table-status_seated")
+				.removeClass("table-status_ordered")
+				.removeClass("table-status_checkout")
+				.removeClass("table-status_unknown");
+			
+				if(this.table.status == "Open") this.element.addClass("table-status_open");
+			else if(this.table.status == "Seated") this.element.addClass("table-status_seated");
+			else if(this.table.status == "Order_Placed") this.element.addClass("table-status_ordered");
+			else if(this.table.status == "Check_Printed") this.element.addClass("table-status_checkout");
+			else this.element.addClass("table-status_unknown");
+		}
+	}
+	
+	function openTableActions(event, item) {
+		var tableID = item && item.table && item.table.id;
+		if(!tableID) return;
+		
+		var menu = $("#table_context_menu");
+
+		var bounds = $(".table-display_wrapper")[0].getBoundingClientRect();
+		var ele_bounds = item.element[0].getBoundingClientRect();
+		var menu_bounds = menu[0].getBoundingClientRect();
+		
+		// calculate position relative to parent
+		var top = (ele_bounds.bottom + ele_bounds.top) / 2 - bounds.top; // event.pageY
+		var left = (ele_bounds.right + ele_bounds.left) / 2 - bounds.left; // event.pageX
+		
+		// make sure it doesn't roll of the edge of the page
+		if(bounds.top + top + menu_bounds.height > window.innerHeight) {
+			top -= menu_bounds.height;
+		}
+
+		// make sure it doesn't roll of the edge of the page
+		if(bounds.left + left + menu_bounds.width > window.innerWidth) {
+			left -= menu_bounds.width;
+		}
+		
+		// set position and visible
+		menu.addClass("table-menu_open")
+			.css("top", top).css("left", left);
+		
+		disp.menu_item = item;
+	
+		// prevent window from being called
+		event.stopPropagation();
 	}
 	
 // ============================================ ========== ============================================ \\
@@ -372,9 +424,16 @@ var TableDisplay = TableDisplay || { mode: "view" };
 			item.draw(g);
 		}
 	}
+	
+	disp.closeMenu = function() {
+		$("#table_context_menu").removeClass("table-menu_open");
+		disp.menu_item = null;
+	}
 
 // ============================================ ============== ============================================ \\
 // ============================================ Event Handlers ============================================ \\
+	
+	$(window).on("click", disp.closeMenu);
 	
 	// on window-resize
 	$(window).resize(function() {

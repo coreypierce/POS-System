@@ -1,0 +1,49 @@
+<res src="table_menu.less" type="css" />
+<res src="/common/jquery-3.4.1.min.js" type="js" />
+
+<div id="table_context_menu" class="table-display_context_menu">
+	<ul class="table-menu_list">
+		<li>
+			<i></i> Order
+		</li>
+		
+		<li>
+			<i></i> Print Check
+		</li>
+		
+		<li>
+			<i></i> Clear Table
+		</li>
+		
+		<span>
+			&nbsp;&nbsp;&nbsp;------- TEMP -------
+		</span>
+		
+		<li onclick="updateStatus('Open')"> Set Open </li>
+		<li onclick="updateStatus('Seated')"> Set Seated </li>
+		<li onclick="updateStatus('Order_Placed')"> Set Ordered </li>
+		<li onclick="updateStatus('Check_Printed')"> Set Check-Printed </li>
+	</ul>
+</div>
+
+<script>
+	function updateStatus(status) {
+		if(!TableDisplay.menu_item) return;
+		
+		$.ajax({
+			url: "/api/table/status",
+			method: "POST",
+			
+			data: {
+				"id": TableDisplay.menu_item.table.id,
+				"status": status
+			}
+		}).done(function(data) {
+			Object.assign(TableDisplay.menu_item.table, data.table);
+			TableDisplay.menu_item.updateElement();
+			TableDisplay.closeMenu();
+		});
+	}
+	
+	$("#table_context_menu li").on("click", e => e.stopPropagation());
+</script>
