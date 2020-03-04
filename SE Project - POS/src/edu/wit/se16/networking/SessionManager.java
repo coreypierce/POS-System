@@ -44,7 +44,7 @@ public class SessionManager {
 		
 		sessionValues.put("employee_firstname", employee.getFirstName());
 		sessionValues.put("employee_lastname", employee.getLastName());
-		sessionValues.put("employee_role", employee.getRole().toString());
+		sessionValues.put("employee_role", employee.getRole().toString().toLowerCase());
 		
 		return true;
 	}

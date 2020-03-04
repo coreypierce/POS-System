@@ -294,7 +294,7 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 		for(var y = 0; y < edit.layout_height - bounds.height; y ++) {
 			pos.x = x; pos.y = y;
 			
-			if(item.move(pos, bounds, 0)) {
+			if(item.move(pos, bounds, 0, true)) {
 				edit.addItem(item);
 				return true;
 			}
@@ -432,6 +432,7 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 			}
 		}).done(function(data) {
 			Object.assign(item, data);
+			item.updateElement();
 		});
 	}
 

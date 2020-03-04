@@ -104,7 +104,7 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		return true;
 	}
 	
-	function moveItem(item, new_pos, new_bounds, new_rotation) {
+	function moveItem(item, new_pos, new_bounds, new_rotation, override) {
 		if(new_pos.x < 0 || new_pos.y < 0) return false;
 		if(new_pos.x + new_bounds.width > disp.layout_width) return false;
 		if(new_pos.y + new_bounds.height > disp.layout_height) return false;
@@ -114,7 +114,7 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		// auto-assign rotation, if none was provided
 		typeof(new_rotation) == 'undefined' && (new_rotation = item.rotation);
 		
-		if(item instanceof Wall) {
+		if(item instanceof Wall && !override) {
 			for(var check of items) {
 				// walls are allowed to intersect other walls
 				if(check instanceof Wall) continue;
@@ -197,14 +197,12 @@ var TableDisplay = TableDisplay || { mode: "view" };
 				"width": 	this.bounds.width  * disp.scaleX + "px",
 				"height": 	this.bounds.height * disp.scaleY + "px",
 			});
-			
-			this.ele_rotate && this.ele_rotate.css("transform", "rotateZ(" + this.rotation + "deg)");
 		}
 		
 		draw(g) {}
 		
-		move(position, bounds, rotation) {
-			return moveItem(this, position, bounds, rotation);
+		move(position, bounds, rotation, override) {
+			return moveItem(this, position, bounds, rotation, override);
 		}
 	}
 	
@@ -241,8 +239,6 @@ var TableDisplay = TableDisplay || { mode: "view" };
 				
 				this.element.append(label);
 				this.element.append(image);
-				
-				this.ele_rotate = image;
 
 				// add class-flags for editing the item
 				this.element
@@ -254,6 +250,23 @@ var TableDisplay = TableDisplay || { mode: "view" };
 				// add to tables-wrapper
 				wrapper.append(this.element);
 			}
+		}
+		
+		resize() {
+			super.resize();
+			
+			var w = this.element.css("width");
+			w = w.substr(0, w.length - 2);
+
+			var h = this.element.css("height");
+			h = h.substr(0, h.length - 2);
+			
+			var max = Math.max(w, h) + "px";
+			
+			this.element.find("svg")
+				.attr("width", max)
+				.attr("height", max)
+				.css("transform", "translate(-50%, -50%) rotateZ(" + this.rotation + "deg)");
 		}
 
 		updateElement() {
@@ -269,6 +282,8 @@ var TableDisplay = TableDisplay || { mode: "view" };
 			else if(this.table.status == "Order_Placed") this.element.addClass("table-status_ordered");
 			else if(this.table.status == "Check_Printed") this.element.addClass("table-status_checkout");
 			else this.element.addClass("table-status_unknown");
+				
+			this.element.find("span").text(this.table.name);
 		}
 	}
 	

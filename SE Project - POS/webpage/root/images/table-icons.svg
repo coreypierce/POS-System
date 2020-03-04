@@ -46,6 +46,439 @@
 	       width="23"/>
   	  </g>
   	</symbol>
+  	
+  	<clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath349">
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g345"
+         id="use351"
+         width="100%"
+         height="100%" />
+    </clipPath>
+  	<symbol id="table_rect_1x2" viewBox="0 0 205 63">
+	   <g
+	     transform="translate(0,-234)">
+	    <g
+	       transform="translate(-132.29167,88.446432)"
+	       clip-path="url(#clipPath349)">
+	      <g
+	         inkscape:label="Clip"
+	         id="g345">
+	        <rect
+	           style="stroke-width:0.26742017"
+	           y="148.45535"
+	           x="183.69646"
+	           height="58.208336"
+	           width="102.80952" />
+	        <circle
+	           r="23.8125"
+	           cy="179.82738"
+	           cx="158.37204"/>
+	        <circle
+	           r="23.8125"
+	           cy="176.80357"
+	           cx="311.83035"/>
+	      </g>
+	    </g>
+	  </g>
+  	</symbol>
+  	
+  	 <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath338">
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g334"
+         id="use340"
+         width="100%"
+         height="100%" />
+    </clipPath>
+  	<symbol id="table_rect_2x2" viewBox="0 0 204 123">
+	 <g
+	     transform="translate(0,-174)">
+	    <g
+	       transform="translate(-12.28422,336.77681)"
+	       clip-path="url(#clipPath338)">
+	      <g>
+	        <rect
+	           style="stroke-width:0.26742017"
+	           y="-101.00894"
+	           x="63.877995"
+	           height="58.208336"
+	           width="102.80952"/>
+	        <circle
+	           r="23.8125"
+	           cy="-128.97917"
+	           cx="38.175594"/>
+	        <circle
+	           r="23.8125"
+	           cy="-69.636909"
+	           cx="38.553585" />
+	        <circle
+	           r="23.8125"
+	           cy="-130.11308"
+	           cx="191.25594"/>
+	        <circle
+	           r="23.8125"
+	           cy="-72.660713"
+	           cx="192.01189"/>
+	        <rect
+	           style="stroke-width:0.26742017"
+	           y="-159.21729"
+	           x="63.877995"
+	           height="58.208336"
+	           width="102.80952"/>
+	      </g>
+	    </g>
+	  </g>
+  	</symbol>
+  	
+  	<clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3865">
+      <g
+         id="use3867"
+         inkscape:label="Clip">
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle72"
+           cx="671.28571"
+           cy="-122.55357"
+           r="66.901787" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle74"
+           cx="672.04169"
+           cy="-215.53571"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle76"
+           cx="754.44049"
+           cy="-161.8631"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle78"
+           cx="585.8631"
+           cy="-157.32739"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle80"
+           cx="613.83331"
+           cy="-49.982143"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle82"
+           cx="734.78577"
+           cy="-55.273808"
+           r="23.8125" />
+      </g>
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3915">
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g3911"
+         id="use3917"
+         width="100%"
+         height="100%" />
+    </clipPath>
+  	<symbol id="table_circle_5" viewBox="0 0 219 218">
+	  <g
+	     transform="translate(0,-79)">
+	    <g
+	       transform="translate(-560.5387,321.65773)"
+	       clip-path="url(#clipPath3915)">
+	      <g>
+	        <circle
+	           r="66.901787"
+	           cy="-122.55357"
+	           cx="671.28571"/>
+	        <circle
+	           r="23.8125"
+	           cy="-215.53571"
+	           cx="669.01788" />
+	        <circle
+	           r="23.8125"
+	           cy="-161.8631"
+	           cx="754.44049"  />
+	        <circle
+	           r="23.8125"
+	           cy="-157.32739"
+	           cx="585.8631"  />
+	        <circle
+	           r="23.8125"
+	           cy="-49.982143"
+	           cx="613.83331" />
+	        <circle
+	           r="23.8125"
+	           cy="-49.98214"
+	           cx="731.00598"  />
+	      </g>
+	    </g>
+	  </g>
+  	</symbol>
+  	
+  	<clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3746">
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g3742"
+         id="use3748"
+         width="100%"
+         height="100%" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3764">
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g3760"
+         id="use3766"
+         width="100%"
+         height="100%" />
+    </clipPath>
+  	<symbol id="table_circle_6" viewBox="0 0 215 237">
+	  <g
+	     transform="translate(0,-60)">
+	    <g
+	       clip-path="url(#clipPath3764)">
+	      <g>
+	        <g
+	           clip-path="url(#clipPath3746)" >
+	          <g>
+	            <a>
+	              <circle
+	                 r="66.901787"
+	                 cy="179.4494"
+	                 cx="108.10119"/>
+	            </a>
+	            <circle
+	               cx="108.10119"
+	               cy="87.223206"
+	               r="23.8125" />
+	            <circle
+	               cx="105.83332"
+	               cy="270.91965"
+	               r="23.8125" />
+	            <circle
+	               cx="188.9881"
+	               cy="134.84821"
+	               r="23.8125" />
+	            <circle
+	               cx="185.96429"
+	               cy="230.85417"
+	               r="23.8125" />
+	            <circle
+	               cx="27.214287"
+	               cy="134.09225"
+	               r="23.8125" />
+	            <circle
+	               cx="28.726173"
+	               cy="224.80653"
+	               r="23.8125" />
+	          </g>
+	        </g>
+	      </g>
+	    </g>
+	  </g>
+  	</symbol>
+  	
+  	<clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath3915">
+      <g
+         id="use3917"
+         inkscape:label="Clip">
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle3979"
+           cx="671.28571"
+           cy="-122.55357"
+           r="66.901787" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle3981"
+           cx="669.01788"
+           cy="-215.53571"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle3983"
+           cx="754.44049"
+           cy="-161.8631"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle3985"
+           cx="585.8631"
+           cy="-157.32739"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle3987"
+           cx="613.83331"
+           cy="-49.982143"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle3989"
+           cx="731.00598"
+           cy="-49.98214"
+           r="23.8125" />
+      </g>
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath338">
+      <g
+         id="use340"
+         inkscape:label="Clip">
+        <rect
+           id="rect4294"
+           width="102.80952"
+           height="58.208336"
+           x="63.877995"
+           y="-101.00894"
+           style="stroke-width:0.26742017"
+           inkscape:transform-center-x="2.0158759"
+           inkscape:transform-center-y="-57.339551" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle4296"
+           cx="38.175594"
+           cy="-128.97917"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle4298"
+           cx="38.553585"
+           cy="-69.636909"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle4300"
+           cx="191.25594"
+           cy="-130.11308"
+           r="23.8125" />
+        <circle
+           style="fill:#000000;stroke-width:0.26458332"
+           id="circle4302"
+           cx="192.01189"
+           cy="-72.660713"
+           r="23.8125" />
+        <rect
+           id="rect4304"
+           width="102.80952"
+           height="58.208336"
+           x="63.877995"
+           y="-159.21729"
+           style="stroke-width:0.26742017"
+           inkscape:transform-center-x="2.0158759"
+           inkscape:transform-center-y="-57.339551" />
+      </g>
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4339">
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g4335"
+         id="use4341"
+         width="100%"
+         height="100%" />
+    </clipPath>
+  	<symbol id="booth_rect_2x2" viewBox="0 0 208 122">
+	 <g
+	     transform="translate(0,-878)">
+	    <g
+	       clip-path="url(#clipPath4339)"
+	       transform="translate(-406.52021,338.53091)">
+	      <g >
+	        <rect
+	           y="600.85712"
+	           x="459.80804"
+	           height="58.208336"
+	           width="102.80952"
+	           id="rect3715-6-0" />
+	        <rect
+	           y="542.6488"
+	           x="459.80804"
+	           height="58.208336"
+	           width="102.80952"
+	           id="rect3715-6-7-7" />
+	        <path
+	           d="M 613.07738,542.64882 V 659.06546"/>
+	        <path
+	           d="m 567.90921,542.64882 h 45.16817"/>
+	        <path
+	           d="m 567.90922,659.06546 h 45.16816"/>
+	        <path
+	           d="M 567.90921,542.64882 V 552.7743"/>
+	        <path
+	           d="m 567.90922,648.93998 v 10.12548"/>
+	        <path
+	           d="m 603.69251,552.7743 h -35.7833"/>
+	        <path
+	           d="m 603.69252,648.93998 h -35.7833"/>
+	        <path
+	           d="m 603.69251,552.77429 v 96.03354"/>
+	        <path
+	           d="m 573.29313,552.85809 v 95.94974"/>
+	        <path
+	           d="m 573.02587,601.23387 h 30.20145"/>
+	        <path
+	           d="M 409.0562,659.17491 V 542.75827"/>
+	        <path
+	           d="m 409.05621,542.75827 h 45.16816"/>
+	        <path
+	           d="m 409.0562,659.17491 h 45.16816"/>
+	        <path
+	           d="M 454.22437,552.88375 V 542.75827"/>
+	        <path
+	           d="M 454.22436,659.17491 V 649.04943"/>
+	        <path
+	           d="m 454.22437,552.88375 h -35.7833"/>
+	        <path
+	           d="m 454.22436,649.04943 h -35.7833"/>
+	        <path
+	           d="M 418.44107,648.91728 V 552.88374"/>
+	        <path
+	           d="M 448.84045,648.91728 V 552.96754"/>
+	        <path
+	           d="m 418.90625,601.34333 h 30.20146"/>
+	        <path
+	           transform="scale(0.26458333)"
+	           d="m 1546.741,2271.4455 v -219.2031 h 84.3477 84.3478 v 18.1756 18.1756 l -67.4277,0.2597 -67.4277,0.2597 -0.2763,180.3122 c -0.152,99.1717 -0.03,181.335 0.2717,182.5851 l 0.5482,2.2728 h 67.1558 67.156 v 18.1828 18.1827 h -84.3478 -84.3477 z"/>
+	        <path
+	           transform="scale(0.26458333)"
+	           d="m 2147.7817,2471.4629 v -18.1756 l 67.4277,-0.2597 67.4277,-0.2597 V 2270.9404 2089.113 l -67.4277,-0.2597 -67.4277,-0.2597 v -18.1756 -18.1756 h 84.3478 84.3477 v 218.698 218.6981 h -84.3477 -84.3478 z"/>
+	        <path
+	           transform="scale(0.26458333)"
+	           d="m 1582.0963,2271.4455 v -180.8173 h 56.5686 56.5685 v 90.4086 90.4087 h -56.0635 c -36.7022,0 -56.0634,0.3489 -56.0634,1.0102 0,0.6612 19.3612,1.0101 56.0634,1.0101 h 56.0635 v 89.3985 89.3985 h -56.5685 -56.5686 z"/>
+	        <path
+	           transform="scale(0.26458333)"
+	           d="m 2167.9848,2362.3592 v -88.8934 h 56.0635 c 36.7022,0 56.0634,-0.3489 56.0634,-1.0101 0,-0.6613 -19.3612,-1.0102 -56.0634,-1.0102 h -56.0635 v -90.4087 -90.4086 h 56.5685 56.5686 v 180.3122 180.3123 h -56.5686 -56.5685 z"/>
+	        <path
+	           transform="scale(0.26458333)"
+	           d="m 1581.086,2271.193 -2e-4,-181.0699 57.0738,0.269 57.0738,0.269 v 90.3922 90.3922 h -56.2318 c -30.9275,0 -56.0424,0.1718 -55.811,0.3817 1.2676,1.1495 17.5965,1.5695 62.2928,1.6022 l 49.75,0.036 v 89.3985 89.3985 h -57.0736 -57.0736 z"/>
+	      </g>
+	    </g>
+	  </g>
+  	</symbol>
   </defs>
   
   <metadata>

@@ -105,6 +105,10 @@ public class RequestInfo {
 	public String getBody(String name) { 
 		Object o; return (o = body.get(name.toLowerCase())) == null ? null : String.valueOf(o); 
 	}
+	
+	public Object getBodyRaw(String name) { 
+		return body.get(name.toLowerCase());
+	}
 
 	/**	Get all mapped values from the request-body */
 	public Map<String, Object> getBody() { return Collections.unmodifiableMap(body); }
