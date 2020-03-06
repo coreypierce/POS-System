@@ -25,9 +25,9 @@ public class LocalVars {
 	}
 	
 	/** Local Port number to bind HTTP-Connector to */
-	public static final int HTTP_PORT = 8081;
+	public static final int HTTP_PORT = 80;
 	/** Local Port number to bind HTTPS-Connector to */
-	public static final int HTTPS_PORT = 3001;
+	public static final int HTTPS_PORT = 433;
 
 	
 //	----------------------------------------- Non-Constructible ----------------------------------------- \\
