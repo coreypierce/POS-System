@@ -15,7 +15,7 @@ import edu.wit.se16.system.logging.LoggingUtil;
 import edu.wit.se16.util.JsonBuilder;
 
 public class Table extends DatabaseObject {
-private static final Logger LOG = LoggingUtil.getLogger();
+	private static final Logger LOG = LoggingUtil.getLogger();
 	
 	private static final PreparedStatement QUERY = Database.prep("SELECT * FROM tables WHERE ID = ?");
 	private static final PreparedStatement INSERT = Database.prep(
@@ -83,6 +83,13 @@ private static final Logger LOG = LoggingUtil.getLogger();
 			LOG.warn("Table INSERT failed!");
 			return false;
 		}
+	}
+
+// =========================================== Order Function =========================================== \\
+	
+	public Order startOrder(Employee employee) {
+		LOG.trace("Starting new order on Table #{}", super.id);
+		return new Order(employee, this);
 	}
 
 // =========================================== Table Status =========================================== \\
