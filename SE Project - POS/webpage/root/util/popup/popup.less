@@ -1,10 +1,13 @@
+@popup-width_x-small:	23rem;
 @popup-width_small:		32rem;
 @popup-width_medium:	46rem;
 @popup-width_large:		60rem;
 
+@popup-height_x-small:	10rem;
 @popup-height_small:	10rem;
 @popup-height_medium:	20rem;
 @popup-height_large:	30rem;
+
 
 .popup {
 	position: fixed;
@@ -43,6 +46,11 @@
 	}
 	
 // ========================= Style Properties =========================  \\
+	&.popup-size_x-small {
+		width: @popup-width_x-small;
+		min-height: @popup-height_x-small;
+	}
+	
 	&.popup-size_small {
 		width: @popup-width_small;
 		min-height: @popup-height_small;

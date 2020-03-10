@@ -1,0 +1,38 @@
+
+	<res src="ePopup.less" type="css" />
+	
+		<section class="ePopup-wrapper">
+			<span>First Name</span>
+			<div class="ePopup-input_wrapper">
+				<input type="text" id="employee_firstName" placeholder="First Name"/>
+			</div>
+			<span>Last Name</span>
+			<div class="ePopup-input_wrapper">
+				<input type="text" id="employee_lastName" placeholder="Last Name"/>
+			</div>
+			<div class="ePopup-input_wrapper2">
+                <span>Position</span>
+                <select name="position?">
+                    <option>Select Position</option>
+                    <option>Host</option>
+                    <option>Server</option>
+                    <option>Manager</option>
+                </select>
+			</div>
+			<div class="ePopup-button_wrapper">
+				<button onclick="create()" style="background:#42e619">
+					Create
+				</button>
+				<button onclick="cancel()" style="background:#db1414">
+					Cancel
+				</button>
+			</div>
+		</section>
+
+<script>
+
+	function cancel(){
+		Popup.close();
+	}
+	
+</script>
