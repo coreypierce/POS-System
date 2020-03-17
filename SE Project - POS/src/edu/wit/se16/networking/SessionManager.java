@@ -19,9 +19,9 @@ import edu.wit.se16.system.logging.LoggingUtil;
 public class SessionManager {
 	private static final Logger LOG = LoggingUtil.getLogger();
 	
-	private static SessionToken token;
-	
-	private static CaseInsensitiveMap sessionValues;
+	// ThreadLocal as multiple connections (threads) could be running at once
+	private static ThreadLocal<SessionToken> token = new ThreadLocal<>();
+	private static ThreadLocal<CaseInsensitiveMap> sessionValues = new ThreadLocal<>();
 	
 	/**
 	 * 	Attempts to resume a Session. <br/>
@@ -34,14 +34,15 @@ public class SessionManager {
 			return true;
 		}
 		
-		token = SessionToken.getToken(request);
-		if(token == null) return false;
+		token.set(SessionToken.getToken(request));
+		if(token.get() == null) return false;
 		
-		LOG.trace("Resuming session for Employee #{}", token.getEmployeeNumber());
+		LOG.trace("Resuming session for Employee #{}", token.get().getEmployeeNumber());
+		Employee employee = token.get().getEmployee();
 		
-		Employee employee = token.getEmployee();
-		sessionValues = new CaseInsensitiveMap();
-		
+		CaseInsensitiveMap sessionValues = new CaseInsensitiveMap();
+		SessionManager.sessionValues.set(sessionValues);
+
 		sessionValues.put("employee_firstname", employee.getFirstName());
 		sessionValues.put("employee_lastname", employee.getLastName());
 		sessionValues.put("employee_role", employee.getRole().toString().toLowerCase());
@@ -51,12 +52,14 @@ public class SessionManager {
 	
 	public static void setSession(SessionToken token) {
 		LOG.trace("Session started for Employee #{}", token.getEmployeeNumber());
-		SessionManager.token = token;
+		SessionManager.token.set(token);
 	}
 	
 	public static void startSession(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
 		LOG.debug("No session found; attempting to start new Session...");
-		sessionValues = new CaseInsensitiveMap();
+
+		CaseInsensitiveMap sessionValues = new CaseInsensitiveMap();
+		SessionManager.sessionValues.set(sessionValues);
 		
 		CaseInsensitiveMap values = new CaseInsensitiveMap();
 		values.put("redirect_url", request.getRequest().getPathInfo());
@@ -70,14 +73,14 @@ public class SessionManager {
 	 * 	Called right before returning to Client, used to finalize Session state
 	 */
 	public static void suspend(HttpServletResponse response) {
-		if(token != null) {
-			LOG.trace("Suspending session for Employee #{}", token.getEmployeeNumber());
-			token.setSession(response);
+		if(token.get() != null) {
+			LOG.trace("Suspending session for Employee #{}", token.get().getEmployeeNumber());
+			token.get().appendSessionToken(response);
 		}
 	}
 	
-	public static SessionToken getSessionToken() { return token; }
-	public static CaseInsensitiveMap getSessionHTMLValues() { return sessionValues; }
+	public static SessionToken getSessionToken() { return token.get(); }
+	public static CaseInsensitiveMap getSessionHTMLValues() { return sessionValues.get(); }
 	
 //	----------------------------------------- Non-Constructible ----------------------------------------- \\
 	private SessionManager() {}

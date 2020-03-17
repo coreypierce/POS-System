@@ -149,7 +149,7 @@ public class SessionToken {
 
 // =========================================== Response =========================================== \\
 	
-	public void setSession(HttpServletResponse response) {
+	public void appendSessionToken(HttpServletResponse response) {
 		response.addCookie(this.cookie);
 	}
 	
