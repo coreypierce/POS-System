@@ -24,22 +24,22 @@ public class JsonReader {
 		while(true) {
 			try {
 				switch(parser.nextToken()) {
-					case VALUE_NULL: current.append(parser.currentName().toLowerCase(), null); break;
+					case VALUE_NULL: current.append(parser.currentName(), null); break;
 					
-					case VALUE_NUMBER_FLOAT: current.append(parser.currentName().toLowerCase(), parser.getDoubleValue()); break;
-					case VALUE_NUMBER_INT: 	 current.append(parser.currentName().toLowerCase(), parser.getIntValue());   break;
+					case VALUE_NUMBER_FLOAT: current.append(parser.currentName(), parser.getDoubleValue()); break;
+					case VALUE_NUMBER_INT: 	 current.append(parser.currentName(), parser.getIntValue());   break;
 					
-					case VALUE_STRING: current.append(parser.currentName().toLowerCase(), parser.getText()); break;
+					case VALUE_STRING: current.append(parser.currentName(), parser.getText()); break;
 					
-					case VALUE_TRUE:  current.append(parser.currentName().toLowerCase(), true);  break;
-					case VALUE_FALSE: current.append(parser.currentName().toLowerCase(), false); break;
+					case VALUE_TRUE:  current.append(parser.currentName(), true);  break;
+					case VALUE_FALSE: current.append(parser.currentName(), false); break;
 	
 	
 					case START_ARRAY:
 					case START_OBJECT:
 						stack.push(current);
 						AddableCollection nextCollection = AddableCollection.newCollect(parser.currentToken());
-						if(current != null) current.append(parser.currentName().toLowerCase(), nextCollection.get()); 
+						if(current != null) current.append(parser.currentName(), nextCollection.get()); 
 						current = nextCollection;
 					break;
 					
@@ -75,7 +75,7 @@ public class JsonReader {
 		public void append(String name, Object value) {
 			if(map != null) {
 				if(name == null || name.isEmpty()) throw new IllegalArgumentException("Cannot add value with Name!");
-				map.put(name, value);
+				map.put(name.toLowerCase(), value);
 			
 			} else if(array != null) {
 				if(name != null && !name.isEmpty()) throw new IllegalArgumentException("Names cannot be used in Arrays");
