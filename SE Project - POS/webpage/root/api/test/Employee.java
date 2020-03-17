@@ -11,6 +11,8 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 
+import com.mysql.fabric.xmlrpc.base.Data;
+
 import edu.wit.se16.database.Database;
 import edu.wit.se16.system.logging.LoggingUtil;
 
@@ -18,9 +20,10 @@ public class Employee {
 	private static final PreparedStatement createStatement = Database.prep("INSERT INTO EMPLOYEES (firstname,lastname,password_hash," +
 			"password_salt)  VALUES(?,?,'','')");
 	private static final PreparedStatement listEmployee = Database.prep("SELECT * FROM EMPLOYEES");
+	private static final PreparedStatement removeEmployee = Database.prep("DELETE FROM EMPLOYEES WHERE id = ?");
+	private static final PreparedStatement activateEmployee = Database.prep("UPDATE EMPLOYEES SET active = 1, deleted = 0 WHERE id = ?");
+	private static final PreparedStatement deactivateEmployee = Database.prep("UPDATE EMPLOYEES SET active = 0, deleted = 1 WHERE id = ?");
 	private static final Logger LOG = LoggingUtil.getLogger();
-	//activate/deactivate statement 
-	//delete employee statement
 	//set password statement
 	public Employee() {
 		
@@ -42,8 +45,7 @@ public class Employee {
 		Date date = Calendar.getInstance().getTime();	//create date object
 		DateFormat reportDate = new SimpleDateFormat("yyyy-MM-dd");	//format date in certain way
 		String reportName = reportDate.format(date);	//use date format as file name
-		File employeeReport = new File("C:\\Users\\corey\\git\\POS-System\\SE Project - POS\\webpage\\root\\api\\test\\" 
-					+ reportName + ".csv");	//creating the file
+		File employeeReport = new File(reportName + ".csv");	//creating the file
 		/*
 		 * Writing to file section
 		 */
@@ -61,5 +63,14 @@ public class Employee {
 		} catch (IOException e) {
 			LOG.error("File Error!!",e);
 		}
-	}	
+	}
+	public static void removeEmployee(int employeeID) {
+		Database.update(removeEmployee, employeeID);
+	}
+	public static void activateEmployee(int employeeID) {
+		Database.update(activateEmployee, employeeID);
+	}
+	public static void deactivateEmployee(int employeeID) {
+		Database.update(deactivateEmployee, employeeID);
+	}
 }
