@@ -1,0 +1,57 @@
+<import src="/common/base_head.html" title="Edit Menu" />
+<res src="mEdit.less" type="css" />
+
+<html>
+    <body>
+        <div class = "all">
+            <div class = "leftSide">
+            </div>
+            <div class = "rightSide">
+                <div class = "rMenu_selection">
+                    <div> example1</div>
+                    <div> example2</div>
+                    <div> example3</div>
+                    <div> example4</div>
+                </div>
+                <div class = "rFood_selection">
+					<div>exampleA1</div>
+					<div>exampleA2</div>
+					<div>exampleA3</div>
+					<div>exampleA4</div>
+					<div>exampleA5</div>
+					<div>exampleA6</div>
+					<div>exampleA7</div>
+					<div>exampleA8</div>
+					<div>exampleA9</div>
+					<div>exampleA10</div>
+					<div>exampleA11</div>
+					<div>exampleA12</div>
+					<div>exampleA13</div>
+					<div>exampleA14</div>
+					<div>exampleA15</div>
+					<div>exampleA16</div>
+					
+                </div>
+                <div class = "rButton_selection">
+                	<div class = "MenuS-textbox">
+	                	<input list="MenuSelection" name="MenuSelection">
+	                    <datalist id="MenuSelection">
+					    <option value="Breakfast">
+					    <option value="Lunch">
+					    <option value="Dinner">			
+					    <option value="Dessert">
+					 	</datalist>
+				 	</div>
+				 	<div class = "textbox">
+				 		<input type="text" id="food_name" placeholder="Food Name" class="foodName"/>
+				 		<input type="number" id="price" placeholder="Price" class="priceText"/>
+				 	</div>
+				 	<div class = "cancel_add-btn">
+				 		<button onclick="create()" class = create-btn type="button" style="background:#42e619">Create</button>
+				 		<button onclick="clear()" class = clear-btn type="button" style="background:#db1414">Clear</button>
+				 	</div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
