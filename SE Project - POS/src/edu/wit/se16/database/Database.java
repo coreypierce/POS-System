@@ -14,8 +14,8 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 
+import edu.wit.se16.system.LocalVars;
 import edu.wit.se16.system.RunCycle;
-import edu.wit.se16.system.SystemVars;
 import edu.wit.se16.system.logging.LoggingUtil;
 import edu.wit.se16.util.ErrorUtil;
 
@@ -27,7 +27,7 @@ public class Database {
 	
 	private static final String CONNECTOR_ADDRESS = 
 			"jdbc:" + CONNECTOR_SUBPROTOCAL + "://" +
-			SystemVars.DATABASE_HOSTNAME + ":" + SystemVars.DATABASE_PORT +
+			LocalVars.DATABASE_HOSTNAME + ":" + LocalVars.DATABASE_PORT +
 			"?" + CONNECTOR_URL_PROPERTIES;
 	
 // =========================================== ========== =========================================== \\
@@ -36,7 +36,7 @@ public class Database {
 	private static Connection connection;
 	
 	private static void connect() throws SQLException {
-		connection = DriverManager.getConnection(CONNECTOR_ADDRESS, SystemVars.DATABASE_USERNAME, SystemVars.DATABASE_PASSWORD);
+		connection = DriverManager.getConnection(CONNECTOR_ADDRESS, LocalVars.DATABASE_USERNAME, LocalVars.DATABASE_PASSWORD);
 		RunCycle.addShutdownAction(connection::close);
 		buildDatabase();
 	}

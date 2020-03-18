@@ -27,7 +27,15 @@ public class LocalVars {
 	/** Local Port number to bind HTTP-Connector to */
 	public static final int HTTP_PORT = 80;
 	/** Local Port number to bind HTTPS-Connector to */
-	public static final int HTTPS_PORT = 3001;
+	public static final int HTTPS_PORT = 433;
+	
+// ======================================== Database Variables ======================================== \\
+
+	public static final String DATABASE_HOSTNAME = "localhost";
+	public static final int DATABASE_PORT = 3306;
+	
+	public static final String DATABASE_USERNAME = "root";
+	public static final String DATABASE_PASSWORD = "admin";
 
 	
 //	----------------------------------------- Non-Constructible ----------------------------------------- \\
