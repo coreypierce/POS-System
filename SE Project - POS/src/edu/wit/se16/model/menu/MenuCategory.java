@@ -3,6 +3,8 @@ package edu.wit.se16.model.menu;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 
@@ -12,7 +14,9 @@ import edu.wit.se16.system.logging.LoggingUtil;
 
 public class MenuCategory extends DatabaseObject {
 private static final Logger LOG = LoggingUtil.getLogger();
-	
+
+	private static final PreparedStatement QUERY_ALL_NAMES = Database.prep("SELECT id, name FROM menu_categories");
+
 	private static final PreparedStatement QUERY = Database.prep("SELECT * FROM menu_categories WHERE id = ? OR name = ?");
 	private static final PreparedStatement INSERT = Database.prep("INSERT INTO menu_categories (name) VALUES (?)");
 	
@@ -62,5 +66,16 @@ private static final Logger LOG = LoggingUtil.getLogger();
 			LOG.warn("Menu-Category INSERT failed!");
 			return false;
 		}
+	}
+	
+	public static Map<Integer, String> getAllCategories() {
+		Map<Integer, String> categories = new HashMap<>();
+		
+		// errr... not the best way to do this, LOT of sql requests...
+		Database.query(result -> {
+			categories.put(result.getInt("id"), result.getString("name"));
+		}, QUERY_ALL_NAMES);
+		
+		return categories;
 	}
 }

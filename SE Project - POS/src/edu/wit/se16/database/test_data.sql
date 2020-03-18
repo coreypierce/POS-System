@@ -29,3 +29,11 @@ INSERT INTO `sections` (shift_id, section_number, assignee_id) VALUES(
 INSERT INTO `section_tables` (section_id, table_id) VALUES(
 	(SELECT ID FROM `sections` LIMIT 1), 
 	(SELECT ID FROM `tables` WHERE table_number = '6' LIMIT 1));
+    
+    
+INSERT INTO `menu_categories` (name) VALUES('Food');
+INSERT INTO `menu_categories` (name) VALUES('Drinks');
+    
+INSERT INTO `menu_items` (category_id, name, price) VALUES(1, 'Food A', 3.95);
+INSERT INTO `menu_items` (category_id, name, price) VALUES(1, 'Food B', 5.50);
+INSERT INTO `menu_items` (category_id, name, price) VALUES(2, 'Vodka', 7.99);

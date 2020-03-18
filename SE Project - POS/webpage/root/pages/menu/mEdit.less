@@ -1,91 +1,69 @@
-.all{
-    height: 35rem;
-    display: flex;
-    border-radius: 5px;
-    border-style: solid;
-    
-    .leftSide{
-    width: 25%;
-    border-style: solid;
-	}
+.edit-menu {
+	height: 100%;
+    min-height: 36rem;
+		
+	display: flex;
+	flex-direction: column;
 	
-	.rightSide{
-	    width: 75%;
-	    border-style: solid;
+	.edit-menu-inputs_wrapper {  
+		padding: .5rem 0;
+
+	    background: white;
+	    box-shadow: 0 -6px 8px -6px #787878;
 	    
-	    .rMenu_selection{
-			    overflow-y: auto;
-			    height: 15%;
-			    display: flex;
-			    flex-wrap: wrap;
-			    align-content: flex-start;
-			    align-items:center;
-  				justify-content:center;
-			    div{
-		    		border-style: solid;
-		    		border-radius: 5px;	
-		    		width: 22.9695%;
-		    		height: 4.324rem;
-		    		margin: 0.1rem;
-		    		overflow: hidden;
-				  	text-overflow: ellipsis;
-				  	text-align: center;
-		    		padding: 0.2rem;
-			    }
-			    
+	    z-index: 100;
+		
+		& > * {
+			margin: .5rem;
+			
+			&:first-child {
+				margin-top: 0;
 			}
-		.rFood_selection{
-		    overflow-y: auto;
-		    border-top: solid;
-		    border-bottom: solid;
-		    height: 60%;
-		    display: flex;
-		    flex-wrap: wrap;
-			align-content: flex-start;
-		   	align-items:center;
-  			justify-content:center;
-		   	
-		   	div{
-	     		border-style: solid;
-	     		border-radius: 5px;
-	     		width: 21.1632%;
-	    		height: 3.506rem;
-	    		margin: 0.5rem;
-	    		overflow: hidden;
-	    		text-overflow: ellipsis;
-	    		text-align: center;
-	    		padding: 0.2rem;
-	    		
-	    		}
-		   	}
-		.rButton_selection{  
-		    height: 23%;
-		    
-		    .MenuS-textbox{
-		    	input{
-		    		width: 91%;
-		    		margin-top: 2rem;
-				    margin-left: 2.6rem;
-				    margin-right: 2.6rem;
-		    		}
-		    }
-		    .textbox{
-		    	margin-left: 2.6rem;
-		    	margin-right: 2.6rem;
-		    	padding-top: 0.25rem;
-			    .foodName{
-			    	width: 79.48%;
-			    }
-			    .priceText{
-			    	width: 20%;
-			    }
-		    }
-		    
-		    button{
-		    	float:right;
-		    	
-		    	}
-   		}
-    }
-    
-    }
+			
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+		
+		.edit-menu-inputs_category_wrapper {
+			display: flex;
+			
+			input {
+				flex-grow: 1;
+			}
+		}
+		
+		.edit-menu-inputs_properties_wrapper {
+			display: flex;
+			
+			.edit-menu-item_name {
+			    width: 100%;
+    			margin-right: .5rem;
+			}
+			
+			.edit-menu-item_price {
+				width: 6rem;
+			}
+		}
+		
+		.edit-menu-inputs_buttons {
+		    padding-top: .5rem;
+			
+			.edit-menu-button_create {
+			    float: right;
+			    margin-right: .5rem;
+			    
+				background-color: #42b346;
+			}
+			
+			.edit-menu-button_reset {
+			    float: right;
+				background-color: #db1414;
+			}
+			
+			.edit-menu-button_delete {
+				background-color: #404040;
+			}
+		}
+	}
+}

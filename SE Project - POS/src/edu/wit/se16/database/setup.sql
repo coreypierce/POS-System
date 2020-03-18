@@ -178,7 +178,7 @@ FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
     
 CONSTRAINT `order_item_FOREIN_KEY_item`
 FOREIGN KEY (`item_id`) REFERENCES `menu_items` (`id`)
-	ON DELETE RESTRICT
+	ON DELETE CASCADE
 	ON UPDATE CASCADE
 );
 
