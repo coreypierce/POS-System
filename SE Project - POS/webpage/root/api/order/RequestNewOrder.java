@@ -13,11 +13,12 @@ import edu.wit.se16.model.Table;
 import edu.wit.se16.model.Table.TableStatus;
 import edu.wit.se16.networking.SessionManager;
 import edu.wit.se16.networking.StandardResponses;
+import edu.wit.se16.networking.requests.IRequest;
 import edu.wit.se16.networking.requests.RequestInfo;
 import edu.wit.se16.system.logging.LoggingUtil;
 import edu.wit.se16.util.JsonBuilder;
 
-public class RequestNewOrder {
+public class RequestNewOrder implements IRequest {
 	private static final Logger LOG = LoggingUtil.getLogger();
 
 	public HttpServletResponse process(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {

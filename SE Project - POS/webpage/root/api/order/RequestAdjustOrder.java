@@ -15,13 +15,14 @@ import edu.wit.se16.networking.StandardResponses;
 import edu.wit.se16.networking.requests.IRequest;
 import edu.wit.se16.networking.requests.RequestInfo;
 import edu.wit.se16.system.logging.LoggingUtil;
+import edu.wit.se16.util.JsonBuilder;
 
 public class RequestAdjustOrder implements IRequest {
 	private static final Logger LOG = LoggingUtil.getLogger();
 
 	public HttpServletResponse process(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
 		@SuppressWarnings("unchecked")
-		ArrayList<Map<String, String>> items = (ArrayList<Map<String, String>>) request.getBodyRaw("items");
+		ArrayList<Map<String, Object>> items = (ArrayList<Map<String, Object>>) request.getBodyRaw("items");
 		Integer order_id = request.getBody("id", Integer::parseInt, null);
  		
 		// validate parameters
@@ -35,9 +36,11 @@ public class RequestAdjustOrder implements IRequest {
 					HttpServletResponse.SC_BAD_REQUEST, "Missing 'items'");
 		}
 
+		Order order;
+		
 		try {
 			// lookup order
-			Order order = new Order(order_id);
+			order = new Order(order_id);
 			order.update(items);
 			
 		} catch(NoSuchElementException e) {
@@ -50,7 +53,9 @@ public class RequestAdjustOrder implements IRequest {
 			return StandardResponses.error(request, response, 
 					HttpServletResponse.SC_BAD_REQUEST, "Malformed data in 'items'!");
 		}
-		
+
+		// respond with Order-JSON
+		JsonBuilder.from(order.toJSON()).build(response);
 		response.setStatus(HttpServletResponse.SC_OK);
 		return response;
 	}

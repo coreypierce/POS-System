@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,7 +26,8 @@ public class Order extends DatabaseObject {
 	private static final PreparedStatement QUERY = Database.prep("SELECT * FROM orders WHERE ID = ?");
 	private static final PreparedStatement INSERT = Database.prep("INSERT INTO orders (server_id, table_id) VALUES (?, ?)");
 
-	private static final PreparedStatement QUERY_BY_TABLE = Database.prep("SELECT id FROM orders WHERE table_id = ? LIMIT 1");
+	private static final PreparedStatement QUERY_BY_TABLE = Database.prep(
+			"SELECT id FROM orders WHERE table_id = ? ORDER BY timestamp DESC LIMIT 1");
 	
 	private static final PreparedStatement QUERY_ALL_ITEM = Database.prep("SELECT * FROM order_items WHERE order_id = ?");
 	private static final PreparedStatement DELETE_ITEM = Database.prep("DELETE order_items WHERE order_id = ? AND item_id = ?");
@@ -112,11 +114,11 @@ public class Order extends DatabaseObject {
 		LOG.trace("Adjusting Order #{}, setting Menu-Item #{} to {}...", super.id, item.getId(), amount);
 		
 		if(items.containsKey(item)) {
-			// create / insert new Order-Item
-			this.items.put(item, new OrderItem(this, item, amount));
+			this.items.get(item).updateQuantity(amount);
 
 		} else {
-			this.items.get(item).updateQuantity(amount);
+			// create / insert new Order-Item
+			this.items.put(item, new OrderItem(this, item, amount));
 		}
 	}
 	
@@ -127,16 +129,21 @@ public class Order extends DatabaseObject {
 		Database.update(DELETE_ITEM, super.id, item.getId());
 	}
 	
-	public void update(ArrayList<Map<String, String>> raw) {
+	public void update(ArrayList<Map<String, Object>> raw) {
 		Set<MenuItem> toRem = this.items.keySet();
 		
-		for(Map<String, String> raw_item : raw) {
-			int item_id = Integer.parseInt(raw_item.get("item"));
-			int amount = Integer.parseInt(raw_item.get("quantity"));
+		for(Map<String, Object> raw_item : raw) {
+			int item_id = (Integer) raw_item.get("item");
+			int amount = (Integer) raw_item.get("quantity");
 
-			MenuItem menuItem = new MenuItem(item_id);
-			setItemAmount(menuItem, amount);
-			toRem.remove(menuItem);
+			try {
+				MenuItem menuItem = new MenuItem(item_id);
+				setItemAmount(menuItem, amount);
+				toRem.remove(menuItem);
+			
+			} catch(NoSuchElementException e) {
+				LOG.warn("No such Menu-Item #{}! Skipping items...", item_id);
+			}
 		}
 		
 		for(MenuItem menuItem : toRem) {
@@ -150,10 +157,12 @@ public class Order extends DatabaseObject {
 		JsonBuilder builder = JsonBuilder.create();
 		builder.append("id", super.id);
 		
+		builder.newArray("items");
 		for(OrderItem item : items.values()) {
 			item.appendJSON(builder);
 		}
 		
+		builder.end();
 		return builder.build();
 	}
 	
@@ -204,9 +213,10 @@ public class Order extends DatabaseObject {
 		// =========================================== Data Access =========================================== \\
 		
 		public void appendJSON(JsonBuilder builder) {
-			builder
+			builder.newObject()
 				.append("item", item.toJSON())
-				.append("quantity", quantity);
+				.append("quantity", quantity)
+			.end();
 		}
 	}
 }

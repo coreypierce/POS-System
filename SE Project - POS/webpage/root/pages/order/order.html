@@ -1,0 +1,33 @@
+<res src="order.less" type="css" />	
+<res src="order.js" type="js" />	
+
+<div class="order-wrapper">
+	<div class="order-details">
+		<div class="order-items">
+		</div>
+		
+		<div class="order-actions_wrapper">
+			<button style="background-color: #db1414;" onclick="closeOrder()"> Cancel </button>
+			<button style="background-color: #42b346;" onclick="submitOrder()"> Submit </button>
+		</div>
+	</div>
+	
+	<div class="order-menu_wrapper">
+		<import src="/common/menu_display/menu.html" />
+	</div>
+</div>
+
+<script>
+	Menu.setOnClick(Order.addItem);
+
+	function closeOrder() {
+		Order.clearOrder();
+		Popup.close();
+	}
+	
+	function submitOrder() {
+		Order.submitOrder();
+		Popup.close();
+	}
+	
+</script>

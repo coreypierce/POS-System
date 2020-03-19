@@ -3,7 +3,7 @@
 
 <div id="table_context_menu" class="table-display_context_menu">
 	<ul class="table-menu_list">
-		<li>
+		<li onclick="showOrder()">
 			<i></i> Order
 		</li>
 		
@@ -43,6 +43,21 @@
 			TableDisplay.menu_item.updateElement();
 			TableDisplay.closeMenu();
 		});
+	}
+	
+	function showOrder() {
+		if(!TableDisplay.menu_item) return;
+		
+		Order && Order.newOrder(TableDisplay.menu_item.table.id);
+		Popup.show("edit-order");
+		
+		/*if(TableDisplay.menu_item.table.status == "Open") {
+			Order && Order.newOrder(TableDisplay.menu_item.table.id);
+			Popup.show("edit-order");
+		} else {
+			Order && Order.openOrder(TableDisplay.menu_item.table.id);
+			Popup.show("edit-order");
+		}*/
 	}
 	
 	$("#table_context_menu li").on("click", e => e.stopPropagation());
