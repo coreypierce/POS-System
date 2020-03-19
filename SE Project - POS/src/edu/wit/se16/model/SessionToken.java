@@ -126,6 +126,11 @@ public class SessionToken {
 		LOG.trace("Ending Employee #{} session...", this.employee_id);
 		Database.update(DELETE_TOKEN, employee_id);
 	}
+	
+	public static void clearEmplyeesSession(Employee employee) {
+		LOG.trace("Manualy ending Session for Employee #{}...", employee.getId());
+		Database.update(DELETE_TOKEN, employee.getId());
+	}
 
 // =========================================== Expiration =========================================== \\
 	

@@ -52,7 +52,7 @@ public class PasswordUtil {
 		
 		StringBuilder password = new StringBuilder(6);
 		for(int i = 0; i < bytes.length; i ++) {
-			password.append((char) (bytes[i] % range + 'a'));
+			password.append((char) ((int) bytes[i] % range + 'a'));
 		}
 		
 		return password.toString();

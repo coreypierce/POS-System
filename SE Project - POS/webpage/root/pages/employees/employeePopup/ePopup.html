@@ -12,15 +12,15 @@
 			</div>
 			<div class="ePopup-input_wrapper2">
                 <span>Position</span>
-                <select name="position?">
-                    <option>Select Position</option>
+                <select id="role">
+                    <option value="">Select Position</option>
                     <option>Host</option>
                     <option>Server</option>
                     <option>Manager</option>
                 </select>
 			</div>
 			<div class="ePopup-button_wrapper">
-				<button onclick="create()" style="background:#42e619">
+				<button onclick="create()" style="background:#42b346">
 					Create
 				</button>
 				<button onclick="cancel()" style="background:#db1414">
@@ -30,9 +30,39 @@
 		</section>
 
 <script>
+	function create() {
+		$.ajax({
+			url: "/api/employees/new",
+			method: "POST",
+			
+			data: {
+				"firstname": $("#employee_firstName").val(),
+				"lastname": $("#employee_lastName").val(),
+				"role": $("#role").val()
+			}
+		})
+		.done(function(data, status, xhr) {
+			if(status == "success") {
+				// if Employees API is loaded, append new employee
+				Employees && Employees.appendEmployee(data.employee);
 
+				// TODO: find better solution for display
+				alert("TEMP-PASSWORD: " + data.password);
+				
+				// close and clear
+				cancel();
+				
+			}
+		});
+	}
+	
 	function cancel(){
 		Popup.close();
+		
+		// clear inputs on close
+		$("#employee_firstName").val("");
+		$("#employee_lastName").val("");
+		$("#role").val("");
 	}
 	
 </script>

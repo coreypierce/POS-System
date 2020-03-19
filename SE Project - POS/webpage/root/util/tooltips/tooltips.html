@@ -1,0 +1,10 @@
+<res src="tooltips.less" type="css" />
+<res src="tooltips.js" type="js" />
+
+<script>
+	$(function() {
+		$("*[data-tooltip]:not(.tooltip)").each(function(i, ele) {
+			Tooltips.create($(ele));
+		});
+	});
+</script>
