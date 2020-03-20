@@ -1,6 +1,7 @@
 var TableDisplay = TableDisplay || { mode: "view" };
 (function(disp) {
 	if(!$) throw "Missing jQuery! Table-Display requires page to include jQuery";
+	if(!TableDisplay.mode) TableDisplay.mode = "view";
 	
 	// query canvas, and get HTML-tag
 	var canvas = $("#table_canvas")[0];
@@ -313,6 +314,11 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		
 		// set position and visible
 		menu.addClass("table-menu_open")
+			.removeClass("table-menu-status_Open")
+			.removeClass("table-menu-status_Seated")
+			.removeClass("table-menu-status_Order_Placed")
+			.removeClass("table-menu-status_Check_Printed")
+			.addClass("table-menu-status_" + item.table.status)
 			.css("top", top).css("left", left);
 		
 		disp.menu_item = item;

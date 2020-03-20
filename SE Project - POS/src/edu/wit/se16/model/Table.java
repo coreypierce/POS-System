@@ -89,7 +89,31 @@ public class Table extends DatabaseObject {
 	
 	public Order startOrder(Employee employee) {
 		LOG.trace("Starting new order on Table #{}", super.id);
+		setStatus(TableStatus.Order_Placed, employee);
 		return new Order(employee, this);
+	}
+	
+	public double printCheck(Employee employee) {
+		LOG.trace("Printing check for Table #{}", super.id);
+		
+		// get the current order for the table
+		Order order = Order.getTablesOrder(super.id);
+		if(order == null) throw new IllegalStateException("No order exists for Table #" + super.id);
+
+		setStatus(TableStatus.Check_Printed, employee);
+		return order.calculateBill();
+	}
+	
+// =========================================== Customer Function =========================================== \\
+
+	public void seatCustomer(Employee employee, int amount) {
+		LOG.trace("Seating {} Customer(s) at Table #{}", amount, super.id);
+		setStatus(TableStatus.Seated, employee);
+	}
+	
+	public void clearTable(Employee employee) {
+		LOG.trace("Clearing Table #{}", super.id);
+		setStatus(TableStatus.Open, employee);
 	}
 
 // =========================================== Table Status =========================================== \\

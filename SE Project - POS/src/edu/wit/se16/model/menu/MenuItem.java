@@ -130,4 +130,7 @@ public class MenuItem extends DatabaseObject {
 			.append("category_id", category_id)
 		.build();
 	}
+	
+	public String getName() { return name; }
+	public double getPrice() { return price; }
 }

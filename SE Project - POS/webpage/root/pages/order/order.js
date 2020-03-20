@@ -68,8 +68,10 @@ var Order = Order || {};
 		})
 		.done(function(data, status, xhr) {
 			if(status == "success") {
-				current_order = data;
+				current_order = data.order;
 				resetOrderDisplay();
+				
+				TableDisplay && TableDisplay.menuActionCallback(data);
 			}
 		});
 	}

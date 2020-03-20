@@ -9,11 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 import edu.wit.se16.model.Employee;
+import edu.wit.se16.model.Employee.Role;
 import edu.wit.se16.model.SessionToken;
 import edu.wit.se16.model.Shift;
 import edu.wit.se16.model.Table;
-import edu.wit.se16.model.Employee.Role;
-import edu.wit.se16.model.Table.TableStatus;
 import edu.wit.se16.model.layout.LayoutJsonParams;
 import edu.wit.se16.model.layout.Section;
 import edu.wit.se16.networking.SessionManager;
@@ -23,12 +22,11 @@ import edu.wit.se16.networking.requests.RequestInfo;
 import edu.wit.se16.system.logging.LoggingUtil;
 import edu.wit.se16.util.JsonBuilder;
 
-public class RequestStatusUpdate implements IRequest {
+public class RequestPrintCheck implements IRequest {
 	private static final Logger LOG = LoggingUtil.getLogger();
 
 	public HttpServletResponse process(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
 		Integer id = request.getBody("id", Integer::parseInt, null);
-		TableStatus status = request.getBody("status", TableStatus::valueOf, null);
 		
 		// validate parameters
 		if(id == null) {
@@ -36,25 +34,26 @@ public class RequestStatusUpdate implements IRequest {
 					HttpServletResponse.SC_BAD_REQUEST, "Missing table-ID!");
 		}
 		
-		if(status == null) {
-			return StandardResponses.error(request, response, 
-					HttpServletResponse.SC_BAD_REQUEST, "Missing or Bad status value!");
-		}
-		
 		SessionToken token = SessionManager.getSessionToken();
 		Employee employee = token.getEmployee();
-		Table table;
 		
-		LOG.trace("Status update for Table #{} to '{}' requested by Employee #{}...", id, status, employee.getId());
+		LOG.trace("Employee #{} requested the bill for Table #{}...", employee.getId(), id);
+
+		Table table;
+		double amount;
 		
 		try {
 			// attempt to load the table
 			table = new Table(id);
-			table.setStatus(status, employee);
+			amount = table.printCheck(employee);
 
 		} catch(NoSuchElementException e) {
-			LOG.warn("Could not find Table #{}, for status-update!", id);
+			LOG.warn("Could not find Table #{}, to print-check for!", id);
 			return StandardResponses.error(request, response, HttpServletResponse.SC_BAD_REQUEST, "Could not find table!");
+			
+		} catch (IllegalStateException e) {
+			LOG.warn("Table #{} does not currently have an Order!", id);
+			return StandardResponses.error(request, response, HttpServletResponse.SC_BAD_REQUEST, "No open Order for specified Table!");
 		}
 		
 		// Layout conversion Parameters
@@ -69,6 +68,7 @@ public class RequestStatusUpdate implements IRequest {
 		// send updated table back to client
 		JsonBuilder.create()
 			.append("success", true)
+			.append("amount", amount)
 			.append("table", table.toJSON(params))
 		.build(response);
 		
@@ -76,5 +76,5 @@ public class RequestStatusUpdate implements IRequest {
 		return response;
 	}
 
-	public String getCommand() { return "status"; }
+	public String getCommand() { return "print_check"; }
 }

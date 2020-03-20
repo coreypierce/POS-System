@@ -1,17 +1,17 @@
 <res src="table_menu.less" type="css" />
 <res src="/common/jquery-3.4.1.min.js" type="js" />
 
-<div id="table_context_menu" class="table-display_context_menu">
+<div id="table_context_menu" class="table-display_context_menu table-menu-role_{!employee_role}">
 	<ul class="table-menu_list">
-		<li onclick="showOrder()">
+		<li onclick="showOrder()" class="table-menu-option_order">
 			<i></i> Order
 		</li>
 		
-		<li>
+		<li onclick="printCheck()" class="table-menu-option_print_check">
 			<i></i> Print Check
 		</li>
 		
-		<li>
+		<li onclick="clearTable()" class="table-menu-option_clear">
 			<i></i> Clear Table
 		</li>
 		
@@ -27,6 +27,13 @@
 </div>
 
 <script>
+	var TableDisplay = TableDisplay || {};
+	TableDisplay.menuActionCallback = function(data) {
+		Object.assign(TableDisplay.menu_item.table, data.table);
+		TableDisplay.menu_item.updateElement();
+		TableDisplay.closeMenu();
+	};
+
 	function updateStatus(status) {
 		if(!TableDisplay.menu_item) return;
 		
@@ -38,11 +45,33 @@
 				"id": TableDisplay.menu_item.table.id,
 				"status": status
 			}
-		}).done(function(data) {
-			Object.assign(TableDisplay.menu_item.table, data.table);
-			TableDisplay.menu_item.updateElement();
-			TableDisplay.closeMenu();
-		});
+		}).done(TableDisplay.menuActionCallback);
+	}
+	
+	function printCheck() {
+		if(!TableDisplay.menu_item) return;
+		
+		$.ajax({
+			url: "/api/table/print_check",
+			method: "POST",
+			
+			data: {
+				"id": TableDisplay.menu_item.table.id,
+			}
+		}).done(TableDisplay.menuActionCallback);
+	}
+	
+	function clearTable() {
+		if(!TableDisplay.menu_item) return;
+		
+		$.ajax({
+			url: "/api/table/clear",
+			method: "POST",
+			
+			data: {
+				"id": TableDisplay.menu_item.table.id,
+			}
+		}).done(TableDisplay.menuActionCallback);
 	}
 	
 	function showOrder() {

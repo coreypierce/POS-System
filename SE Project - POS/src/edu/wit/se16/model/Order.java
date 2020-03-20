@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -151,6 +152,17 @@ public class Order extends DatabaseObject {
 		}
 	}
 
+	public double calculateBill() {
+		LOG.trace("Calculating Order #{}'s total price...", super.id);
+		
+		double sum = 0;
+		for(Entry<MenuItem, OrderItem> entry : this.items.entrySet()) {
+			sum += entry.getKey().getPrice() * entry.getValue().quantity;
+		}
+		
+		return sum;
+	}
+	
 	// =========================================== JSON =========================================== \\
 	
 	public JsonNode toJSON() {

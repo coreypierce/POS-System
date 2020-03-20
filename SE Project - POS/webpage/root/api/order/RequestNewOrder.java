@@ -9,8 +9,12 @@ import org.slf4j.Logger;
 
 import edu.wit.se16.model.Employee;
 import edu.wit.se16.model.Order;
+import edu.wit.se16.model.Shift;
 import edu.wit.se16.model.Table;
+import edu.wit.se16.model.Employee.Role;
 import edu.wit.se16.model.Table.TableStatus;
+import edu.wit.se16.model.layout.LayoutJsonParams;
+import edu.wit.se16.model.layout.Section;
 import edu.wit.se16.networking.SessionManager;
 import edu.wit.se16.networking.StandardResponses;
 import edu.wit.se16.networking.requests.IRequest;
@@ -34,6 +38,15 @@ public class RequestNewOrder implements IRequest {
 		Employee employee = SessionManager.getSessionToken().getEmployee();
 		Table table = new Table(table_id);
 		
+		// Layout conversion Parameters
+		LayoutJsonParams params = new LayoutJsonParams();
+		Shift shift = Shift.getCurrentShift();
+		
+		// if the employee is a Server, then get their active section
+		if(employee.getRole() == Role.Server && shift != null) {
+			params.section = Section.findSection(shift, employee);
+		}
+		
 		// if an order should already exist
 		if(table.getStatus().ordinal() >= TableStatus.Order_Placed.ordinal()) {
 			LOG.trace("Requested Order for Table #{}; order should already exists!", table_id);
@@ -45,7 +58,10 @@ public class RequestNewOrder implements IRequest {
 				
 			} else {
 				// respond with Order-JSON
-				JsonBuilder.from(order.toJSON()).build(response);
+				JsonBuilder.create()
+					.append("order", order.toJSON())
+					.append("table", table.toJSON(params))
+				.build(response);
 				response.setStatus(HttpServletResponse.SC_OK);
 				return response;
 			}
@@ -57,7 +73,10 @@ public class RequestNewOrder implements IRequest {
 		Order order = table.startOrder(employee);
 		
 		// respond with Order-JSON
-		JsonBuilder.from(order.toJSON()).build(response);
+		JsonBuilder.create()
+			.append("order", order.toJSON())
+			.append("table", table.toJSON(params))
+		.build(response);
 		response.setStatus(HttpServletResponse.SC_OK);
 		return response;
 	}
