@@ -12,9 +12,8 @@ body {
 	display: flex;
 	flex-grow: 1;
 	
-	.edit-action_bar {
+	nav {
 		position: fixed;
-		right: 0;
 		
 		opacity: .5;
 		z-index: 500;
@@ -24,6 +23,22 @@ body {
 		&:hover {
 			opacity: 1;
 		}
+	}
+	
+	.edit-menu_bar {
+		left: 356px;
+		
+		button {
+		    width: 100%;
+		    text-align: left;
+		    
+			background: hsla(15, 49%, 46%, 1);
+		    margin: 1rem;
+		}
+	}
+	
+	.edit-action_bar {
+		right: 0;
 		
 		button {
 			background: @action_button-color;

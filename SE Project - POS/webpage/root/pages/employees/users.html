@@ -1,13 +1,9 @@
-<html>
-	<import src="/common/base_head.html" title="Manage Users" />
-	<import src="/util/tooltips/tooltips.html"/>
-	
-	<res src="users.less" type="css" />
-	<res src="users.js" type="js" />
+<import src="/util/tooltips/tooltips.html"/>
 
-<body>
-	<import src="/common/employee_header/employee_header.html" />
-	
+<res src="users.less" type="css" />
+<res src="users.js" type="js" />
+
+<div>
 	<div class="user-disp_header">
 		<h2> Manage Employees </h2>
     	<button style="background-color: #42b346;" onclick="openNewEmployee()"> <i></i> New Employee </button>
@@ -18,11 +14,10 @@
 	
 	<import src="/util/popup/popup.html" popup="/pages/employees/employeePopup/ePopup.html" 
 			name="new_employee" size="x-small" title="New Employee"/>
-			
-	<script>
-		function openNewEmployee() {
-			Popup.show("new_employee");
-		}
-	</script>
-</body>
-</html>
+</div>
+
+<script>
+	function openNewEmployee() {
+		Popup.show("new_employee");
+	}
+</script>

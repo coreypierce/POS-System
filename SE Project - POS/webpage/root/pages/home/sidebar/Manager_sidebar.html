@@ -1,0 +1,27 @@
+<style>
+	.manager-sidebar {
+		padding: 1rem;
+	}
+	
+	.manager-sidebar button {
+		width: 100%;
+	    text-align: left;
+	    
+    	margin: .5rem 0;
+	}
+</style>
+
+<div class="manager-sidebar">
+	<button style="background: #3d7fa9" onclick="openEditLayoutPage()"> <i></i> Edit Layout </button>
+	<button style="background: #7c52ad" onclick="openEmployeeManagementPage()"> <i></i> Manage Employees </button>
+</div>
+
+<script>
+	function openEditLayoutPage() {
+		window.location.replace("/nav/edit");
+	}
+	
+	function openEmployeeManagementPage() {
+		window.location.replace("/nav/employees");
+	}
+</script>

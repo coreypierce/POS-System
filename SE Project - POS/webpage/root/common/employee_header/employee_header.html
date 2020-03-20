@@ -19,9 +19,32 @@
 	</div>
 	
 	<div class="user-actions">
-		<button id="logout_button">
+		<button id="home_button" onclick="redirectHome()">
+			<i></i>
+			Home
+		</button>
+		
+		<button id="logout_button" onclick="logout()">
 			<i></i>
 			Logout
 		</button>
 	</div>
 </header>
+
+<script>
+	function redirectHome() {
+		window.location.replace("/");
+	}
+	
+	function logout() {
+		$.ajax({
+			url: "/api/login/logout",
+			method: "POST"
+		})
+		.done(function() {
+			// delete session-token cookie
+			document.cookie = 'Session-Token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+			window.location.replace("/");
+		});
+	}
+</script>

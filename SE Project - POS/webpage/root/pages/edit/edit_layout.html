@@ -1,7 +1,4 @@
 <res src="edit_layout.less" type="css" />
-<res src="/common/jquery-3.4.1.min.js" type="js" />
-
-<import src="/common/employee_header/employee_header.html" />
 
 <div class="edit-layout_content"> 
 	<nav class="edit-action_bar">
@@ -21,6 +18,10 @@
 				<input type="range" id="resize_h" min="30" max="125" value="50" step="5" class="edit-resize_slider">
 			</div>
 		</div>
+	</nav>
+	
+	<nav class="edit-menu_bar">
+	    <button onclick="showEditMenu()"> <i></i> Edit Menu </button>
 	</nav>
 
 	<aside class="edit-sidebar">
@@ -55,6 +56,9 @@
 		<import src="/util/popup/popup.html" popup="/pages/edit/save_layout_popup.html" 
 			name="edit_save_popup" title="Confirm Save Changes" size="small"/>
 	</div>
+	
+	<import src="/util/popup/popup.html" popup="/pages/menu/mEdit.html" 
+		name="edit-menu" size="medium" title="Edit Menu"/>
 	
 	<script type="text/javascript">
 // ============================================ ====== ============================================ \\
@@ -97,6 +101,10 @@
 
 // ============================================ ========== ============================================ \\
 // ============================================ Add/Remove ============================================ \\
+		
+		function showEditMenu() {
+			Popup.show("edit-menu");
+		}
 		
 		function save() {
 			Popup.show("edit_save_popup");

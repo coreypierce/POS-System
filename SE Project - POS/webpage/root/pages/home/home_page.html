@@ -4,10 +4,13 @@
 
 <div class="home-main_content"> 
 	<aside class="home-sidebar">
-		
+		<import src="sidebar/{!employee_role}_sidebar.html" />
 	</aside>
 
 	<section class="home-restaurant_display">
 		<import src="/common/table_display/table_display.html" /> 
 	</section>
+	
+	<import src="/util/popup/popup.html" popup="/pages/order/order.html" 
+		name="edit-order" size="large" title="Edit Order"/>
 </div>
