@@ -75,8 +75,8 @@ public class RestaurantLayout {
 		this.items = new HashMap<>();
 		
 		// don't let width/height == 0
-		this.width = 1;
-		this.height = 1;
+		this.width = 30;
+		this.height = 30;
 	}
 	
 	private void queryItems() {
@@ -107,8 +107,8 @@ public class RestaurantLayout {
 	
 	public void recalculateSize() {
 		// recalculate layout bounds
-		this.width = 1;
-		this.height = 1;
+		this.width = 30;
+		this.height = 30;
 		
 		for(Item item : this.items.values()) {
 			updateBounds(item);

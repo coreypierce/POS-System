@@ -32,7 +32,6 @@ public class RequestLogout implements IRequest {
 		token.endSession();
 
 		response.setStatus(HttpServletResponse.SC_OK);
-		response.sendRedirect("/");
 		return response;
 	}
 

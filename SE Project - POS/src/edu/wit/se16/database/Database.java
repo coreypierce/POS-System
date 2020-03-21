@@ -61,9 +61,9 @@ public class Database {
 				runner.runScript(new BufferedReader(new InputStreamReader(script_in)));
 				
 				// TODO: Temp add test-data REMOVE BEFORE RELEASE
-				LOG.warn("Temp data added; REMOVE BEFORE RELEASE");
-				script_in = Database.class.getResourceAsStream("test_data.sql");
-				runner.runScript(new BufferedReader(new InputStreamReader(script_in)));
+//				LOG.warn("Temp data added; REMOVE BEFORE RELEASE");
+//				script_in = Database.class.getResourceAsStream("test_data.sql");
+//				runner.runScript(new BufferedReader(new InputStreamReader(script_in)));
 			}
 		} catch(IOException e) {
 			LOG.error("Failed to find SQL creation script!", e);

@@ -7,6 +7,9 @@ var Employees = Employees || {};
 // ============================================ Element Functions ============================================ \\
 	
 	function generateEmployeeRow(user) {
+		var isProtected = window.employee_id < 999999 && user.id > 999999;
+		var blockIdiots = window.employee_id == user.id;
+		
 		var ele = $("<div />")
 			.attr("id", "employee_row_" + user.id)
 			.addClass("user-disp_wrapper")
@@ -18,17 +21,23 @@ var Employees = Employees || {};
 					
 					.append($("<div />")
 						.addClass("user-actions_wrapper")
-						.append($("<span />").append($("<a />")
+						.append($("<span />")
+							.css("visibility", isProtected || blockIdiots ? "hidden" : "visible")
+							.append($("<a />")
 								.attr("data-tooltip", "Delete")
 								.addClass("user-action_delete")
 								.on("click", e => deleteUser(user.id))))
 								
-						.append($("<span />").append($("<a />")
+						.append($("<span />")
+							.css("visibility", isProtected || blockIdiots ? "hidden" : "visible")
+							.append($("<a />")
 								.attr("data-tooltip", "Toggle Activation")
 								.addClass("user-action_active")
 								.on("click", e => toggleActivation(user.id))))
 								
-						.append($("<span />").append($("<a />")
+						.append($("<span />")
+							.css("visibility", isProtected ? "hidden" : "visible")
+							.append($("<a />")
 								.attr("data-tooltip", "Reset Password")
 								.addClass("user-action_reset_password")
 								.on("click", e => resetPassword(user.id))))

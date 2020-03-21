@@ -1,0 +1,53 @@
+<html>
+	<import src="/common/base_head.html" title="Welcome to Setup" />
+	
+	<res src="setup.less" type="css" />
+	<res src="../login.js" type="js" />
+	<res src="/common/sjcl.min.js" type="js" />
+	
+<body>
+	<section class="setup-wrapper">
+		<header class="setup-header">
+			<h2> 
+				Setup
+			</h2>
+		</header>
+	
+		<div class="setup-label">
+			Welcome to your new POS-System <br />
+			Please record the following:
+		</div>
+		
+		<div class="setup-input">
+			Manager ID 
+			<input type="text" readonly value="{!setup_id}" />
+		</div>
+		
+		<div class="setup-input">
+			Password 
+			<input type="text" readonly value="{!setup_password}" />
+		</div>
+		
+		<span> This will be changed after login </span>
+		
+		<div class="setup-buttons">
+			<button onclick="login()" style="background:#42e619">
+				Login
+			</button>
+		</div>
+	</section>
+	
+	<script type="text/javascript">
+		function login() {
+			Login.submit("{!setup_id}", "{!setup_password}", 
+				function() {
+					window.location.replace("{!redirect_url}");
+				},
+				
+				function() {
+					alert("Login Failed!");
+				});
+		}
+	</script>
+</body>
+</html>

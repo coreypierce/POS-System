@@ -46,6 +46,7 @@ public class SessionManager {
 		sessionValues.put("employee_firstname", employee.getFirstName());
 		sessionValues.put("employee_lastname", employee.getLastName());
 		sessionValues.put("employee_role", employee.getRole().toString().toLowerCase());
+		sessionValues.put("employee_id", employee.getId());
 		
 		// check if the employee is active and hasn't been deleted
 		boolean employee_usable = employee.isActive() && !employee.isDeleted();
@@ -73,18 +74,29 @@ public class SessionManager {
 	
 	public static void startSession(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
 		if(token.get() == null) {
-			LOG.debug("No session found; attempting to start new Session...");
-	
-			CaseInsensitiveMap sessionValues = new CaseInsensitiveMap();
-			SessionManager.sessionValues.set(sessionValues);
-			
-			CaseInsensitiveMap values = new CaseInsensitiveMap();
-			values.put("redirect_url", request.getRequest().getPathInfo());
-			
-			// open stream to HTML file, and open response stream
-			InputStream in = HTMLResourceLoader.loadHTMLStream("root/pages/login/login.html", values);
-			RequestPage.sendPage("root/pages/login/login.html", "login-page", in, request, response);
-			
+			// Check if we should run the setup process
+			if(SetupHandler.shouldEnterSetup()) {
+				LOG.debug("No session found; Running setup process...");
+
+				CaseInsensitiveMap sessionValues = new CaseInsensitiveMap();
+				SessionManager.sessionValues.set(sessionValues);
+				
+				SetupHandler.runSetup(request, response);
+
+			} else {
+				LOG.debug("No session found; attempting to start new Session...");
+		
+				CaseInsensitiveMap sessionValues = new CaseInsensitiveMap();
+				SessionManager.sessionValues.set(sessionValues);
+				
+				CaseInsensitiveMap values = new CaseInsensitiveMap();
+				values.put("redirect_url", request.getRequest().getPathInfo());
+				
+				// open stream to HTML file, and open response stream
+				InputStream in = HTMLResourceLoader.loadHTMLStream("root/pages/login/login.html", values);
+				RequestPage.sendPage("root/pages/login/login.html", "login-page", in, request, response);
+			}
+
 		} else {
 			LOG.debug("Insecure session found; directing employee to security-page...");
 			

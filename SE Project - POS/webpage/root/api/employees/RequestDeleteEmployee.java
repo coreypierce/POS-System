@@ -37,6 +37,11 @@ public class RequestDeleteEmployee implements IRequest {
 					HttpServletResponse.SC_FORBIDDEN, "Only Managers can access employee info!");
 		}
 		
+		if(id > 999999 && manager.getId() <= 999999) {
+			return StandardResponses.error(request, response, 
+					HttpServletResponse.SC_FORBIDDEN, "Employee is in the protected range!");
+		}
+		
 		try {
 			Employee employee = new Employee(id);
 			employee.delete();
