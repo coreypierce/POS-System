@@ -1,0 +1,90 @@
+<html>
+	<import src="/common/base_head.html" title="Login" />
+	
+	<res src="secure.less" type="css" />
+	<res src="../login.js" type="js" />
+	
+	<value name="redirect_url" default="/" />
+	
+<body>
+	<section class="login-wrapper secure-employee_usable_not_{!employee_usable}">
+		<header class="login-header">
+			<h2> 
+				Employee is not currently Active!
+			</h2>
+		</header>
+		
+		<div>
+			Please login with a different account
+		</div>
+		
+		<div class="login-button_wrapper">
+			<button onclick="logout()" style="background:#db1414">
+				Back to Login
+			</button>
+		</div>
+	</section>
+
+	<section class="login-wrapper secure-employee_usable_{!employee_usable}">
+		<header class="login-header">
+			<h2> 
+				Reset password
+			</h2>
+			
+		</header>
+	
+		<div class="login-label">
+			Please enter your new password:
+		</div>
+	
+		<div class="login-input_wrapper">
+			<input type="password" id="new_password" placeholder="New Password"/>
+		</div>
+		
+		<div class="login-input_wrapper">
+			<input type="password" id="confirm_password" placeholder="Confirm Password"/>
+		</div>
+		
+		<div class="login-button_wrapper">
+			<button onclick="update()" style="background:#42b346">
+				Update Password
+			</button>
+		</div>
+	</section>
+	
+	<script type="text/javascript">
+		function update() {
+			var pass = $("#new_password").val();
+			var confirm = $("#confirm_password").val();
+			
+			// check if passwords match
+			if(!pass || pass != confirm) {
+				alert("Passwords do not match!");
+				$("#confirm_password").val("");
+				return;
+			}
+			
+			Login.setPassword(pass, function() {
+				window.location.replace("{!redirect_url}");
+			});
+		}
+		
+		function logout() {
+			$.ajax({
+				url: "/api/login/logout",
+				method: "POST",
+				
+				headers: {
+					// not the best solution, session deosn't actuly end on server...
+					"Non-Session": true
+				}
+			})
+			.done(function() {
+				// delete session-token cookie
+				document.cookie = 'Session-Token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+				window.location.replace("/");
+			});
+		}
+	</script>
+</body>
+</html>

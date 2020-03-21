@@ -47,6 +47,22 @@ public class SessionManager {
 		sessionValues.put("employee_lastname", employee.getLastName());
 		sessionValues.put("employee_role", employee.getRole().toString().toLowerCase());
 		
+		// check if the employee is active and hasn't been deleted
+		boolean employee_usable = employee.isActive() && !employee.isDeleted();
+		sessionValues.put("employee_usable", employee_usable);
+
+		// employee is not usable; attempt start-session with set-token
+		if(!employee_usable) return false;
+		
+		// if the client requested a "Non-Secure-Session" proceed without checking for temp-password
+		String secure_sesson = request.getHeader("Non-Secure-Session");
+		if(secure_sesson != null && secure_sesson.equalsIgnoreCase("true")) {
+			return true;
+		}
+
+		// employee is not secure; attempt start-session with set-token
+		if(employee.isTempPassword()) return false;
+		
 		return true;
 	}
 	
@@ -56,17 +72,30 @@ public class SessionManager {
 	}
 	
 	public static void startSession(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
-		LOG.debug("No session found; attempting to start new Session...");
-
-		CaseInsensitiveMap sessionValues = new CaseInsensitiveMap();
-		SessionManager.sessionValues.set(sessionValues);
-		
-		CaseInsensitiveMap values = new CaseInsensitiveMap();
-		values.put("redirect_url", request.getRequest().getPathInfo());
-		
-		// open stream to HTML file, and open response stream
-		InputStream in = HTMLResourceLoader.loadHTMLStream("root/pages/login/login.html", values);
-		RequestPage.sendPage("root/pages/login/login.html", "login-page", in, request, response);
+		if(token.get() == null) {
+			LOG.debug("No session found; attempting to start new Session...");
+	
+			CaseInsensitiveMap sessionValues = new CaseInsensitiveMap();
+			SessionManager.sessionValues.set(sessionValues);
+			
+			CaseInsensitiveMap values = new CaseInsensitiveMap();
+			values.put("redirect_url", request.getRequest().getPathInfo());
+			
+			// open stream to HTML file, and open response stream
+			InputStream in = HTMLResourceLoader.loadHTMLStream("root/pages/login/login.html", values);
+			RequestPage.sendPage("root/pages/login/login.html", "login-page", in, request, response);
+			
+		} else {
+			LOG.debug("Insecure session found; directing employee to security-page...");
+			
+			// clone the current session-values
+			CaseInsensitiveMap values = new CaseInsensitiveMap(SessionManager.sessionValues.get());
+			values.put("redirect_url", request.getRequest().getPathInfo());
+			
+			// open stream to HTML file, and open response stream
+			InputStream in = HTMLResourceLoader.loadHTMLStream("root/pages/login/secure/secure.html", values);
+			RequestPage.sendPage("root/pages/login/secure/secure.html", "secure-page", in, request, response);
+		}
 	}
 	
 	/**

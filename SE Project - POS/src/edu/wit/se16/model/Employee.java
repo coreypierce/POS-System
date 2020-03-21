@@ -20,11 +20,11 @@ public class Employee extends DatabaseObject {
 	private static final PreparedStatement QUERY_ALL_IDS = Database.prep("SELECT id FROM employees WHERE deleted = false");
 	
 	private static final PreparedStatement QUERY = Database.prep("SELECT * FROM employees WHERE ID = ?");
-	private static final PreparedStatement INSERT = Database.prep(
-			"INSERT INTO employees (firstname, lastname, role, password_hash, password_salt) VALUES (?, ?, ?, '', '')");
+	private static final PreparedStatement INSERT = Database.prep("INSERT INTO employees (firstname, lastname, role, "
+													+ "password_hash, password_salt, temp_password) VALUES (?, ?, ?, '', '', TRUE)");
 
 	private static final PreparedStatement CHANGE_PASSWORD = Database.prep(
-			"UPDATE employees SET password_hash = ?, password_salt = ? WHERE id = ?");
+			"UPDATE employees SET password_hash = ?, password_salt = ?, temp_password = ? WHERE id = ?");
 
 	// prevents more the on instance from inserting at once
 	private static final Object INSERT_LOCK = new Object();
@@ -46,6 +46,7 @@ public class Employee extends DatabaseObject {
 	
 	private String password_hash;
 	private String password_salt;
+	private boolean temp_password;
 	
 	private boolean active, deleted;
 	
@@ -73,6 +74,7 @@ public class Employee extends DatabaseObject {
 			
 			this.password_hash = result.getString("password_hash");
 			this.password_salt = result.getString("password_salt");
+			this.temp_password = result.getBoolean("temp_password");
 			
 			this.active = result.getBoolean("active");
 			this.deleted = result.getBoolean("deleted");
@@ -125,6 +127,7 @@ public class Employee extends DatabaseObject {
 		Database.update(DELETE, id);
 		
 		this.deleted = true;
+		// clear session, requiring new login
 		SessionToken.clearEmplyeesSession(this);
 	}
 	
@@ -144,6 +147,8 @@ public class Employee extends DatabaseObject {
 		Database.update(DEACTIVATE, id);
 		
 		this.active = false;
+		// clear session, requiring new login
+		SessionToken.clearEmplyeesSession(this);
 	}
 
 // =========================================== Adjust Password =========================================== \\
@@ -155,7 +160,7 @@ public class Employee extends DatabaseObject {
 		this.password_hash = password.hash;
 		this.password_salt = password.salt;
 		
-		Database.update(CHANGE_PASSWORD, this.password_hash, this.password_salt, super.id);
+		Database.update(CHANGE_PASSWORD, this.password_hash, this.password_salt, true, super.id);
 		// clear session, requiring new login
 		SessionToken.clearEmplyeesSession(this);
 		return password.plain_text;
@@ -169,7 +174,7 @@ public class Employee extends DatabaseObject {
 		this.password_salt = password.salt;
 
 		LOG.trace("Submitting Employee #{}'s password to database...", id);
-		Database.update(CHANGE_PASSWORD, this.password_hash, this.password_salt, super.id);
+		Database.update(CHANGE_PASSWORD, this.password_hash, this.password_salt, false, super.id);
 		// clear session, requiring new login
 		SessionToken.clearEmplyeesSession(this);
 	}
@@ -178,6 +183,7 @@ public class Employee extends DatabaseObject {
 	
 	public String getSalt() { return password_salt; }
 	public String getPassword() { return password_hash; }
+	public boolean isTempPassword() { return temp_password; }
 
 // =========================================== JSON =========================================== \\
 	
@@ -199,4 +205,7 @@ public class Employee extends DatabaseObject {
 	public String getLastName() { return lastname; }
 	
 	public Role getRole() { return role; }
+	
+	public boolean isActive() { return active; }
+	public boolean isDeleted() { return deleted; }
 }

@@ -87,5 +87,26 @@ var Login = Login || {};
 	Login.submit = function(username, password, pass, fail) {
 		// get spec from server
 		requestDetails(username, submit_password(username, password, pass, fail));
-	}
+	};
+	
+	Login.setPassword = function(password, onComplete) {
+		// send results to server
+		$.ajax({
+			url: "/api/login/set_password",
+			method: "POST",
+			
+			data: {
+				// bad; don't send passwords in plain text
+				"password": password,
+			},
+			
+			headers: {
+				"Non-Secure-Session": true
+			}
+		})
+		.done(onComplete)
+		.fail(function() {
+			alert("Reset Failed!");
+		});
+	};
 })(Login);

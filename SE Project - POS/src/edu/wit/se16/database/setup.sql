@@ -14,6 +14,7 @@ CREATE TABLE `employees` (
 	`role` ENUM('Server', 'Host', 'Manager') NOT NULL DEFAULT 'Server',
 	`password_hash` VARCHAR(88) NOT NULL,
 	`password_salt` VARCHAR(88) NOT NULL,
+    `temp_password` TINYINT NULL,
 	`active` TINYINT NULL DEFAULT 1,
 	`deleted` TINYINT NULL DEFAULT 0,
     `created_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
