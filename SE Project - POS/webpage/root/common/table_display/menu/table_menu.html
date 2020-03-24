@@ -51,14 +51,8 @@
 	function printCheck() {
 		if(!TableDisplay.menu_item) return;
 		
-		$.ajax({
-			url: "/api/table/print_check",
-			method: "POST",
-			
-			data: {
-				"id": TableDisplay.menu_item.table.id,
-			}
-		}).done(TableDisplay.menuActionCallback);
+		PrintCheck && PrintCheck.printCheck(TableDisplay.menu_item.table.id);
+		Popup.show("print-check");
 	}
 	
 	function clearTable() {

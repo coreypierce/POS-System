@@ -1,60 +1,40 @@
-.printchecK{
+.printcheck {
 	display: flex;
-	.printcheck-inputs_wrapper{
+	
+	.printcheck-inputs_wrapper {
 		width: 100%;
-		
 		padding: 1rem;
 	
-		.printcheck-ordernames_wrapper{
+		.printcheck-order_wrapper {
 			max-height: 20rem;
 			overflow: auto;
-			.food1{
+			
+			.printcheck-food_item {
 				display: flex;
-				.food-name{
-					width: 73.8%;
+				
+				.food-name {
 				}
-				.food-name_price{
-					width: 26.2%;
+				
+				.food-amount {
+				    align-self: flex-end;
+				    margin-left: .5rem;
+				    
+				    font-size: .9rem;
+				    color: #7a7a7a;
 				}
-			}
-			.food2{
-				display: flex;
-				.food-name{
-					width: 73.8%;
-				}
-				.food-name_price{
-					width: 26.2%;
+				
+				.food-name_price {
+				    flex-grow: 1;
+				    text-align: end;
+				    margin-right: .5rem;
 				}
 			}
 		}
-		.printcheck-totalall_wrapper{
-			.printcheck-subtotal_wrapper{
-				display: flex;
-				.subtotal{
-					width: 70%;
-				}
-				.subtotal-price{
-					width: 30%;
-				}
-			}
-			.printcheck-tax_wrapper{
-				display: flex;
-				.tax{
-					width: 70%;
-				}
-				.tax-price{
-					width: 30%;
-				}
-			}
-			.printcheck-total_wrapper{
-				display: flex;
-				.total{
-					width: 70%;
-				}
-				.total-price{
-					width: 30%;
-				}
-			}
+		
+		.printcheck-totalall_wrapper {
+			display: grid;
+		    grid-template-columns: auto min-content;
+		    margin-right: .5rem;
 		}
 	}
 }
