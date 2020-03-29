@@ -257,8 +257,9 @@ public class RestaurantLayout {
 		public boolean updateConstraints(int rotation, Point position, Dimension bounds) {
 			this.location = position;
 			this.bounds = bounds;
+			this.rotation = rotation;
 
-			LOG.trace("Update layout-item #{} -- pos: {}, bounds: {}", id, position, bounds);			
+			LOG.trace("Update layout-item #{} -- pos: {}, bounds: {}, rotation: {}", id, position, bounds, rotation);			
 			return Database.update(UPDATE_ITEM, rotation, position.x, position.y, bounds.width, bounds.height, id);
 		}
 		

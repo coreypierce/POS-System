@@ -9,19 +9,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import edu.wit.se16.database.Database;
 import edu.wit.se16.database.DatabaseObject;
 import edu.wit.se16.model.Employee;
 import edu.wit.se16.model.Shift;
 import edu.wit.se16.model.Table;
 import edu.wit.se16.system.logging.LoggingUtil;
+import edu.wit.se16.util.JsonBuilder;
 
 public class Section extends DatabaseObject {
 	private static final Logger LOG = LoggingUtil.getLogger();
 	
 	private static final PreparedStatement QUERY = Database.prep("SELECT * FROM sections WHERE ID = ?");	
 	private static final PreparedStatement INSERT = Database.prep("INSERT INTO sections (shift_id, section_number) VALUES(?, ?)");
-
+	private static final PreparedStatement DELETE = Database.prep("DELETE FROM sections WHERE id = ?");
+	
 	private static final PreparedStatement ASSIGN = Database.prep("UPDATE sections SET assignee_id = ? WHERE ID = ?");
 
 	private static final PreparedStatement LOOKUP_SECTION = Database.prep(
@@ -32,6 +36,9 @@ public class Section extends DatabaseObject {
 	
 	private static final PreparedStatement QUERY_TABLES = Database.prep("SELECT table_id FROM section_tables WHERE section_id = ?");
 
+	private static final PreparedStatement LOOKUP_SECTION_BY_TABLE = Database.prep(
+			"SELECT section_id FROM section_tables WHERE table_id = ? AND section_id IN (SELECT id FROM sections WHERE shift_id = ?)");
+	
 	private static final PreparedStatement ADD_TABLE_ASSIGNMENT = Database.prep(
 			"INSERT INTO section_tables (section_id, table_id) VALUES(?, ?)");
 
@@ -58,9 +65,18 @@ public class Section extends DatabaseObject {
 		// mutable integer
 		AtomicInteger id = new AtomicInteger(0);
 		// query section-id based on shift and employee
-		Database.query(result -> { id.set(result.getInt("id")); }, LOOKUP_SECTION, shift.getId(), employee.getId());
+		Database.query(result -> id.set(result.getInt("id")), LOOKUP_SECTION, shift.getId(), employee.getId());
 		// if no section was found
-		return id.get() == 0 ? null : new Section(id.get());
+		return id.get() <= 0 ? null : new Section(id.get());
+	}
+	
+	public static Section findSection(Shift shift, Table table) {
+		// mutable integer
+		AtomicInteger id = new AtomicInteger(0);
+		// query section-id based on shift and table
+		Database.query(results -> id.set(results.getInt("section_id")), LOOKUP_SECTION_BY_TABLE, table.getId(), shift.getId());
+		// if no section was found
+		return id.get() <= 0 ? null : new Section(id.get());
 	}
 
 // =========================================== DB - Object =========================================== \\
@@ -107,7 +123,11 @@ public class Section extends DatabaseObject {
 		}
 	}
 	
-
+	public void delete() {
+		LOG.trace("Deleting Section #{}...", super.id);
+		Database.update(DELETE, super.id);
+	}
+	
 // =========================================== Section Tables =========================================== \\
 	
 	public List<Table> getTables() {
@@ -116,6 +136,17 @@ public class Section extends DatabaseObject {
 		Database.query(results -> {
 			// query table by ID
 			tables.add(new Table(results.getInt("table_id")));
+		}, QUERY_TABLES, super.id);
+		
+		return tables;
+	}
+	
+	public List<Integer> getTablesIds() {
+		ArrayList<Integer> tables = new ArrayList<>();
+		
+		Database.query(results -> {
+			// query table by ID
+			tables.add(results.getInt("table_id"));
 		}, QUERY_TABLES, super.id);
 		
 		return tables;
@@ -133,6 +164,25 @@ public class Section extends DatabaseObject {
 	public void removeTable(Table table) {
 		LOG.trace("Removing Table #{} from Section #{}...", table.getId(), id);
 		Database.update(REMOVE_TABLE_ASSIGNMENT, super.id, table.getId());
+	}
+	
+// =========================================== JSON =========================================== \\
+	
+	public JsonNode toJSON() {
+		List<Integer> tableIDs = getTablesIds();
+		
+		JsonBuilder builder = JsonBuilder.create()
+			.append("id", super.id)
+			.append("number", this.number)
+			.append("assignee", assignee == null ? null : assignee.toJSON());
+		
+		builder.newArray("tables");
+		for(int table_id : tableIDs) {
+			builder.append(table_id);
+		}
+		
+		builder.end();
+		return builder.build();
 	}
 	
 // =========================================== Shift Access =========================================== \\

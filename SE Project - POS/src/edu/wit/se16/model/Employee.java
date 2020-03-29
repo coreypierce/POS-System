@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import edu.wit.se16.database.Database;
+import edu.wit.se16.database.Database.ResultsConsumer;
 import edu.wit.se16.database.DatabaseObject;
 import edu.wit.se16.security.PasswordUtil;
 import edu.wit.se16.security.PasswordUtil.Password;
@@ -18,6 +19,13 @@ public class Employee extends DatabaseObject {
 	private static final Logger LOG = LoggingUtil.getLogger();
 	
 	private static final PreparedStatement QUERY_ALL_IDS = Database.prep("SELECT id FROM employees WHERE deleted = false");
+	
+	private static final PreparedStatement QUERY_ROLE_IDS = Database.prep(
+			"SELECT id FROM employees WHERE deleted = false AND role = ?");
+	private static final PreparedStatement QUERY_ACTIVE_IDS = Database.prep(
+			"SELECT id FROM employees WHERE deleted = false AND active = ?");
+	private static final PreparedStatement QUERY_ROLE_ACTIVE_IDS = Database.prep(
+			"SELECT id FROM employees WHERE deleted = false AND role = ? AND active = ?");
 	
 	private static final PreparedStatement QUERY = Database.prep("SELECT * FROM employees WHERE ID = ?");
 	private static final PreparedStatement INSERT = Database.prep("INSERT INTO employees (firstname, lastname, role, "
@@ -108,12 +116,19 @@ public class Employee extends DatabaseObject {
 		}
 	}
 	
-	public static Employee[] getAllEmployees() {
+	public static Employee[] getAllEmployees(Role filter, Boolean active) {
 		ArrayList<Employee> employees = new ArrayList<>();
-		
-		Database.query(result -> {
+		ResultsConsumer callback = result -> {
 			employees.add(new Employee(result.getInt("id")));
-		}, QUERY_ALL_IDS);
+		};
+		
+		if(filter == null) {
+			if(active == null) Database.query(callback, QUERY_ALL_IDS);
+			else Database.query(callback, QUERY_ACTIVE_IDS, active);
+		} else {
+			if(active == null) Database.query(callback, QUERY_ROLE_IDS, filter.toString());
+			else Database.query(callback, QUERY_ROLE_ACTIVE_IDS, filter.toString(), active);
+		}
 		
 		return employees.toArray(new Employee[0]);
 	}

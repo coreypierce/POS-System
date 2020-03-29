@@ -20,20 +20,23 @@ public class RequestAllEmployees implements IRequest {
 	private static final Logger LOG = LoggingUtil.getLogger();
 
 	public HttpServletResponse process(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
+		Role query_role = request.getBody("role", Role::valueOf, null);
+		Boolean active = request.getBody("active", Boolean::parseBoolean, null);
+		
 		Employee manager = SessionManager.getSessionToken().getEmployee();
 		LOG.trace("Employee #{} is requesting all employee information", manager.getId());
 		
 		// validate user is a Manager
-		if(manager.getRole() != Role.Manager) {
-			return StandardResponses.error(request, response, 
-					HttpServletResponse.SC_FORBIDDEN, "Only Managers can access employee info!");
-		}
+//		if(manager.getRole() != Role.Manager) {
+//			return StandardResponses.error(request, response, 
+//					HttpServletResponse.SC_FORBIDDEN, "Only Managers can access employee info!");
+//		}
 		
 		JsonBuilder builder = JsonBuilder.create()
 			.newArray("employees");
 		
 		// write all employee's into JSON
-		Employee[] employees = Employee.getAllEmployees();
+		Employee[] employees = Employee.getAllEmployees(query_role, active);
 		for(Employee employee : employees) {
 			builder.append(employee.toJSON());
 		}

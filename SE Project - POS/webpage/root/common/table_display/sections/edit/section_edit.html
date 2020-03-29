@@ -1,0 +1,23 @@
+<value name="section_edit_append" default=""/>
+
+<res src="section_edit.less" type="css" />
+<res src="section_edit.js" type="js" />
+
+<div id="section_edit" class="edit-section_wrapper" style="display: none">
+	<button class="edit-section_add" onclick="createSection()"> New Section </button> 
+	
+	<div class="edit-section_list">
+		
+	</div>
+</div>
+
+<script>
+	function createSection() {
+		Sections.makeNewSection();
+	}
+
+	$(function() {
+		var attach_section_to = $("{!section_edit_append}")
+		attach_section_to.length && $("#section_edit").css("display", "").appendTo(attach_section_to);
+	});
+</script>

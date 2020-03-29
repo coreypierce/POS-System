@@ -24,7 +24,7 @@ public class RequestCreateMenuItem implements IRequest {
 		Double price = request.getBody("price", Double::parseDouble, null);
 		
 		// validate parameters
-		if(name == null || category_name == null || price == null) {
+		if(name == null || category_name == null || price == null || name.isEmpty() || category_name.isEmpty()) {
 			return StandardResponses.error(request, response, 
 					HttpServletResponse.SC_BAD_REQUEST, "Missing required parameter: name, category, or price");
 		}
@@ -34,7 +34,9 @@ public class RequestCreateMenuItem implements IRequest {
 		MenuCategory category = new MenuCategory(category_name);
 		MenuItem item = new MenuItem(name, price, category);
 		
-		JsonBuilder.from(item.toJSON()).build(response);
+		JsonBuilder.from(item.toJSON())
+			.append("category", category_name)
+		.build(response);
 		response.setStatus(HttpServletResponse.SC_OK);
 		return response;
 	}

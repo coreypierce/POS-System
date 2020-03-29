@@ -1,5 +1,5 @@
 var TableDisplay = TableDisplay || { mode: "view" };
-(function(disp) {
+(function(TableDisplay) {
 	if(!$) throw "Missing jQuery! Table-Display requires page to include jQuery";
 	if(!TableDisplay.mode) TableDisplay.mode = "view";
 	
@@ -32,20 +32,28 @@ var TableDisplay = TableDisplay || { mode: "view" };
 	
 	var id_map = {};
 	
-	disp.findItemByElement = function(ele) {
+	TableDisplay.findItemByElement = function(ele) {
 		return id_map[ele.attr("id")];
 	}
 	
+	TableDisplay.forEachTable = function(func) {
+		for(var id in id_map) {
+			// if the item is a table
+			if(id_map[id] instanceof Table) {
+				func && func(id_map[id]);
+			}
+		}
+	}
 
 // ============================================ =========== ============================================ \\
 // ============================================ Layout Size ============================================ \\
 	
-	disp.layout_width = 1;
-	disp.layout_height = 1;
+	TableDisplay.layout_width = 1;
+	TableDisplay.layout_height = 1;
 	
 	var layoutSizeListeners = [];
 	
-	disp.addLayoutSizeListener = function(listener) {
+	TableDisplay.addLayoutSizeListener = function(listener) {
 		layoutSizeListeners.push(listener);
 	};
 	
@@ -71,17 +79,17 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		id_map[item.element.attr("id")] = item;
 		
 		// if edit-mode
-		disp.setup && disp.setup(item.element);
+		TableDisplay.setup && TableDisplay.setup(item.element);
 	}
 	
-	disp.addItem = function(item) {
+	TableDisplay.addItem = function(item) {
 		// add item to the list
 		items.push(item);
 		// setup any additional properties
 		setupElement(item);
 	}
 	
-	disp.removeItem = function(item) {
+	TableDisplay.removeItem = function(item) {
 		for(var i = 0; i < items.length; i ++) {
 			if(items[i] == item) {
 				item.element.remove();
@@ -107,8 +115,8 @@ var TableDisplay = TableDisplay || { mode: "view" };
 	
 	function moveItem(item, new_pos, new_bounds, new_rotation, override) {
 		if(new_pos.x < 0 || new_pos.y < 0) return false;
-		if(new_pos.x + new_bounds.width > disp.layout_width) return false;
-		if(new_pos.y + new_bounds.height > disp.layout_height) return false;
+		if(new_pos.x + new_bounds.width > TableDisplay.layout_width) return false;
+		if(new_pos.y + new_bounds.height > TableDisplay.layout_height) return false;
 		
 		if(new_bounds.width <= 0 || new_bounds.height <= 0) return false;
 
@@ -153,14 +161,17 @@ var TableDisplay = TableDisplay || { mode: "view" };
 			// if request was successful
 			if(status == "success") {
 				// extract useful data
-				disp.layout_width = data.width; 
-				disp.layout_height = data.height;
+				TableDisplay.layout_width = data.width; 
+				TableDisplay.layout_height = data.height;
 				
 				parseItems(data.items);
-				disp.resize();
+				TableDisplay.resize();
 				
 				// call the size listeners when the size changes due to request
-				layoutSizeListeners.forEach(listener => listener(disp.layout_width, disp.layout_height));
+				layoutSizeListeners.forEach(listener => 
+					listener(TableDisplay.layout_width, TableDisplay.layout_height));
+
+				Sections && Sections.setup();
 			}
 		})
 		.fail(function(xhr, status, error) {
@@ -192,11 +203,11 @@ var TableDisplay = TableDisplay || { mode: "view" };
 			this.makeElement();
 			
 			this.element && this.element.css({
-				"top": 	this.position.y * disp.scaleY,
-				"left": this.position.x * disp.scaleX,
+				"top": 	this.position.y * TableDisplay.scaleY,
+				"left": this.position.x * TableDisplay.scaleX,
 				
-				"width": 	this.bounds.width  * disp.scaleX + "px",
-				"height": 	this.bounds.height * disp.scaleY + "px",
+				"width": 	this.bounds.width  * TableDisplay.scaleX + "px",
+				"height": 	this.bounds.height * TableDisplay.scaleY + "px",
 			});
 		}
 		
@@ -246,7 +257,7 @@ var TableDisplay = TableDisplay || { mode: "view" };
 					.addClass("table-selectable").addClass("table-draggable")
 					.addClass("table-edit_rotatable");
 				
-				this.element.on("click", e => disp.mode != 'edit' && openTableActions(e, this));
+				this.element.on("click", e => TableDisplay.mode != 'edit' && openTableActions(e, this));
 				
 				// add to tables-wrapper
 				wrapper.append(this.element);
@@ -321,7 +332,7 @@ var TableDisplay = TableDisplay || { mode: "view" };
 			.addClass("table-menu-status_" + item.table.status)
 			.css("top", top).css("left", left);
 		
-		disp.menu_item = item;
+		TableDisplay.menu_item = item;
 	
 		// prevent window from being called
 		event.stopPropagation();
@@ -358,8 +369,8 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		}
 	}
 	
-	disp.Wall = Wall;
-	disp.Table = Table;
+	TableDisplay.Wall = Wall;
+	TableDisplay.Table = Table;
 
 // ============================================ ========= ============================================ \\
 // ============================================ Grid Draw ============================================ \\
@@ -383,12 +394,12 @@ var TableDisplay = TableDisplay || { mode: "view" };
 	} 
 	
 	function drawGrid(g) {
-		for(var x = 0, index = 0; x < w; x += disp.scaleX, index ++) {
+		for(var x = 0, index = 0; x < w; x += TableDisplay.scaleX, index ++) {
 			g.strokeStyle = index % grid_major == 0 ? grid_color_major : grid_color_minor;
 			g.drawLine(x, 0, x, h);
 		}
 		
-		for(var y = 0, index = 0; y < h; y += disp.scaleY, index ++) {
+		for(var y = 0, index = 0; y < h; y += TableDisplay.scaleY, index ++) {
 			g.strokeStyle = index % grid_major == 0 ? grid_color_major : grid_color_minor;
 			// if it's a major-grid line, use new line, else old line
 			g.globalCompositeOperation = index % grid_major == 0 ? "source-over" : "destination-over";
@@ -401,25 +412,25 @@ var TableDisplay = TableDisplay || { mode: "view" };
 	
 	function drawLayoutBounds(g) {
 		g.fillStyle = "#0003";
-		g.fillRect(0, disp.layout_height, disp.layout_width, h / disp.scaleY);
-		g.fillRect(disp.layout_width, 0, w / disp.scaleX, disp.layout_height);
+		g.fillRect(0, TableDisplay.layout_height, TableDisplay.layout_width, h / TableDisplay.scaleY);
+		g.fillRect(TableDisplay.layout_width, 0, w / TableDisplay.scaleX, TableDisplay.layout_height);
 	}
 
 // ============================================ ================== ============================================ \\
 // ============================================ External Functions ============================================ \\
 	
-	disp.resize = function() {
+	TableDisplay.resize = function() {
 		w = canvas.width = canvas.clientWidth;
 		h = canvas.height = canvas.clientHeight;
 		
 		// calculate the max-square scale factor
-		disp.scaleX = w / disp.layout_width;
-		disp.scaleY = h / disp.layout_height;
+		TableDisplay.scaleX = w / TableDisplay.layout_width;
+		TableDisplay.scaleY = h / TableDisplay.layout_height;
 		
-		if(disp.scaleX < disp.scaleY)
-			disp.scaleY = disp.scaleX;
+		if(TableDisplay.scaleX < TableDisplay.scaleY)
+			TableDisplay.scaleY = TableDisplay.scaleX;
 		else
-			disp.scaleX = disp.scaleY;
+			TableDisplay.scaleX = TableDisplay.scaleY;
 		
 		// resize all elements
 		for(var item of items) {
@@ -427,15 +438,17 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		}
 		
 		// redraw
-		disp.redraw();
+		TableDisplay.redraw();
+		
+		Sections && (Sections.regrow(), Sections.draw());
 	}
 	
-	disp.redraw = function() {
+	TableDisplay.redraw = function() {
 		clearScreen(g);
 		drawGrid(g);
 		
 		// scale here so items can ignore scale when drawing
-		g.scale(disp.scaleX, disp.scaleY);
+		g.scale(TableDisplay.scaleX, TableDisplay.scaleY);
 		
 		// draw the limits of the restaurant
 		drawLayoutBounds(g);
@@ -446,24 +459,24 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		}
 	}
 	
-	disp.closeMenu = function() {
+	TableDisplay.closeMenu = function() {
 		$("#table_context_menu").removeClass("table-menu_open");
-		disp.menu_item = null;
+		TableDisplay.menu_item = null;
 	}
 
 // ============================================ ============== ============================================ \\
 // ============================================ Event Handlers ============================================ \\
 	
-	$(window).on("click", disp.closeMenu);
+	$(window).on("click", TableDisplay.closeMenu);
 	
 	// on window-resize
 	$(window).resize(function() {
-		disp.resize();
+		TableDisplay.resize();
 	})
 	
 	// on document-load
 	$(function() {
-		disp.resize();
+		TableDisplay.resize();
 	});
 	
 	// request/load layout data

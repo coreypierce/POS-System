@@ -3,6 +3,7 @@ package edu.wit.se16.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 
@@ -28,6 +29,18 @@ public class Table extends DatabaseObject {
 	private static final PreparedStatement UPDATE_STATUS = Database.prep(
 			"INSERT INTO table_status_history (employee_id, table_id, status) VALUES (?, ?, ?)");
 	
+	private static final PreparedStatement NEXT_TABLE_NUMBER = Database.prep(
+			"SELECT (table_number + 1) as next_number FROM tables t1 WHERE NOT EXISTS(" +
+					" SELECT table_number FROM tables t2 WHERE table_number = t1.table_number + 1 " +
+					" AND EXISTS(SELECT id FROM restaurant_layout WHERE is_table = t2.id LIMIT 1)" +
+					" LIMIT 1) " +
+			"UNION DISTINCT (SELECT 1 as next_number FROM tables WHERE NOT EXISTS (SELECT table_number FROM tables t3" +
+				" WHERE table_number = 1 AND EXISTS(SELECT id FROM restaurant_layout WHERE is_table = t3.id LIMIT 1))" +
+				" LIMIT 1)" +
+			" ORDER BY table_number ASC LIMIT 1");
+	
+	private static final Object sync_insert = new Object();
+	
 	public static enum TableStatus {
 		Open, Seated, Order_Placed, Check_Printed, Check_In;
 	}
@@ -39,16 +52,26 @@ public class Table extends DatabaseObject {
 		super(id);
 	}
 	
-	public Table(String tableDescriptor, int tableNumber) {
-		this.tableNumber = tableNumber;
-		this.tableDescriptor = tableDescriptor;
-		
-		insert(); // insert into database
-		query(); // re-query fields
-		
-		setStatus(TableStatus.Open, null);
+	public Table(String tableDescriptor) {
+		synchronized(sync_insert) {
+			this.tableNumber = Table.calculateNextTableNumber();
+			this.tableDescriptor = tableDescriptor;
+			
+			insert(); // insert into database
+			query(); // re-query fields
+			
+			setStatus(TableStatus.Open, null);
+		}
 	}
 
+	private static int calculateNextTableNumber() {
+		LOG.trace("Calculating next table-number...");
+		
+		AtomicInteger nextNumber = new AtomicInteger(1);
+		Database.query(results -> nextNumber.set(results.getInt("next_number")), NEXT_TABLE_NUMBER);
+		return nextNumber.get();
+	}
+	
 // =========================================== DB - Object =========================================== \\
 	
 	protected boolean query() {
@@ -103,6 +126,10 @@ public class Table extends DatabaseObject {
 		setStatus(TableStatus.Check_Printed, employee);
 		return order.calculateBill();
 	}
+	
+// =========================================== Section Functions =========================================== \\
+	
+	
 	
 // =========================================== Customer Function =========================================== \\
 

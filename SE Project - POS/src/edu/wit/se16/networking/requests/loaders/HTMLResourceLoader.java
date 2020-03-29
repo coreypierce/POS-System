@@ -79,7 +79,8 @@ public class HTMLResourceLoader {
 		}
 		
 		// add session values to map
-		SessionManager.getSessionHTMLValues().forEach(values::putIfAbsent);
+		CaseInsensitiveMap session_values = SessionManager.getSessionHTMLValues();
+		if(session_values != null) session_values.forEach(values::putIfAbsent);
 		
 		HashMap<String, String> resources = res;
 		if(resources == null) {
