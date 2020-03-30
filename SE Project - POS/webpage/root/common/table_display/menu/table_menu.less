@@ -65,6 +65,11 @@
 // ============================================ Menu Access Control ============================================ \\
 
 		&.table-menu-role_Host {
+			&.table-menu-status_Open {
+				.table-menu-option_seat		{ display: inherit; }
+			}
+			
+			.table-menu-option_seat			{ display: none; }
 			.table-menu-option_order 		{ display: none; }
 			.table-menu-option_print_check 	{ display: none; }
 			.table-menu-option_clear 		{ display: none; }
@@ -72,30 +77,35 @@
 		
 		&.table-menu-role_Server, &.table-menu-role_Manager {
 			&.table-menu-status_Open {
+				.table-menu-option_seat			{ display: none; }
 				.table-menu-option_order 		{ display: none; }
 				.table-menu-option_print_check 	{ display: none; }
 				.table-menu-option_clear 		{ display: none; }
 			}
 			
 			&.table-menu-status_Seated {
+				.table-menu-option_seat			{ display: none; }
 				.table-menu-option_order 		{  }
 				.table-menu-option_print_check 	{ display: none; }
 				.table-menu-option_clear 		{  }
 			}
 			
 			&.table-menu-status_Order_Placed {
+				.table-menu-option_seat			{ display: none; }
 				.table-menu-option_order 		{  }
 				.table-menu-option_print_check 	{  }
 				.table-menu-option_clear 		{ display: none; }
 			}
 			
 			&.table-menu-status_Check_Printed {
+				.table-menu-option_seat			{ display: none; }
 				.table-menu-option_order 		{ display: none; }
 				.table-menu-option_print_check 	{ display: none; }
 				.table-menu-option_clear 		{  }
 			}
 			
 			&.table-menu-status_unknown {
+				.table-menu-option_seat			{ display: none; }
 				.table-menu-option_order 		{ display: none; }
 				.table-menu-option_print_check 	{ display: none; }
 				.table-menu-option_clear 		{ display: none; }

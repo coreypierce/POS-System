@@ -3,6 +3,10 @@
 
 <div id="table_context_menu" class="table-display_context_menu table-menu-role_{!employee_role}">
 	<ul class="table-menu_list">
+		<li onclick="promptSeatAmount()" class="table-menu-option_seat">
+			<i></i> Seat Guests
+		</li>
+		
 		<li onclick="promptPickup()" class="table-menu-option_pickup">
 			<i></i> Pickup Table
 		</li>
@@ -32,6 +36,9 @@
 
 <import src="/util/popup/popup.html" popup="/common/table_display/menu/pickup_popup.html" 
 	name="prompt-pickup" title="Confirm" size="x-small"/>
+	
+<import src="/util/popup/popup.html" popup="/common/table_display/menu/seat_popup.html" 
+	name="prompt-seat" title="Seat Guests" size="x-small"/>
 
 <script>
 	var TableDisplay = TableDisplay || {};
@@ -96,6 +103,33 @@
 	
 	function promptPickup() {
 		Popup.show("prompt-pickup");
+	}
+	
+	function promptSeatAmount() {
+		var suggestInput = $("#suggestion-count");
+		// copy suggestion value into popup, or set to 1 (if not host)
+		$("#seat_popup_input").val(suggestInput.length && suggestInput.val() || 1);
+		
+		Popup.show("prompt-seat");
+	}
+	
+	function seatGuests(amount) {
+		if(!TableDisplay.menu_item) return;
+		
+		// reset suggestion box
+		$("#suggestion-count").val('');
+		
+		Request.ajax({
+			url: "/api/table/seat",
+			method: "POST",
+			
+			data: {
+				"id": TableDisplay.menu_item.table.id,
+				"amount": amount
+			},
+			
+			done: TableDisplay.menuActionCallback
+		});
 	}
 	
 	$("#table_context_menu li").on("click", e => e.stopPropagation());

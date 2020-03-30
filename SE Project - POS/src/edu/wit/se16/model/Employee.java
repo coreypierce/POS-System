@@ -2,6 +2,7 @@ package edu.wit.se16.model;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 
@@ -42,6 +43,11 @@ public class Employee extends DatabaseObject {
 	private static final PreparedStatement DELETE = Database.prep("UPDATE employees SET deleted = true WHERE id = ?");
 	private static final PreparedStatement ACTIVATE = Database.prep("UPDATE employees SET active = true WHERE id = ?");
 	private static final PreparedStatement DEACTIVATE = Database.prep("UPDATE employees SET active = false WHERE id = ?");
+
+	private static final PreparedStatement COUNT_TIMESTAMPS = Database.prep(
+			"SELECT count(id) as count FROM employee_timestamps WHERE employee_id = ?");
+	
+	private static final PreparedStatement RECORD_TIMESTAMP = Database.prep("INSERT INTO employee_timestamps (employee_id) VALUES(?)");
 	
 	public static enum Role {
 		Server, Host, Manager;
@@ -199,6 +205,19 @@ public class Employee extends DatabaseObject {
 	public String getSalt() { return password_salt; }
 	public String getPassword() { return password_hash; }
 	public boolean isTempPassword() { return temp_password; }
+
+// =========================================== Clock In/Out =========================================== \\
+	
+	public boolean isClockedIn() {
+		AtomicBoolean state = new AtomicBoolean();
+		Database.query(results -> state.set(results.getInt("count") % 2 == 1), COUNT_TIMESTAMPS, super.id);
+		return state.get();
+	}
+	
+	public void recordTimestamp() {
+		LOG.trace("Recording Timestamp for Employee #{}...", super.id);
+		Database.update(RECORD_TIMESTAMP, super.id);
+	}
 
 // =========================================== JSON =========================================== \\
 	

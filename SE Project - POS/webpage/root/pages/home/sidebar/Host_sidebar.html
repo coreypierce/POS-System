@@ -1,0 +1,46 @@
+<res src="Host_sidebar.less" type="css" />
+
+<div class="host-sidebar">
+	<div class="host-sidebar-suggestion">
+		<div>
+			<h4> # of Guests </h4>
+			<input type="number" id="suggestion-count">
+		</div>
+	
+		<button onclick="suggestSection()">
+			Suggest <br/> Section
+		</button>
+	</div>
+
+	<div class="host-sidebar-sections">
+		<div class="host-sidebar-sections_shadow"> </div>
+		<span class="host-sidebar-sections_header"> Section </span>
+		<span class="host-sidebar-sections_header"> Count </span>
+	
+	    
+	</div>
+	
+	<import src="common/clock.html" />
+</div>
+
+<script>
+	function suggestSection() {
+		
+	}
+	
+	(function() {
+		var prev = Sections.onSectionQuery;
+		Sections.onSectionQuery = function() {
+			var group = $(".host-sidebar-sections");
+			
+			Sections.forEachSection(function(section) {
+				group
+					.append($("<span />").text("Section #" + section.number))
+					.append($("<span />").text("?"))
+			});
+			
+			// call previous function
+			prev();
+		};
+	})();
+</script>

@@ -45,6 +45,7 @@ public class SessionManager {
 
 		sessionValues.put("employee_firstname", employee.getFirstName());
 		sessionValues.put("employee_lastname", employee.getLastName());
+		sessionValues.put("employee_clock_in", employee.isClockedIn());
 		sessionValues.put("employee_role", employee.getRole().toString().toLowerCase());
 		sessionValues.put("employee_id", employee.getId());
 		

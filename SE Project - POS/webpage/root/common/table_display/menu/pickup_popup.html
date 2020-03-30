@@ -3,7 +3,7 @@
 	<div style="text-align: center;"> Are you sure you want to pickup this table? </div>
 	
 	<div style="margin-top: 1.5rem; display: flex; justify-content: center">
-		<button style="background-color: #42b346; margin-right: .5rem" id="pickup_option"> Pickup Table </button>
+		<button style="background-color: #42b346; margin-right: .5rem" id="pickup_button"> Pickup Table </button>
 		<button style="background-color: #db1414;" onclick="closePopup()"> Cancel </button>
 	</div>
 </div>
@@ -13,7 +13,7 @@
 	$("#pickup_popup").closest("article").on("click", e => e.stopPropagation())
 		.find("*").on("click", e => e.stopPropagation())
 
-	$("#pickup_option").on("click", event => {
+	$("#pickup_button").on("click", event => {
 		showOrder();
 		event.stopPropagation();
 	});

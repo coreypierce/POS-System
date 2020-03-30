@@ -1,0 +1,28 @@
+<div id="seat_popup">
+	<div style="display: flex; margin-top: 1.5rem;"> 
+		Enter the number of Customers:
+		<input type="number" id="seat_popup_input" style="flex-grow: 1; width: 1px; margin-left: 1rem;"/> 
+	</div>
+	
+	<div style="margin-top: 2rem; display: flex; justify-content: flex-end">
+		<button style="background-color: #42b346; margin-right: .5rem" id="seat_button"> Seat Guests </button>
+		<button style="background-color: #db1414;" onclick="closePopup()"> Cancel </button>
+	</div>
+</div>
+
+<script>
+	// prevent clicking on the popup from closing the menu
+	$("#seat_popup").closest("article").on("click", e => e.stopPropagation())
+		.find("*").on("click", e => e.stopPropagation())
+
+	$("#seat_button").on("click", event => {
+		Popup.close();
+		seatGuests($("#seat_popup_input").val());
+		
+		event.stopPropagation();
+	});
+
+	function closePopup() {
+		Popup.close();
+	}
+</script>

@@ -304,6 +304,8 @@ var Sections = Sections || {};
 	
 					Sections.regrow();
 					Sections.draw();
+					
+					Sections.onSectionQuery();
 				}
 			}
 		});
@@ -409,5 +411,7 @@ var Sections = Sections || {};
 		
 		querySections();
 	};
+	
+	Sections.onSectionQuery = function() {};
 	
 })(Sections);

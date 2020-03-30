@@ -40,6 +40,15 @@ public class Table extends DatabaseObject {
 				" LIMIT 1)" +
 			" ORDER BY next_number ASC LIMIT 1");
 	
+	private static final PreparedStatement SEAT_CUSTOMERS = Database.prep(
+			"INSERT INTO table_guest_history (table_id, guest_count) VALUES (?, ?)");
+
+	private static final PreparedStatement LOOKUP_CURRENT_SEATING = Database.prep(
+			"SELECT id FROM table_guest_history WHERE table_id = ? ORDER BY timestamp DESC LIMIT 1");
+	
+	private static final PreparedStatement LINK_SEAT_AND_ORDER = Database.prep(
+			"UPDATE table_guest_history SET order_id = ? WHERE id = ?");
+	
 	private static final Object sync_insert = new Object();
 	
 	public static enum TableStatus {
@@ -117,7 +126,13 @@ public class Table extends DatabaseObject {
 		setStatus(TableStatus.Order_Placed, employee);
 		assignToEmployee(employee);
 		
-		return new Order(employee, this);
+		Order order = new Order(employee, this);
+		int seating_id = getCurrentSeatingID();
+		
+		LOG.trace("Linking Order #{} to seating group #{}", order.getId(), seating_id);
+		Database.update(LINK_SEAT_AND_ORDER, order.getId(), seating_id);
+		
+		return order;
 	}
 	
 	public double printCheck(Employee employee) {
@@ -151,6 +166,8 @@ public class Table extends DatabaseObject {
 	public void seatCustomer(Employee employee, int amount) {
 		LOG.trace("Seating {} Customer(s) at Table #{}", amount, super.id);
 		setStatus(TableStatus.Seated, employee);
+		
+		Database.update(SEAT_CUSTOMERS, super.id, amount);
 	}
 	
 	public void clearTable(Employee employee) {
@@ -159,6 +176,12 @@ public class Table extends DatabaseObject {
 		
 		// back to open, so unassigns temp
 		Section.removeTempTable(this);
+	}
+	
+	private int getCurrentSeatingID() {
+		AtomicInteger id = new AtomicInteger(0);
+		Database.query(results -> id.set(results.getInt("id")), LOOKUP_CURRENT_SEATING, super.id);
+		return id.get();
 	}
 
 // =========================================== Table Status =========================================== \\

@@ -115,6 +115,28 @@ FOREIGN KEY (`table_id`) REFERENCES `tables` (`id`)
 	ON UPDATE CASCADE
 );
 
+CREATE TABLE `table_guest_history` (
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`table_id` INT UNSIGNED NOT NULL,
+    `guest_count` INT UNSIGNED NOT NULL,
+    `order_id` INT UNSIGNED NULL,
+	`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (`id`),
+UNIQUE INDEX `id_UNIQUE` (`id` ASC),
+	INDEX `table_guest_history_FOREIGN_KEY_table_idx` (`table_id` ASC),
+	INDEX `table_guest_history_FOREIGN_KEY_order_idx` (`order_id` ASC),
+    
+CONSTRAINT `table_guest_history_FOREIGN_KEY_table`
+FOREIGN KEY (`table_id`) REFERENCES `tables` (`id`)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+    
+CONSTRAINT `table_guest_history_FOREIGN_KEY_order_id`
+FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`)
+	ON DELETE SET NULL
+	ON UPDATE CASCADE
+);
+
 /* ********************************* **** ********************************* */
 /* ********************************* Menu ********************************* */
 

@@ -1,0 +1,43 @@
+<res src="clock.less" type="css" />
+
+<div class="sidebar-clock_wrapper">
+	<button id="clock_button" onclick="recordTimestamp()"> Clock Out </button>
+</div>
+
+<script>
+	function recordTimestamp() {
+		Request.ajax({
+			url: "/api/clock/record",
+			method: "POST",
+			
+			done: function(data, status, xhr) {
+				var wasClockedIn = $("#clock_button").hasClass("clock-out");
+				
+				// assign opisite value
+				setClockButtonState(!wasClockedIn);
+				
+				// if employee was clocked in, logout
+				if(wasClockedIn) {
+					Request.logout();
+				}
+			}
+		});
+	}
+	
+	function setClockButtonState(clocked_in) {
+		if(clocked_in) {
+			$("#clock_button")
+				.removeClass("clock-in")
+				.addClass("clock-out")
+				.text("Clock Out");
+			
+		} else {
+			$("#clock_button")
+				.removeClass("clock-out")
+				.addClass("clock-in")
+				.text("Clock In");
+		}
+	}
+	
+	setClockButtonState({!employee_clock_in});
+</script>
