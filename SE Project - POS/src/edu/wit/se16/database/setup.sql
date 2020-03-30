@@ -250,6 +250,7 @@ FOREIGN KEY (`shift_id`) REFERENCES `shifts` (`id`)
 CREATE TABLE `section_tables` (
 	`section_id` INT UNSIGNED NOT NULL,
 	`table_id` INT UNSIGNED NOT NULL,
+	`temp_override` TINYINT NULL DEFAULT 0,
 PRIMARY KEY (`section_id`, `table_id`),
 INDEX `section_table_FOREIGN_KEY_table_idx` (`table_id` ASC),
 

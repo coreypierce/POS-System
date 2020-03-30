@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import edu.wit.se16.database.Database;
 import edu.wit.se16.database.DatabaseObject;
 import edu.wit.se16.model.layout.LayoutJsonParams;
+import edu.wit.se16.model.layout.Section;
 import edu.wit.se16.system.logging.LoggingUtil;
 import edu.wit.se16.util.JsonBuilder;
 
@@ -37,7 +38,7 @@ public class Table extends DatabaseObject {
 			"UNION DISTINCT (SELECT 1 as next_number FROM tables WHERE NOT EXISTS (SELECT table_number FROM tables t3" +
 				" WHERE table_number = 1 AND EXISTS(SELECT id FROM restaurant_layout WHERE is_table = t3.id LIMIT 1))" +
 				" LIMIT 1)" +
-			" ORDER BY table_number ASC LIMIT 1");
+			" ORDER BY next_number ASC LIMIT 1");
 	
 	private static final Object sync_insert = new Object();
 	
@@ -112,7 +113,10 @@ public class Table extends DatabaseObject {
 	
 	public Order startOrder(Employee employee) {
 		LOG.trace("Starting new order on Table #{}", super.id);
+		
 		setStatus(TableStatus.Order_Placed, employee);
+		assignToEmployee(employee);
+		
 		return new Order(employee, this);
 	}
 	
@@ -129,7 +133,18 @@ public class Table extends DatabaseObject {
 	
 // =========================================== Section Functions =========================================== \\
 	
-	
+	public void assignToEmployee(Employee employee) {
+		LOG.trace("Assigning Table #{} to Employee #{}...", super.id, employee.getId());
+		
+		Shift shift = Shift.getCurrentShift();
+		Section section = Section.findSection(shift, employee);
+		
+		// if this table is already part of the Employee's Section
+		if(section.hasTable(this)) return;
+
+		LOG.trace("Table #{} is not part of Employee #{}'s section!", super.id, employee.getId());
+		section.addTempTable(this);
+	}
 	
 // =========================================== Customer Function =========================================== \\
 
@@ -141,6 +156,9 @@ public class Table extends DatabaseObject {
 	public void clearTable(Employee employee) {
 		LOG.trace("Clearing Table #{}", super.id);
 		setStatus(TableStatus.Open, employee);
+		
+		// back to open, so unassigns temp
+		Section.removeTempTable(this);
 	}
 
 // =========================================== Table Status =========================================== \\
@@ -171,11 +189,13 @@ public class Table extends DatabaseObject {
 	public JsonNode toJSON(LayoutJsonParams param) {
 		// remove confusion on enum-translation by using string
 		String status = getStatus().toString();
+		boolean can_pickup = false;
 		
 		// if a section was provided
 		if(param != null && param.section != null) {
 			// if the table is not part of that section
 			if(!param.section.hasTable(this)) {
+				can_pickup = status.equals(TableStatus.Seated.toString());
 				// hide status of that table
 				status = "unknown";
 			}
@@ -186,6 +206,7 @@ public class Table extends DatabaseObject {
 			.append("name", "TB-" + tableNumber)
 			.append("icon", tableDescriptor)
 			.append("status", status) 
+			.append("can_pickup", can_pickup)
 		.build();
 	}
 }

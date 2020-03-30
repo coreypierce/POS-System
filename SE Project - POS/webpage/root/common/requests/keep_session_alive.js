@@ -1,5 +1,8 @@
 var SessionUtil = SessionUtil || {};
 (function(SessionUtil) {
+	// default to 'true' for first-pass
+	SessionUtil.keepAlive = true;
+
 	function ping_server() {
 		// is an action was taken to keep session active
 		if(SessionUtil.keepAlive) {
@@ -7,8 +10,11 @@ var SessionUtil = SessionUtil || {};
 		} else {
 			Request.logout();
 		}
+		
+		// ping server slightly sooner then the timeout-interval (keeps session-token valid)
+		window.setTimeout(ping_server, Request.timeout_interval - 1 * 60 * 1000);
 	}
-
+	
 	function markAction() {
 		SessionUtil.keepAlive = true;
 		if(SessionUtil.timeout) window.clearTimeout(SessionUtil.timeout);
@@ -18,9 +24,9 @@ var SessionUtil = SessionUtil || {};
 	}
 	
 	// actions that mark the user as active
-	$(window).on("click", markAction).on("mousedown", markAction).on("focus", markAction).on("mouseup");
+	$(window).on("click", markAction).on("mousedown", markAction).on("focus", markAction).on("mouseup", markAction);
 	
-	// ping server slightly sooner then the timeout-interval (keeps session-token valid)
-	window.setInterval(ping_server, Request.timeout_interval - 1 * 60 * 1000);
+	// start ping-loop
+	ping_server();
 	
 })(SessionUtil);

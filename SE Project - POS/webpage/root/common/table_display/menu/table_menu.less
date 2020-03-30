@@ -51,6 +51,10 @@
 				margin-bottom: 0;
 				border-bottom: none;
 			}
+			
+			&.table-menu-option_pickup {
+				display: none;
+			}
 		}
 	}
 	
@@ -89,6 +93,18 @@
 				.table-menu-option_order 		{ display: none; }
 				.table-menu-option_print_check 	{ display: none; }
 				.table-menu-option_clear 		{  }
+			}
+			
+			&.table-menu-status_unknown {
+				.table-menu-option_order 		{ display: none; }
+				.table-menu-option_print_check 	{ display: none; }
+				.table-menu-option_clear 		{ display: none; }
+			}
+		}
+		
+		&.table-menu-role_Server {
+			&.table-menu-can_pickup {
+				.table-menu-option_pickup 		{ display: inherit; }
 			}
 		}
 		

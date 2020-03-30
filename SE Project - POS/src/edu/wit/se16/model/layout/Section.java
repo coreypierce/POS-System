@@ -31,19 +31,29 @@ public class Section extends DatabaseObject {
 	private static final PreparedStatement LOOKUP_SECTION = Database.prep(
 			"SELECT id FROM sections WHERE shift_id = ? AND assignee_id = ? LIMIT 1");	
 	
+	// NOTE: we don't check 'temp_override' here, as we'll count temp. tables as "in the section" when asked directly
 	private static final PreparedStatement CHECK_TABLE = Database.prep(
 			"SELECT * FROM section_tables WHERE section_id = ? AND table_id = ?");
 	
-	private static final PreparedStatement QUERY_TABLES = Database.prep("SELECT table_id FROM section_tables WHERE section_id = ?");
+	// NOTE: we DO check 'temp_override' here as the tables are not officially part of the section
+	private static final PreparedStatement QUERY_TABLES = Database.prep(
+			"SELECT table_id FROM section_tables WHERE section_id = ? AND temp_override = false");
 
-	private static final PreparedStatement LOOKUP_SECTION_BY_TABLE = Database.prep(
-			"SELECT section_id FROM section_tables WHERE table_id = ? AND section_id IN (SELECT id FROM sections WHERE shift_id = ?)");
+	// NOTE: again we DO check 'temp_override' here as we want to know the TRUE section the table belongs to
+	private static final PreparedStatement LOOKUP_SECTION_BY_TABLE = Database.prep("SELECT section_id FROM section_tables "
+			+ "WHERE temp_override = false AND table_id = ? AND section_id IN (SELECT id FROM sections WHERE shift_id = ?)");
 	
 	private static final PreparedStatement ADD_TABLE_ASSIGNMENT = Database.prep(
 			"INSERT INTO section_tables (section_id, table_id) VALUES(?, ?)");
 
 	private static final PreparedStatement REMOVE_TABLE_ASSIGNMENT = Database.prep(
 			"DELETE FROM section_tables WHERE section_id = ? AND table_id = ?");
+	
+	private static final PreparedStatement ADD_TEMP_TABLE = Database.prep(
+			"INSERT INTO section_tables (section_id, table_id, temp_override) VALUES(?, ?, true)");
+
+	private static final PreparedStatement REMOVE_TEMP_TABLE = Database.prep(
+			"DELETE FROM section_tables WHERE table_id = ? AND temp_override = true");
 	
 	private int number;
 	private int shift_id;
@@ -164,6 +174,17 @@ public class Section extends DatabaseObject {
 	public void removeTable(Table table) {
 		LOG.trace("Removing Table #{} from Section #{}...", table.getId(), id);
 		Database.update(REMOVE_TABLE_ASSIGNMENT, super.id, table.getId());
+	}
+	
+	public void addTempTable(Table table) {
+		LOG.trace("Temporarily adding Table #{} to Section #{}...", table.getId(), id);
+		Database.update(ADD_TEMP_TABLE, super.id, table.getId());
+	}
+	
+	// happens to ALL temp. version of specified table
+	public static void removeTempTable(Table table) {
+		LOG.trace("Removing temporarily Table #{}...", table.getId());
+		Database.update(REMOVE_TEMP_TABLE, table.getId());
 	}
 	
 // =========================================== JSON =========================================== \\

@@ -3,6 +3,10 @@
 
 <div id="table_context_menu" class="table-display_context_menu table-menu-role_{!employee_role}">
 	<ul class="table-menu_list">
+		<li onclick="promptPickup()" class="table-menu-option_pickup">
+			<i></i> Pickup Table
+		</li>
+	
 		<li onclick="showOrder()" class="table-menu-option_order">
 			<i></i> Order
 		</li>
@@ -25,6 +29,9 @@
 		<li onclick="updateStatus('Check_Printed')"> Set Check-Printed </li>
 	</ul>
 </div>
+
+<import src="/util/popup/popup.html" popup="/common/table_display/menu/pickup_popup.html" 
+	name="prompt-pickup" title="Confirm" size="x-small"/>
 
 <script>
 	var TableDisplay = TableDisplay || {};
@@ -85,6 +92,10 @@
 			Order && Order.openOrder(TableDisplay.menu_item.table.id);
 			Popup.show("edit-order");
 		}*/
+	}
+	
+	function promptPickup() {
+		Popup.show("prompt-pickup");
 	}
 	
 	$("#table_context_menu li").on("click", e => e.stopPropagation());

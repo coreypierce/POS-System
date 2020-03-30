@@ -11,6 +11,7 @@ var Popup = Popup || {};
 	// once page has loaded, append backdrop
 	$(function() {
 		lib.__backdrop.appendTo($("body"));
+		lib.__backdrop.on("click", e => e.stopPropagation());
 	})
 	
 	// Generates a unique-id and maps the given name to that ID

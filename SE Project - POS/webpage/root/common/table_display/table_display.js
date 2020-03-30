@@ -289,7 +289,7 @@ var TableDisplay = TableDisplay || { mode: "view" };
 				.removeClass("table-status_checkout")
 				.removeClass("table-status_unknown");
 			
-				if(this.table.status == "Open") this.element.addClass("table-status_open");
+				 if(this.table.status == "Open") this.element.addClass("table-status_open");
 			else if(this.table.status == "Seated") this.element.addClass("table-status_seated");
 			else if(this.table.status == "Order_Placed") this.element.addClass("table-status_ordered");
 			else if(this.table.status == "Check_Printed") this.element.addClass("table-status_checkout");
@@ -325,12 +325,17 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		
 		// set position and visible
 		menu.addClass("table-menu_open")
+			.removeClass("table-menu-can_pickup")
 			.removeClass("table-menu-status_Open")
 			.removeClass("table-menu-status_Seated")
 			.removeClass("table-menu-status_Order_Placed")
 			.removeClass("table-menu-status_Check_Printed")
+			.removeClass("table-menu-status_unknown")
 			.addClass("table-menu-status_" + item.table.status)
 			.css("top", top).css("left", left);
+
+		if(item.table.can_pickup) 
+			menu.addClass("table-menu-can_pickup");
 		
 		TableDisplay.menu_item = item;
 	
