@@ -21,7 +21,7 @@ public class SessionToken {
 	private static final Logger LOG = LoggingUtil.getLogger();
 	
 	private static final String COOKIE_NAME = "Session-Token"; // TODO: reduce to 5 minute-timeout
-	private static final Duration LOGIN_TIMEOUT = Duration.ofMinutes(5000);
+	private static final Duration LOGIN_TIMEOUT = Duration.ofMinutes(5);
 	
 	private static final PreparedStatement QUERY = Database.prep(
 			"SELECT * FROM session_tokens WHERE id = ? ORDER BY expiration DESC LIMIT 1");

@@ -70,27 +70,28 @@ var Menu = Menu || {};
 // ============================================ Server Functions ============================================ \\
 
 	function queryItems() {
-		$.ajax({
+		Request.ajax({
 			url: "/api/menu/list",
 			method: "POST",
-		})
-		.done(function(data, status, xhr) {
-			for(var category_id in data.categories) {
-				// add category to mappings
-				categories[category_id] = data.categories[category_id];
-				category_ids[categories[category_id]] = category_id;
-				// add header for category
-				generateCategory(category_id);
+		
+			done: function(data, status, xhr) {
+				for(var category_id in data.categories) {
+					// add category to mappings
+					categories[category_id] = data.categories[category_id];
+					category_ids[categories[category_id]] = category_id;
+					// add header for category
+					generateCategory(category_id);
+				}
+				
+				for(var item of data.items) {
+					// add item to mapping
+					items[item.id] = item;
+					// add tile for item
+					generateItem(item);
+				}
+				
+				Menu.onItemsAvailable && Menu.onItemsAvailable();
 			}
-			
-			for(var item of data.items) {
-				// add item to mapping
-				items[item.id] = item;
-				// add tile for item
-				generateItem(item);
-			}
-			
-			Menu.onItemsAvailable && Menu.onItemsAvailable();
 		});
 	}
 	

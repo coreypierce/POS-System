@@ -5,7 +5,7 @@ var Menu = Menu || {};
 // ============================================ Server Functions ============================================ \\
 	
 	function addItem(category, name, price) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/menu/new",
 			method: "POST",
 			
@@ -13,18 +13,19 @@ var Menu = Menu || {};
 				"category": category,
 				"name": name,
 				"price": price
-			}
-		})
-		.done(function(data, status, xhr) {
-			// if request was successful
-			if(status == "success") {
-				Menu.appendItem(data);
+			},
+			
+			done: function(data, status, xhr) {
+				// if request was successful
+				if(status == "success") {
+					Menu.appendItem(data);
+				}
 			}
 		});
 	}
 	
 	function updateItem(id, category, name, price) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/menu/update",
 			method: "POST",
 			
@@ -33,37 +34,39 @@ var Menu = Menu || {};
 				"category": category,
 				"name": name,
 				"price": price
-			}
-		})
-		.done(function(data, status, xhr) {
-			// if request was successful
-			if(status == "success") {
-				var ele = $("#menu-item_" + id);
-				ele.html(data.name + "<span>$" + parseFloat(data.price).toFixed(2) + "</span>");
-				
-				if(!Menu.getCategories()[data.category_id]) {
-					Menu.appendCategory(data.category_id, category);
+			},
+			
+			done: function(data, status, xhr) {
+				// if request was successful
+				if(status == "success") {
+					var ele = $("#menu-item_" + id);
+					ele.html(data.name + "<span>$" + parseFloat(data.price).toFixed(2) + "</span>");
+					
+					if(!Menu.getCategories()[data.category_id]) {
+						Menu.appendCategory(data.category_id, category);
+					}
+					
+					$("#menu-group_" + data.category_id).append(ele);
+					Object.assign(Menu.getItem(id), data);
 				}
-				
-				$("#menu-group_" + data.category_id).append(ele);
-				Object.assign(Menu.getItem(id), data);
 			}
 		});
 	}
 	
 	function deleteItem(id) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/menu/delete",
 			method: "POST",
 			
 			data: {
 				"id": id,
-			}
-		})
-		.done(function(data, status, xhr) {
-			// if request was successful
-			if(status == "success") {
-				$("#menu-item_" + id).remove();
+			},
+			
+			done: function(data, status, xhr) {
+				// if request was successful
+				if(status == "success") {
+					$("#menu-item_" + id).remove();
+				}
 			}
 		});
 	}

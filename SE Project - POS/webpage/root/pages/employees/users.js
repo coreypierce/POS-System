@@ -57,35 +57,37 @@ var Employees = Employees || {};
 		// TODO: Need better method of promitting user
 		if(!confirm("Are you sure you want to delete User?")) return;
 		
-		$.ajax({
+		Request.ajax({
 			url: "/api/employees/delete",
 			method: "POST",
 			
 			data: {
 				"id": id
-			}
-		})
-		.done(function(data, status, xhr) {
-			if(status == "success") {
-				employees[id] = undefined;
-				$("#employee_row_" + id).remove();
+			},
+			
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					employees[id] = undefined;
+					$("#employee_row_" + id).remove();
+				}
 			}
 		});
 	}
 	
 	function resetPassword(id) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/employees/reset_password",
 			method: "POST",
 			
 			data: {
 				"id": id
-			}
-		})
-		.done(function(data, status, xhr) {
-			if(status == "success") {
-				// TODO: Find better way to display to admin
-				alert("TEMP-PASSWORD: " + data.password);
+			},
+			
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					// TODO: Find better way to display to admin
+					alert("TEMP-PASSWORD: " + data.password);
+				}
 			}
 		});
 	}
@@ -99,32 +101,34 @@ var Employees = Employees || {};
 	}
 	
 	function deactivateEmployee(id) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/employees/deactivate",
 			method: "POST",
 			
 			data: {
 				"id": id
+			},
+			
+			done: function(data, status, xhr) {
+				$("#employee_row_" + id + " .user-action_active").addClass("state-deactive");
+				employees[id].active = false;
 			}
-		})
-		.done(function(data, status, xhr) {
-			$("#employee_row_" + id + " .user-action_active").addClass("state-deactive");
-			employees[id].active = false;
 		});
 	}
 	
 	function activateEmployee(id) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/employees/activate",
 			method: "POST",
 			
 			data: {
 				"id": id
+			},
+			
+			done: function(data, status, xhr) {
+				$("#employee_row_" + id + " .user-action_active").removeClass("state-deactive");
+				employees[id].active = true;
 			}
-		})
-		.done(function(data, status, xhr) {
-			$("#employee_row_" + id + " .user-action_active").removeClass("state-deactive");
-			employees[id].active = true;
 		});
 	}
 	
@@ -132,16 +136,17 @@ var Employees = Employees || {};
 // ============================================ Server Functions ============================================ \\
 	
 	function queryAllEmployees() {
-		$.ajax({
+		Request.ajax({
 			url: "/api/employees/list",
 			method: "POST",
-		})
-		.done(function(data, status, xhr) {
-			for(var user of data.employees) {
-				// add employee to mapping
-				employees[user.id] = user;
-				// add row for employee
-				generateEmployeeRow(user);
+			
+			done: function(data, status, xhr) {
+				for(var user of data.employees) {
+					// add employee to mapping
+					employees[user.id] = user;
+					// add row for employee
+					generateEmployeeRow(user);
+				}
 			}
 		});
 	}

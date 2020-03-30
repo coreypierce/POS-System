@@ -58,37 +58,39 @@ var Order = Order || {};
 // ============================================ Server Functions ============================================ \\
 	
 	function startOrder(table_id) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/order/new",
 			method: "POST",
 			
 			data: {
 				"table_id": table_id
-			}
-		})
-		.done(function(data, status, xhr) {
-			if(status == "success") {
-				current_order = data.order;
-				resetOrderDisplay();
-				
-				TableDisplay && TableDisplay.menuActionCallback(data);
+			},
+			
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					current_order = data.order;
+					resetOrderDisplay();
+					
+					TableDisplay && TableDisplay.menuActionCallback(data);
+				}
 			}
 		});
 	}
 	
 	function loadOrder(table_id) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/order/details",
 			method: "POST",
 			
 			data: {
 				"table_id": table_id
-			}
-		})
-		.done(function(data, status, xhr) {
-			if(status == "success") {
-				current_order = data;
-				resetOrderDisplay();
+			},
+			
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					current_order = data;
+					resetOrderDisplay();
+				}
 			}
 		});
 	}
@@ -96,17 +98,18 @@ var Order = Order || {};
 	function submitOrder() {
 		if(!current_order) return;
 		
-		$.ajax({
+		Request.ajax({
 			url: "/api/order/edit",
 			method: "POST",
 			
 			contentType: "application/json",
-			data: JSON.stringify(current_order)
-		})
-		.done(function(data, status, xhr) {
-			if(status == "success") {
-				if(current_order && current_order.id == data.id) {
-					current_order = data;
+			data: JSON.stringify(current_order),
+			
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					if(current_order && current_order.id == data.id) {
+						current_order = data;
+					}
 				}
 			}
 		});

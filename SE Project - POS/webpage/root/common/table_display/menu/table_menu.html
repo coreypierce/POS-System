@@ -37,15 +37,17 @@
 	function updateStatus(status) {
 		if(!TableDisplay.menu_item) return;
 		
-		$.ajax({
+		Request.ajax({
 			url: "/api/table/status",
 			method: "POST",
 			
 			data: {
 				"id": TableDisplay.menu_item.table.id,
 				"status": status
-			}
-		}).done(TableDisplay.menuActionCallback);
+			},
+			
+			done: TableDisplay.menuActionCallback
+		});
 	}
 	
 	function printCheck() {
@@ -58,14 +60,16 @@
 	function clearTable() {
 		if(!TableDisplay.menu_item) return;
 		
-		$.ajax({
+		Request.ajax({
 			url: "/api/table/clear",
 			method: "POST",
 			
 			data: {
 				"id": TableDisplay.menu_item.table.id,
-			}
-		}).done(TableDisplay.menuActionCallback);
+			},
+			
+			done: TableDisplay.menuActionCallback
+		});
 	}
 	
 	function showOrder() {

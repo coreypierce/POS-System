@@ -415,7 +415,7 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 	}
 
 	function perform_addItem(item) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/layout/new",
 			method: "POST",
 			
@@ -429,15 +429,17 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 				rotation: item.rotation,
 				
 				table: item instanceof TableDisplay.Table && item.table.icon || null
+			},
+			
+			done: function(data) {
+				Object.assign(item, data);
+				item.updateElement();
 			}
-		}).done(function(data) {
-			Object.assign(item, data);
-			item.updateElement();
 		});
 	}
 
 	function perform_updateItem(item) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/layout/edit",
 			method: "POST",
 			
@@ -456,7 +458,7 @@ var TableDisplay = TableDisplay || { mode: "edit" };
 	}
 	
 	function perform_deleteItem(item) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/layout/delete",
 			method: "POST",
 			

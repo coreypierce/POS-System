@@ -290,70 +290,74 @@ var Sections = Sections || {};
 // ============================================ Server Functions ============================================ \\
 	
 	function querySections() {
-		$.ajax({
+		Request.ajax({
 			url: "/api/layout/section/list",
-			method: "POST"
-				
-		}).done(function(data, status, xhr) {
-			if(status == "success") {
-				sections = data.sections;
-				Sections.draw();
-				
-				// after the sections have been queried, if we're in edit mode
-				Sections.setupEdit && Sections.setupEdit();
+			method: "POST",
 
-				Sections.regrow();
-				Sections.draw();
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					sections = data.sections;
+					Sections.draw();
+					
+					// after the sections have been queried, if we're in edit mode
+					Sections.setupEdit && Sections.setupEdit();
+	
+					Sections.regrow();
+					Sections.draw();
+				}
 			}
 		});
 	}
 	
 	Sections.createSection = function(callback) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/layout/section/new",
-			method: "POST"
+			method: "POST",
 				
-		}).done(function(data, status, xhr) {
-			if(status == "success") {
-				var section = data;
-				
-				// record section
-				sections.push(section);
-				// invoke callback
-				callback && callback(section);
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					var section = data;
+					
+					// record section
+					sections.push(section);
+					// invoke callback
+					callback && callback(section);
+				}
 			}
 		});
 	};
 	
 	function addTableToSection(section, table_id){
-		$.ajax({
+		Request.ajax({
 			url: "/api/layout/section/add_table",
 			method: "POST",
 			
 			data: {
 				"section_id": section.id,
 				"table_id": table_id,
-			}
-				
-		}).done(function(data, status, xhr) {
-			if(status == "success") {
-				var section = data;
+			},
+
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					var section = data;
+				}
 			}
 		});
 	}
 	
 	function removeTableFromSection(table_id){
-		$.ajax({
+		Request.ajax({
 			url: "/api/layout/section/remove_table",
 			method: "POST",
 			
 			data: {
 				"table_id": table_id,
-			}
-				
-		}).done(function(data, status, xhr) {
-			if(status == "success") {
-				var section = data;
+			},
+			
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					var section = data;
+				}
 			}
 		});
 	}

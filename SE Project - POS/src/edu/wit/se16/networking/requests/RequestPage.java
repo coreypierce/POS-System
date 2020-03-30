@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 
-import edu.wit.se16.networking.SessionManager;
 import edu.wit.se16.networking.StandardResponses;
 import edu.wit.se16.networking.requests.loaders.HTMLResourceLoader;
 import edu.wit.se16.system.logging.LoggingUtil;
@@ -36,6 +35,13 @@ public class RequestPage implements IRequest {
 	public static HttpServletResponse sendPage(String resource, String filename, InputStream in,
 			RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
 		
+		return sendPage(resource, filename, in, request, response, HttpServletResponse.SC_OK);
+	}
+	
+	public static HttpServletResponse sendPage(String resource, String filename, InputStream in,
+			RequestInfo request, HttpServletResponse response, int status_code) throws IOException, ServletException {
+
+		response.setStatus(status_code);
 		OutputStream out = response.getOutputStream();
 		
 		if(in != null) {
@@ -55,7 +61,6 @@ public class RequestPage implements IRequest {
 			return StandardResponses.missing(request, response, filename);
 		}
 
-		response.setStatus(HttpServletResponse.SC_OK);
 		return response;
 	}
 

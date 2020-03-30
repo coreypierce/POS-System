@@ -94,7 +94,7 @@ public class SessionManager {
 				
 				// open stream to HTML file, and open response stream
 				InputStream in = HTMLResourceLoader.loadHTMLStream("root/pages/login/login.html", values);
-				RequestPage.sendPage("root/pages/login/login.html", "login-page", in, request, response);
+				RequestPage.sendPage("root/pages/login/login.html", "login-page", in, request, response, 440);
 			}
 
 		} else {

@@ -58,20 +58,21 @@ var PrintCheck = PrintCheck || {};
 // ============================================ Server Functions ============================================ \\
 	
 	function printCheck(table_id) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/table/print_check",
 			method: "POST",
 			
 			data: {
 				"table_id": table_id
-			}
-		})
-		.done(function(data, status, xhr) {
-			if(status == "success") {
-				current_check = data;
-				resetCheckDisplay();
-				
-				TableDisplay && TableDisplay.menuActionCallback(data);
+			},
+			
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					current_check = data;
+					resetCheckDisplay();
+					
+					TableDisplay && TableDisplay.menuActionCallback(data);
+				}
 			}
 		});
 	}

@@ -31,7 +31,7 @@
 
 <script>
 	function create() {
-		$.ajax({
+		Request.ajax({
 			url: "/api/employees/new",
 			method: "POST",
 			
@@ -39,19 +39,20 @@
 				"firstname": $("#employee_firstName").val(),
 				"lastname": $("#employee_lastName").val(),
 				"role": $("#role").val()
-			}
-		})
-		.done(function(data, status, xhr) {
-			if(status == "success") {
-				// if Employees API is loaded, append new employee
-				Employees && Employees.appendEmployee(data.employee);
-
-				// TODO: find better solution for display
-				alert("TEMP-PASSWORD: " + data.password);
-				
-				// close and clear
-				cancel();
-				
+			},
+			
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					// if Employees API is loaded, append new employee
+					Employees && Employees.appendEmployee(data.employee);
+	
+					// TODO: find better solution for display
+					alert("TEMP-PASSWORD: " + data.password);
+					
+					// close and clear
+					cancel();
+					
+				}
 			}
 		});
 	}

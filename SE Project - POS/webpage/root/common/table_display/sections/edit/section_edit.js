@@ -109,32 +109,33 @@ var Sections = Sections || {};
 // ============================================ Server Functions ============================================ \\
 	
 	function queryActiveServers() {
-		$.ajax({
+		Request.ajax({
 			url: "/api/employees/list",
 			method: "POST",
 			
 			data: {
 				role: "Server",
 				active: true
+			},
+		
+			done: function(data, status, xhr) {
+				employees = data.employees;
+				// force re-check of all employee options
+				onSelectEmployee(null);
+				
+				Sections.forEachSection(function(section) {
+					if(section.assignee) {
+						$(".edit-section_element[id='" + section.id + "']" +
+							" select option[value='" + section.assignee.id + "']").prop('selected', true);
+						$("select option[value='" + section.assignee.id + "']:not(:selected)").remove();
+					}
+				});
 			}
-		})
-		.done(function(data, status, xhr) {
-			employees = data.employees;
-			// force re-check of all employee options
-			onSelectEmployee(null);
-			
-			Sections.forEachSection(function(section) {
-				if(section.assignee) {
-					$(".edit-section_element[id='" + section.id + "']" +
-						" select option[value='" + section.assignee.id + "']").prop('selected', true);
-					$("select option[value='" + section.assignee.id + "']:not(:selected)").remove();
-				}
-			});
 		});
 	}
 	
 	function sendAssignments(section_id, assignee_id) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/layout/section/assign",
 			method: "POST",
 				
@@ -146,7 +147,7 @@ var Sections = Sections || {};
 	}
 	
 	function sendDeleteSection(section_id) {
-		$.ajax({
+		Request.ajax({
 			url: "/api/layout/section/delete",
 			method: "POST",
 				
