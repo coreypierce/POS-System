@@ -37,14 +37,6 @@
 	}
 	
 	function logout() {
-		$.ajax({
-			url: "/api/login/logout",
-			method: "POST"
-		})
-		.done(function() {
-			// delete session-token cookie
-			document.cookie = 'Session-Token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-			window.location.replace("/");
-		});
+		Request.logout();
 	}
 </script>
