@@ -304,6 +304,16 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		if(!tableID) return;
 		
 		var menu = $("#table_context_menu");
+		
+		// add class first, so we get the correct size
+		menu.addClass("table-menu_open")
+			.removeClass("table-menu-can_pickup")
+			.removeClass("table-menu-status_Open")
+			.removeClass("table-menu-status_Seated")
+			.removeClass("table-menu-status_Order_Placed")
+			.removeClass("table-menu-status_Check_Printed")
+			.removeClass("table-menu-status_unknown")
+			.addClass("table-menu-status_" + item.table.status)
 
 		var bounds = $(".table-display_wrapper")[0].getBoundingClientRect();
 		var ele_bounds = item.element[0].getBoundingClientRect();
@@ -324,15 +334,7 @@ var TableDisplay = TableDisplay || { mode: "view" };
 		}
 		
 		// set position and visible
-		menu.addClass("table-menu_open")
-			.removeClass("table-menu-can_pickup")
-			.removeClass("table-menu-status_Open")
-			.removeClass("table-menu-status_Seated")
-			.removeClass("table-menu-status_Order_Placed")
-			.removeClass("table-menu-status_Check_Printed")
-			.removeClass("table-menu-status_unknown")
-			.addClass("table-menu-status_" + item.table.status)
-			.css("top", top).css("left", left);
+		menu.css("top", top).css("left", left);
 
 		if(item.table.can_pickup) 
 			menu.addClass("table-menu-can_pickup");

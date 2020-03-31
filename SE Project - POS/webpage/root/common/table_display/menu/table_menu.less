@@ -73,6 +73,7 @@
 			.table-menu-option_order 		{ display: none; }
 			.table-menu-option_print_check 	{ display: none; }
 			.table-menu-option_clear 		{ display: none; }
+			.table-menu-option_check_in		{ display: none; }
 		}
 		
 		&.table-menu-role_Server, &.table-menu-role_Manager {
@@ -81,6 +82,7 @@
 				.table-menu-option_order 		{ display: none; }
 				.table-menu-option_print_check 	{ display: none; }
 				.table-menu-option_clear 		{ display: none; }
+				.table-menu-option_check_in		{ display: none; }
 			}
 			
 			&.table-menu-status_Seated {
@@ -88,6 +90,7 @@
 				.table-menu-option_order 		{  }
 				.table-menu-option_print_check 	{ display: none; }
 				.table-menu-option_clear 		{  }
+				.table-menu-option_check_in		{  }
 			}
 			
 			&.table-menu-status_Order_Placed {
@@ -95,6 +98,7 @@
 				.table-menu-option_order 		{  }
 				.table-menu-option_print_check 	{  }
 				.table-menu-option_clear 		{ display: none; }
+				.table-menu-option_check_in		{  }
 			}
 			
 			&.table-menu-status_Check_Printed {
@@ -102,6 +106,7 @@
 				.table-menu-option_order 		{ display: none; }
 				.table-menu-option_print_check 	{ display: none; }
 				.table-menu-option_clear 		{  }
+				.table-menu-option_check_in		{ display: none; }
 			}
 			
 			&.table-menu-status_unknown {
@@ -109,6 +114,7 @@
 				.table-menu-option_order 		{ display: none; }
 				.table-menu-option_print_check 	{ display: none; }
 				.table-menu-option_clear 		{ display: none; }
+				.table-menu-option_check_in		{ display: none; }
 			}
 		}
 		
@@ -118,10 +124,8 @@
 			}
 		}
 		
-//		&.table-menu-role_Manager {
-//			.table-menu-option_order 		{  }
-//			.table-menu-option_print_check 	{  }
-//			.table-menu-option_clear 		{  }
-//		}
+		&.table-menu-role_Manager {
+			.table-menu-option_check_in		{ display: none; }
+		}
 	}
 }

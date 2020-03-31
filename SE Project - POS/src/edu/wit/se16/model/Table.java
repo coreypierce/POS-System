@@ -49,6 +49,9 @@ public class Table extends DatabaseObject {
 	private static final PreparedStatement LINK_SEAT_AND_ORDER = Database.prep(
 			"UPDATE table_guest_history SET order_id = ? WHERE id = ?");
 	
+	private static final PreparedStatement RECORD_CHECK_IN = Database.prep(
+			"INSERT INTO table_status_history (employee_id, table_id, status) VALUES (?, ?, 'Check_In')");
+	
 	private static final Object sync_insert = new Object();
 	
 	public static enum TableStatus {
@@ -206,6 +209,11 @@ public class Table extends DatabaseObject {
 		if(!Database.update(UPDATE_STATUS, employee == null ? null : employee.getId(), id, status.toString())) {
 			LOG.error("Table-Status update failed!");
 		}
+	}
+	
+	public void recordCheckIn(Employee employee) {
+		LOG.trace("Employee #{} has checked in on Table #{}", employee.getId(), super.id);
+		Database.update(RECORD_CHECK_IN, employee.getId(), super.id);
 	}
 	
 // =========================================== Display JSON =========================================== \\

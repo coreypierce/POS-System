@@ -3,6 +3,10 @@
 
 <div id="table_context_menu" class="table-display_context_menu table-menu-role_{!employee_role}">
 	<ul class="table-menu_list">
+		<li onclick="checkIn()" class="table-menu-option_check_in">
+			<i></i> Record Check-In
+		</li>
+		
 		<li onclick="promptSeatAmount()" class="table-menu-option_seat">
 			<i></i> Seat Guests
 		</li>
@@ -48,7 +52,7 @@
 		TableDisplay.closeMenu();
 		
 		// if recount is available, recount sections
-		queryCounts && queryCounts();
+		typeof queryCounts !== 'undefined' && queryCounts();
 	};
 
 	function updateStatus(status) {
@@ -129,6 +133,19 @@
 			data: {
 				"id": TableDisplay.menu_item.table.id,
 				"amount": amount
+			},
+			
+			done: TableDisplay.menuActionCallback
+		});
+	}
+	
+	function checkIn() {
+		Request.ajax({
+			url: "/api/table/check_in",
+			method: "POST",
+			
+			data: {
+				"table_id": TableDisplay.menu_item.table.id
 			},
 			
 			done: TableDisplay.menuActionCallback
