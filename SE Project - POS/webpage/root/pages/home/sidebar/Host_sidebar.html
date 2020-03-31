@@ -28,19 +28,25 @@
 		
 	}
 	
-	(function() {
-		var prev = Sections.onSectionQuery;
-		Sections.onSectionQuery = function() {
-			var group = $(".host-sidebar-sections");
+	function queryCounts() {
+		Request.ajax({
+			url: "/api/host/count",
+			method: "POST",
 			
-			Sections.forEachSection(function(section) {
-				group
-					.append($("<span />").text("Section #" + section.number))
-					.append($("<span />").text("?"))
-			});
-			
-			// call previous function
-			prev();
-		};
-	})();
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					var group = $(".host-sidebar-sections");
+					group.find("span:not(.host-sidebar-sections_header)").remove();
+					
+					for(var section of data.counts) {
+						group
+							.append($("<span />").text("Section #" + section.section_number))
+							.append($("<span />").text(section.count))
+					}
+				}
+			}
+		});
+	}
+	
+	queryCounts();
 </script>

@@ -46,6 +46,9 @@
 		Object.assign(TableDisplay.menu_item.table, data.table);
 		TableDisplay.menu_item.updateElement();
 		TableDisplay.closeMenu();
+		
+		// if recount is available, recount sections
+		queryCounts && queryCounts();
 	};
 
 	function updateStatus(status) {

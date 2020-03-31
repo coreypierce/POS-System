@@ -165,9 +165,10 @@ public class Table extends DatabaseObject {
 
 	public void seatCustomer(Employee employee, int amount) {
 		LOG.trace("Seating {} Customer(s) at Table #{}", amount, super.id);
-		setStatus(TableStatus.Seated, employee);
-		
+
+		// NOTE: must insert custom count BEFORE updating status
 		Database.update(SEAT_CUSTOMERS, super.id, amount);
+		setStatus(TableStatus.Seated, employee);
 	}
 	
 	public void clearTable(Employee employee) {
