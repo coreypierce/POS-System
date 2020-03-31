@@ -68,6 +68,18 @@ var Sections = Sections || {};
 		
 		return null;
 	};
+	
+	Sections.getSectionBoxes = function(section_number) {
+		var results = [];
+		
+		for(var box of boxes) {
+			if(box.section && box.section.number == section_number) {
+				results.push(box);
+			}
+		}
+		
+		return results;
+	};
 
 // ============================================ ============= ============================================ \\
 // ============================================ Section Boxes ============================================ \\

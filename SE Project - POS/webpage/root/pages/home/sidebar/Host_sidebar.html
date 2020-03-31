@@ -24,6 +24,20 @@
 </div>
 
 <script>
+	function onClickSection(event) {
+		var section_id = $(event.target).closest("span").attr("data-section_id");
+		var boxes = Sections.getSectionBoxes(section_id);
+		var elements = $();
+		
+		for(var box of boxes) {
+			elements = elements.add(box.element);
+		}
+		
+		elements.addClass("host-show-section").delay(150).queue(function(){
+		    $(this).removeClass("host-show-section").dequeue();
+		});
+	}
+
 	function suggestSection() {
 		
 	}
@@ -40,8 +54,15 @@
 					
 					for(var section of data.counts) {
 						group
-							.append($("<span />").text("Section #" + section.section_number))
-							.append($("<span />").text(section.count))
+							.append($("<span />")
+								.on("click", onClickSection)
+								.attr("data-section_id", section.section_number)
+								.text("Section #" + section.section_number))
+								
+							.append($("<span />")
+								.on("click", onClickSection)
+								.attr("data-section_id", section.section_number)
+								.text(section.count))
 					}
 				}
 			}

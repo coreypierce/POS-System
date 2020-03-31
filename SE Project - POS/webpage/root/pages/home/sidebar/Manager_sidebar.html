@@ -1,20 +1,13 @@
-<style>
-	.manager-sidebar {
-		padding: 1rem;
-	}
-	
-	.manager-sidebar button {
-		width: 100%;
-	    text-align: left;
-	    
-    	margin: .5rem 0;
-	}
-</style>
+<res src="Manager_sidebar.less" type="css" />
 
 <div class="manager-sidebar">
-	<button style="background: #3d7fa9" onclick="openEditLayoutPage()"> <i></i> Edit Layout </button>
-	<button style="background: #7c52ad" onclick="openEmployeeManagementPage()"> <i></i> Manage Employees </button>
-	<button style="background: #af507e" onclick="openSectionManagementPage()"> <i></i> Modify Sections </button>
+	<div class="manager-sidebar_actions">
+		<button style="background: #3d7fa9" onclick="openEditLayoutPage()"> <i></i> Edit Layout </button>
+		<button style="background: #7c52ad" onclick="openEmployeeManagementPage()"> <i></i> Manage Employees </button>
+		<button style="background: #af507e" onclick="openSectionManagementPage()"> <i></i> Modify Sections </button>
+	</div>
+	
+	<import src="common/clock.html" />
 </div>
 
 <script>
