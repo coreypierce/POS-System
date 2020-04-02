@@ -2,10 +2,23 @@
 
 <div class="home-main_content"> 
 	<aside class="home-sidebar">
+		<div class="edit-shift_actions">
+			<button class="edit-shift-specials_button" onclick="showEditSpecials()"> <i></i> Edit Specials </button>
+		</div>
+	
 		<import src="/common/table_display/sections/edit/section_edit.html" section_edit_append=".home-sidebar" />
 	</aside>
 
 	<section class="home-restaurant_display">
 		<import src="/common/table_display/table_display.html" /> 
 	</section>
+	
+	<import src="/util/popup/popup.html" popup="/pages/menu/specials/manage_specials.html" 
+		name="edit-specials" size="large" title="Manage Specials"/>
 </div>
+
+<script>
+	function showEditSpecials() {
+		Popup.open("edit-specials");
+	}
+</script>

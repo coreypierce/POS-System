@@ -80,7 +80,7 @@ public class RequestPrintCheck implements IRequest {
 		// send updated table back to client
 		JsonBuilder.create()
 			.append("success", true)
-			.append("order_details", order.toJSON())
+			.append("order_details", order.toJSON(shift))
 			
 			.append("sub_total", amount)
 			.append("tax_rate", taxRate * 100)

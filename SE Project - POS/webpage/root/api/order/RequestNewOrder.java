@@ -59,7 +59,7 @@ public class RequestNewOrder implements IRequest {
 			} else {
 				// respond with Order-JSON
 				JsonBuilder.create()
-					.append("order", order.toJSON())
+					.append("order", order.toJSON(shift))
 					.append("table", table.toJSON(params))
 				.build(response);
 				response.setStatus(HttpServletResponse.SC_OK);
@@ -74,7 +74,7 @@ public class RequestNewOrder implements IRequest {
 		
 		// respond with Order-JSON
 		JsonBuilder.create()
-			.append("order", order.toJSON())
+			.append("order", order.toJSON(shift))
 			.append("table", table.toJSON(params))
 		.build(response);
 		response.setStatus(HttpServletResponse.SC_OK);

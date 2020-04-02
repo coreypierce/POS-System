@@ -47,6 +47,10 @@ var Menu = Menu || {};
 			.append($("<span />")
 				.text("$" + parseFloat(item.price).toFixed(2)));
 		
+		// if the item has a default-price, thus its price is a specials-price
+		if(typeof item.default_price !== 'undefined')
+			ele.addClass("menu-special");
+		
 		$("#menu-group_" + item.category_id).append(ele);
 	}
 	
@@ -95,8 +99,25 @@ var Menu = Menu || {};
 		});
 	}
 	
+	Menu.updateItemPrice = function(item) {
+		items[item.id] = item;
+		
+		var ele = $("#menu-item_" + item.id);
+		ele.html(item.name + "<span>$" + parseFloat(item.price).toFixed(2) + "</span>");
+		
+		// if the item has a default-price, thus its price is a specials-price
+		if(typeof item.default_price !== 'undefined')
+			ele.addClass("menu-special");
+		else
+			ele.removeClass("menu-special");
+	};
+	
 // ============================================ ============= ============================================ \\
 // ============================================ API Functions ============================================ \\
+	
+	Menu.getAllItem = function() {
+		return items;
+	};
 	
 	Menu.getItem = function(id) {
 		return items[id];

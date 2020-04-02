@@ -17,10 +17,27 @@ body {
 		width: 256px; 
 		height: 100%;
 		
+	    display: flex;
+	    flex-direction: column;
+		
 		background: @sidebar-color; 
 		
 		box-shadow: 3px 0 8px 0px #787878; 
 		z-index: 99;
+		
+		.edit-shift_actions {
+		    margin: .5rem;
+		    margin-top: 1rem;
+		    
+		    padding-bottom: 1rem;
+		    border-bottom: 2px groove #757575;
+			
+			.edit-shift-specials_button {
+				width: 100%;
+				text-align: left;
+				background: #dab22f;
+			}
+		}
 	}
 	
 	.home-restaurant_display {

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 
+import edu.wit.se16.model.Shift;
 import edu.wit.se16.model.menu.MenuCategory;
 import edu.wit.se16.model.menu.MenuItem;
 import edu.wit.se16.networking.requests.IRequest;
@@ -22,6 +23,8 @@ public class RequestMenuItems implements IRequest {
 	public HttpServletResponse process(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
 		Map<Integer, String> categories = MenuCategory.getAllCategories();
 		MenuItem[] items = MenuItem.getAllItems();
+
+		Shift shift = Shift.getCurrentShift();
 
 		LOG.trace("Found {} categories", categories.size());
 		LOG.trace("Found {} menu-items", items.length);
@@ -38,7 +41,7 @@ public class RequestMenuItems implements IRequest {
 		
 		// write all items into JSON
 		for(MenuItem item : items) {
-			builder.append(item.toJSON());
+			builder.append(item.toJSON(shift));
 		}
 		
 		// end array and send to client

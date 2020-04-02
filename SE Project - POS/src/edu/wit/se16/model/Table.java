@@ -158,7 +158,7 @@ public class Table extends DatabaseObject {
 		Section section = Section.findSection(shift, employee);
 		
 		// if this table is already part of the Employee's Section
-		if(section.hasTable(this)) return;
+		if(section == null || section.hasTable(this)) return;
 
 		LOG.trace("Table #{} is not part of Employee #{}'s section!", super.id, employee.getId());
 		section.addTempTable(this);

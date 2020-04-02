@@ -1,0 +1,18 @@
+<res src="manage_specials.less" type="css" />	
+<res src="specials.js" type="js" />	
+
+<div class="specials-wrapper">
+	<div class="specials-details">
+		<div class="specials-items">
+		</div>
+	</div>
+	
+	<div class="specials-menu_wrapper">
+		<import src="/common/menu_display/menu.html" no_specials="true" />
+	</div>
+</div>
+
+<script>
+	Menu.setOnClick(Specials.addSpecial);
+	
+</script>

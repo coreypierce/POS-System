@@ -165,13 +165,13 @@ public class Order extends DatabaseObject {
 	
 	// =========================================== JSON =========================================== \\
 	
-	public JsonNode toJSON() {
+	public JsonNode toJSON(Shift shift) {
 		JsonBuilder builder = JsonBuilder.create();
 		builder.append("id", super.id);
 		
 		builder.newArray("items");
 		for(OrderItem item : items.values()) {
-			item.appendJSON(builder);
+			item.appendJSON(builder, shift);
 		}
 		
 		builder.end();
@@ -224,9 +224,9 @@ public class Order extends DatabaseObject {
 		
 		// =========================================== Data Access =========================================== \\
 		
-		public void appendJSON(JsonBuilder builder) {
+		public void appendJSON(JsonBuilder builder, Shift shift) {
 			builder.newObject()
-				.append("item", item.toJSON())
+				.append("item", item.toJSON(shift))
 				.append("quantity", quantity)
 			.end();
 		}

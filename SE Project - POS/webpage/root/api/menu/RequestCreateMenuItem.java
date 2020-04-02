@@ -34,7 +34,7 @@ public class RequestCreateMenuItem implements IRequest {
 		MenuCategory category = new MenuCategory(category_name);
 		MenuItem item = new MenuItem(name, price, category);
 		
-		JsonBuilder.from(item.toJSON())
+		JsonBuilder.from(item.toJSON(null))
 			.append("category", category_name)
 		.build(response);
 		response.setStatus(HttpServletResponse.SC_OK);

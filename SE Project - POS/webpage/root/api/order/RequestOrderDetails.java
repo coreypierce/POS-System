@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 import edu.wit.se16.model.Order;
+import edu.wit.se16.model.Shift;
 import edu.wit.se16.model.Table;
 import edu.wit.se16.model.Table.TableStatus;
 import edu.wit.se16.networking.StandardResponses;
@@ -45,9 +46,11 @@ public class RequestOrderDetails implements IRequest {
 			return StandardResponses.error(request, response, 
 					HttpServletResponse.SC_BAD_REQUEST, "Table doesn't currently have an order");
 		}
+
+		Shift shift = Shift.getCurrentShift();
 		
 		// respond with Order-JSON
-		JsonBuilder.from(order.toJSON()).build(response);
+		JsonBuilder.from(order.toJSON(shift)).build(response);
 		response.setStatus(HttpServletResponse.SC_OK);
 		return response;
 	}

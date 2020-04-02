@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import edu.wit.se16.database.Database;
 import edu.wit.se16.database.DatabaseObject;
+import edu.wit.se16.model.Shift;
 import edu.wit.se16.system.logging.LoggingUtil;
 import edu.wit.se16.util.JsonBuilder;
 
@@ -27,6 +29,16 @@ public class MenuItem extends DatabaseObject {
 			"UPDATE menu_items SET category_id = ?, name = ?, price = ? WHERE id = ?");
 	
 	private static final PreparedStatement DELETE = Database.prep("DELETE FROM menu_items WHERE id = ?");
+
+	private static final PreparedStatement QUERY_SPECIAL = Database.prep(
+			"SELECT price FROM specials  WHERE shift_id = ? AND item_id = ?");
+	
+	private static final PreparedStatement INSERT_SPECIAL = Database.prep(
+			"INSERT INTO specials (shift_id, item_id, price) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE price = ?");
+	
+	private static final PreparedStatement DELETE_SPECIAL = Database.prep("DELETE FROM specials WHERE shift_id = ? AND item_id = ?");
+	
+	
 	
 	private String name;
 	private double price;
@@ -120,15 +132,51 @@ public class MenuItem extends DatabaseObject {
 		Database.update(DELETE, super.id);
 	}
 	
+	// =========================================== Special Item =========================================== \\
+	
+	public void markSpecial(Shift shift, double price) {
+		LOG.trace("Assigning special price of ${} to Item #{} durring Shift #{}", price, super.id, shift.getId());
+		Database.update(INSERT_SPECIAL, shift.getId(), super.id, price, price);
+	}
+	
+	public void removeSpecial(Shift shift) {
+		LOG.trace("Remove Item #{} from Shift #{} specials", super.id, shift.getId());
+		Database.update(DELETE_SPECIAL, shift.getId(), super.id);
+	}
+	
+	public static Double lookupSpecialPrice(Shift shift, int item_id) {
+		if(shift == null) return null;
+		
+		// no such thing as a AtomicDouble, so store the double's bits in a long
+		AtomicLong price_bits = new AtomicLong(-1);
+		
+		Database.query(
+			results -> price_bits.set(Double.doubleToLongBits(results.getDouble("price"))), 
+			QUERY_SPECIAL, shift.getId(), item_id);
+		
+		// return null if there's no special price
+		return price_bits.get() < 0 ? null : new Double(Double.longBitsToDouble(price_bits.get()));
+	}
+	
 	// =========================================== JSON =========================================== \\
 	
-	public JsonNode toJSON() {
-		return JsonBuilder.create()
+	public JsonNode toJSON(Shift shift) {
+		Double special_price = MenuItem.lookupSpecialPrice(shift, super.id);
+		
+		JsonBuilder builder = JsonBuilder.create()
 			.append("id", super.id)
 			.append("name", name)
-			.append("price", price)
-			.append("category_id", category_id)
-		.build();
+			.append("category_id", category_id);
+		
+		if(special_price == null) {
+			builder.append("price", price);
+			
+		} else {
+			builder.append("price", special_price);
+			builder.append("default_price", price);
+		}
+		
+		return builder.build();
 	}
 	
 	public String getName() { return name; }

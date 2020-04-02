@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 import edu.wit.se16.model.Order;
+import edu.wit.se16.model.Shift;
 import edu.wit.se16.networking.StandardResponses;
 import edu.wit.se16.networking.requests.IRequest;
 import edu.wit.se16.networking.requests.RequestInfo;
@@ -54,8 +55,10 @@ public class RequestAdjustOrder implements IRequest {
 					HttpServletResponse.SC_BAD_REQUEST, "Malformed data in 'items'!");
 		}
 
+		Shift shift = Shift.getCurrentShift();
+		
 		// respond with Order-JSON
-		JsonBuilder.from(order.toJSON()).build(response);
+		JsonBuilder.from(order.toJSON(shift)).build(response);
 		response.setStatus(HttpServletResponse.SC_OK);
 		return response;
 	}

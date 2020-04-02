@@ -1,4 +1,4 @@
-package root.api.menu;
+package root.api.menu.specials;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 import edu.wit.se16.model.Shift;
-import edu.wit.se16.model.menu.MenuCategory;
 import edu.wit.se16.model.menu.MenuItem;
 import edu.wit.se16.networking.StandardResponses;
 import edu.wit.se16.networking.requests.IRequest;
@@ -17,52 +16,43 @@ import edu.wit.se16.networking.requests.RequestInfo;
 import edu.wit.se16.system.logging.LoggingUtil;
 import edu.wit.se16.util.JsonBuilder;
 
-public class RequestUpdateMenuItem implements IRequest {
+public class RequestMarkSpecial implements IRequest {
 	private static final Logger LOG = LoggingUtil.getLogger();
 
 	public HttpServletResponse process(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
-		Integer id = request.getBody("id", Integer::parseInt, null);
-		
-		String name = request.getBody("name");
-		String category_name = request.getBody("category");
+		Integer item_id = request.getBody("item_id", Integer::parseInt, null);
 		Double price = request.getBody("price", Double::parseDouble, null);
 		
 		// validate parameters
-		if(id == null) {
+		if(item_id == null) {
 			return StandardResponses.error(request, response, 
-					HttpServletResponse.SC_BAD_REQUEST, "Missing parameter 'id'");
+					HttpServletResponse.SC_BAD_REQUEST, "Missing menu-item 'item_id'");
 		}
 		
-		if(name == null || category_name == null || price == null) {
+		if(price == null) {
 			return StandardResponses.error(request, response, 
-					HttpServletResponse.SC_BAD_REQUEST, "Missing required parameter: name, category, or price");
+					HttpServletResponse.SC_BAD_REQUEST, "Missing 'price'");
 		}
 		
-		LOG.trace("Requesting update to Menu-Item #{}; '{}' for ${} in the category '{}'...", id, name, price, category_name);
 		MenuItem item;
+		Shift shift = Shift.getCurrentShift();
 		
+		LOG.trace("Set special price for Menu-Item #{} to ${} for Shift #{}...", item_id, price, shift.getId());
+
 		try {
-			item = new MenuItem(id);
-			
-			MenuCategory category = new MenuCategory(category_name);
-			item.update(category.getId(), name, price);
+			item = new MenuItem(item_id);
+			item.markSpecial(shift, price);
 			
 		} catch(NoSuchElementException e) {
-			LOG.error("Requested Menu-Item #{}, but none exists!", id);
+			LOG.error("Requested Menu-Item #{}, but none exists!", item_id);
 			return StandardResponses.error(request, response, 
 					HttpServletResponse.SC_BAD_REQUEST, "Menu-Item doesn't exist");
 		}
-
-		Shift shift = Shift.getCurrentShift();
 		
-		JsonBuilder.from(item.toJSON(shift))
-			// append name, just in case category is new
-			.append("category", category_name)
-		.build(response);
-		
+		JsonBuilder.from(item.toJSON(shift)).build(response);
 		response.setStatus(HttpServletResponse.SC_OK);
 		return response;
 	}
 
-	public String getCommand() { return "update"; }
+	public String getCommand() { return "set"; }
 }
