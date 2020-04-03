@@ -12,6 +12,7 @@ import edu.wit.se16.model.Employee;
 import edu.wit.se16.model.Employee.Role;
 import edu.wit.se16.model.Shift;
 import edu.wit.se16.model.Shift.ShiftType;
+import edu.wit.se16.networking.SessionManager;
 import edu.wit.se16.networking.StandardResponses;
 import edu.wit.se16.networking.requests.IRequest;
 import edu.wit.se16.networking.requests.RequestInfo;
@@ -32,8 +33,10 @@ public class RequestStartShift implements IRequest {
 		}
 		
 		if(manager_id == null) {
-			return StandardResponses.error(request, response, 
-					HttpServletResponse.SC_BAD_REQUEST, "Missing 'manager_id'");
+//			return StandardResponses.error(request, response, 
+//					HttpServletResponse.SC_BAD_REQUEST, "Missing 'manager_id'");
+			
+			manager_id = SessionManager.getSessionToken().getEmployeeNumber();
 		}
 		
 		LOG.trace("Request to start new '{}' Shift wtih Manager #{}...", type, manager_id);

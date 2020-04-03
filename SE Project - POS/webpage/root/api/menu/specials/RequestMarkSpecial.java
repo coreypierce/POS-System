@@ -35,7 +35,13 @@ public class RequestMarkSpecial implements IRequest {
 		}
 		
 		MenuItem item;
+		
 		Shift shift = Shift.getCurrentShift();
+		if(shift == null) {
+			LOG.error("No shift found in the system!");
+			return StandardResponses.error(request, response, 
+					HttpServletResponse.SC_CONFLICT, "There is no active shift available");
+		}
 		
 		LOG.trace("Set special price for Menu-Item #{} to ${} for Shift #{}...", item_id, price, shift.getId());
 

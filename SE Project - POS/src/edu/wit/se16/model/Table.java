@@ -138,7 +138,7 @@ public class Table extends DatabaseObject {
 		return order;
 	}
 	
-	public double printCheck(Employee employee) {
+	public double printCheck(Shift shift, Employee employee) {
 		LOG.trace("Printing check for Table #{}", super.id);
 		
 		// get the current order for the table
@@ -146,7 +146,7 @@ public class Table extends DatabaseObject {
 		if(order == null) throw new IllegalStateException("No order exists for Table #" + super.id);
 
 		setStatus(TableStatus.Check_Printed, employee);
-		return order.calculateBill();
+		return order.calculateBill(shift);
 	}
 	
 // =========================================== Section Functions =========================================== \\

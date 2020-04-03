@@ -38,6 +38,8 @@ public class RequestPrintCheck implements IRequest {
 		SessionToken token = SessionManager.getSessionToken();
 		Employee employee = token.getEmployee();
 		
+		Shift shift = Shift.getCurrentShift();
+		
 		LOG.trace("Employee #{} requested the bill for Table #{}...", employee.getId(), id);
 
 		Table table;
@@ -48,7 +50,7 @@ public class RequestPrintCheck implements IRequest {
 		try {
 			// attempt to load the table
 			table = new Table(id);
-			amount = table.printCheck(employee);
+			amount = table.printCheck(shift, employee);
 			
 			order = Order.getTablesOrder(id);
 
@@ -70,7 +72,6 @@ public class RequestPrintCheck implements IRequest {
 		
 		// Layout conversion Parameters
 		LayoutJsonParams params = new LayoutJsonParams();
-		Shift shift = Shift.getCurrentShift();
 		
 		// if the employee is a Server, then get their active section
 		if(employee.getRole() == Role.Server && shift != null) {

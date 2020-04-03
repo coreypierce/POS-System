@@ -52,7 +52,7 @@ public class RequestSectionSeatCounts implements IRequest {
 		if(shift == null) {
 			LOG.error("No shift found in the system!");
 			return StandardResponses.error(request, response, 
-					HttpServletResponse.SC_BAD_REQUEST, "There is no active shift available");
+					HttpServletResponse.SC_CONFLICT, "There is no active shift available");
 		}
 		
 		LOG.trace("Requesting guest-count by section for Shift #{}...", shift.getId());

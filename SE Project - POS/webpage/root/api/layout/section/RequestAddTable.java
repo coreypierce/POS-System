@@ -38,7 +38,7 @@ public class RequestAddTable implements IRequest {
 		if(current_shift == null) {
 			LOG.error("No shift found in the system!");
 			return StandardResponses.error(request, response, 
-					HttpServletResponse.SC_BAD_REQUEST, "There is no active shift available");
+					HttpServletResponse.SC_CONFLICT, "There is no active shift available");
 		}
 		
 		LOG.trace("Request to add Table #{} into Section #{}...", table_id, section_id);

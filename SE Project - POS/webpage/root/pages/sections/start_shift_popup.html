@@ -1,0 +1,53 @@
+<res src="start_shift_popup.less" type="css" />
+
+<div class="start-shift">
+	<div class="start-shift-wrapper"> 
+		<span> Start </span>
+		<select class="start-shift-input" id="shift-type-input">
+			<option value="Morning"> Morning </option>
+			<option value="Noon"> Noon </option>
+			<option value="Evening"> Evening </option>
+			<option value="Night"> Night </option>	
+		</select> 
+		<span> shift on <span id="shift_date" class="start-shift-input">data</span></span>
+	</div>
+	
+	<div class="start-shift-actions">
+		<button style="background-color: #42b346;" onclick="startShift()"> Start Shift </button>
+		<button style="background-color: #db1414;" onclick="closePopup()"> Cancel </button>
+	</div>
+</div>
+
+<script>
+	(function() {
+		var date = new Date();
+		var day = date.getDay();
+		
+		var months = ["January", "February", "March", "April", "May", "June", "July", 
+		              "August", "September", "October", "November", "December"];
+		
+		$("#shift_date").text(months[date.getMonth()] + " " + day
+				+ (day == 1 ? 'st' : day == 2 ? 'nd' : day == 3 ? 'rd' : 'th'));
+	})();
+
+	function startShift() {
+		Request.ajax({
+			url: "/api/shifts/start",
+			method: "POST",
+			
+			data: {
+				"type": $("#shift-type-input").val()
+			},
+		
+			done: function() {
+				location.reload();
+			}
+		});
+		
+		Popup.close();
+	}
+
+	function closePopup() {
+		Popup.close();
+	}
+</script>

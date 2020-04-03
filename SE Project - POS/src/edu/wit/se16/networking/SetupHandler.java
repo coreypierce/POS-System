@@ -11,6 +11,8 @@ import org.apache.commons.collections.map.CaseInsensitiveMap;
 import edu.wit.se16.database.Database;
 import edu.wit.se16.model.Employee;
 import edu.wit.se16.model.Employee.Role;
+import edu.wit.se16.model.Shift;
+import edu.wit.se16.model.Shift.ShiftType;
 import edu.wit.se16.networking.requests.RequestInfo;
 import edu.wit.se16.networking.requests.RequestPage;
 import edu.wit.se16.networking.requests.loaders.HTMLResourceLoader;
@@ -37,6 +39,9 @@ public class SetupHandler {
 		
 		// set their ID into the protected range
 		Database.update(Database.prep("UPDATE employees SET id = ? WHERE id = ?"), ROOT_MANAGER_ID, employee.getId());
+		
+		// always force there to be a shift
+		new Shift(ShiftType.Noon, employee);
 		
 		CaseInsensitiveMap values = new CaseInsensitiveMap();
 		values.put("setup_id", ROOT_MANAGER_ID);

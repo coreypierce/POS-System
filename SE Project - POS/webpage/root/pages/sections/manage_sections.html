@@ -2,6 +2,21 @@
 
 <div class="home-main_content"> 
 	<aside class="home-sidebar">
+		<div class="edit-shift_current">
+			<h3>
+				Current Shift
+				<span id="shift-type"> Noon </span>
+			</h3>
+			
+			<span> Manager: </span>
+			<span id="shift-manager-name"> Andy Ngo </span>
+			
+			<span> Started: </span>
+			<span id="shift-start-time"> 11:30am - Dec. 12th </span>
+			
+			<button class="edit-shift-start_button" onclick="Popup.show('start-shift')"> Start new Shift </button>
+		</div>
+	
 		<div class="edit-shift_actions">
 			<button class="edit-shift-specials_button" onclick="showEditSpecials()"> <i></i> Edit Specials </button>
 		</div>
@@ -15,10 +30,40 @@
 	
 	<import src="/util/popup/popup.html" popup="/pages/menu/specials/manage_specials.html" 
 		name="edit-specials" size="large" title="Manage Specials"/>
+		
+	<import src="/util/popup/popup.html" popup="/pages/sections/start_shift_popup.html" 
+		name="start-shift" size="small" title="Start Shift"/>
 </div>
 
 <script>
+	function requestCurrentShiftDetails() {
+		Request.ajax({
+			url: "/api/shifts/details",
+			method: "POST",
+			
+			done: function(data, success, ajax) {
+				var months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", 
+				              "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+				
+				$("#shift-type").text(data.type);
+				$("#shift-manager-name").text(data.manager.firstname + " " + data.manager.lastname);
+				
+				var date = new Date(0);
+				date.setUTCSeconds(data.start_time.epochSecond);
+				
+				var day = date.getDay();
+				
+				$("#shift-start-time").text(
+						(date.getHours() % 12 + 1) + ":" + date.getMinutes() + (date.getHours() > 11 ? "pm" : "am")
+						+ " - " + months[date.getMonth()] + " "
+							+ day + (day == 1 ? 'st' : day == 2 ? 'nd' : day == 3 ? 'rd' : 'th'));
+			}
+		})
+	}
+
 	function showEditSpecials() {
 		Popup.open("edit-specials");
 	}
+	
+	requestCurrentShiftDetails();
 </script>

@@ -68,7 +68,8 @@ var Specials = Specials || {};
 	
 	Specials.addSpecial = function(item) {
 		setSpecialPrice(item, item.price);
-		generateSpecialRow(item);
+		if(!$(".specials-item[data-item_id=" + item.id + "]").length)
+			generateSpecialRow(item);
 	}
 	
 // ============================================ ===== ============================================ \\

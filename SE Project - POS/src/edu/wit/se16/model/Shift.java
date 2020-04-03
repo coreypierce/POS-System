@@ -3,6 +3,7 @@ package edu.wit.se16.model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,6 +37,7 @@ public class Shift extends DatabaseObject {
 	
 	private int manager_id;
 	private ShiftType type;
+	private Instant start_time;
 	
 	public Shift(int id) {
 		super(id);
@@ -65,6 +67,7 @@ public class Shift extends DatabaseObject {
 			this.type = ShiftType.valueOf(results.getString("shift_type"));
 			this.manager_id = results.getInt("manager_id");
 			
+			this.start_time = results.getTimestamp("date").toInstant();
 		}, QUERY, id);
 	}
 
@@ -114,4 +117,11 @@ public class Shift extends DatabaseObject {
 		Database.query(results -> nextNumber.set(results.getInt("next_number")), NEXT_SECTION_NUMBER, super.id, super.id);
 		return nextNumber.get();
 	}
+	
+// =========================================== Getters =========================================== \\
+	
+	public ShiftType getShiftType() { return type; }
+	public Instant getStartTime() { return start_time; }
+	
+	public Employee getManager() { return new Employee(manager_id); }
 }

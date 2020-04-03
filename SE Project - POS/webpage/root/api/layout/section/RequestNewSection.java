@@ -24,7 +24,7 @@ public class RequestNewSection implements IRequest {
 		if(current_shift == null) {
 			LOG.error("No shift found in the system!");
 			return StandardResponses.error(request, response, 
-					HttpServletResponse.SC_BAD_REQUEST, "There is no active shift available");
+					HttpServletResponse.SC_CONFLICT, "There is no active shift available");
 		}
 		
 		LOG.trace("New Section has been requested durring Shift #{}...", current_shift.getId());

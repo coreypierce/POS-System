@@ -31,6 +31,12 @@ var Request = Request || {};
 			// delete session-token cookie
 			document.cookie = 'Session-Token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 			window.location.replace("/");
+			
+		} else if(xhr.status == 409) {
+			Popup && Popup.show("error-shift");
+			
+		} else if(xhr.status == 403) {
+			Popup && Popup.show("error-forbiden");
 		}
 	}
 

@@ -152,12 +152,14 @@ public class Order extends DatabaseObject {
 		}
 	}
 
-	public double calculateBill() {
+	public double calculateBill(Shift shift) {
 		LOG.trace("Calculating Order #{}'s total price...", super.id);
 		
 		double sum = 0;
 		for(Entry<MenuItem, OrderItem> entry : this.items.entrySet()) {
-			sum += entry.getKey().getPrice() * entry.getValue().quantity;
+			Double price = MenuItem.lookupSpecialPrice(shift, entry.getKey().getId());
+			if(price == null) price = entry.getKey().getPrice();
+			sum += price * entry.getValue().quantity;
 		}
 		
 		return sum;
