@@ -19,8 +19,8 @@ import edu.wit.se16.util.JsonBuilder;
 public class RequestSectionSeatCounts implements IRequest {
 	private static final Logger LOG = LoggingUtil.getLogger();
 	
-	private static final PreparedStatement QUERY = Database.prep(
-			"SELECT section_number AS 'section', COALESCE(count, 0) AS 'count' FROM sections AS s " +
+	static final PreparedStatement QUERY = Database.prep(
+			"SELECT s.id AS 'id', section_number AS 'section', COALESCE(count, 0) AS 'count' FROM sections AS s " +
 				"LEFT JOIN ( " + 
 					"SELECT s.id, SUM(g.guest_count) AS 'count' FROM ( " + 
 						"SELECT g.* FROM ( " + 
@@ -45,7 +45,7 @@ public class RequestSectionSeatCounts implements IRequest {
 				        "NOT (h.status = 'Open' AND h.timestamp >= g.timestamp) AND " + 
 				        "(h.status = 'Seated' OR NOT g.order_id = NULL) " + 
 					"GROUP BY s.id " + 
-			") AS c ON c.id = s.id");
+			") AS c ON c.id = s.id WHERE s.shift_id = ?");
 
 	public HttpServletResponse process(RequestInfo request, HttpServletResponse response) throws IOException, ServletException {
 		Shift shift = Shift.getCurrentShift();
@@ -66,7 +66,7 @@ public class RequestSectionSeatCounts implements IRequest {
 				.append("section_number", results.getInt("section"))
 				.append("count", results.getInt("count"))
 			.end();
-		}, QUERY, shift.getId());
+		}, QUERY, shift.getId(), shift.getId());
 		
 		builder.end();
 		

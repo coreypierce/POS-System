@@ -37,7 +37,20 @@
 	}
 
 	function suggestSection() {
-		
+		Request.ajax({
+			url: "/api/host/recommend",
+			method: "POST",
+			
+			data: {
+				"guest_count": $("#suggestion-count").val() || 1
+			},
+			
+			done: function(data, status, xhr) {
+				if(status == "success") {
+					$("span[data-section_id=" + data.section_number + "]").click();
+				}
+			}
+		});
 	}
 	
 	function queryCounts() {
