@@ -18,7 +18,7 @@ git clone https://github.com/coreypierce/POS-System.git
 - Once logged in you can change your password.
 - After, you can the edit the layout of your restaurant and add employees and menu items in to the system. 
 ## Demo Video
-link here
+https://www.youtube.com/watch?v=BtdOTbH-ZSA&feature=youtu.be
 ## Contributors
 - Josh Cilfone
 - Andy Ngo
